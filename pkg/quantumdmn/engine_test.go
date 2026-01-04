@@ -2,6 +2,7 @@ package quantumdmn_test
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -11,14 +12,14 @@ import (
 )
 
 func TestEvaluate(t *testing.T) {
-	projectID := uuid.New().String()
+	projectID := uuid.New()
 	tokenProvider := func(ctx context.Context) (string, error) {
 		return "token", nil
 	}
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Verify URL
-		expectedPath := "/projects/" + projectID + "/definitions/by-xml-id/my-model/evaluate"
+		expectedPath := fmt.Sprintf("/projects/%s/definitions/by-xml-id/my-model/evaluate", projectID)
 		if r.URL.Path != expectedPath {
 			t.Errorf("expected path %s, got %s", expectedPath, r.URL.Path)
 			w.WriteHeader(http.StatusNotFound)

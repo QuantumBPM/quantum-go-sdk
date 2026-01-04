@@ -104,10 +104,12 @@ The SDK provides a `NewZitadelTokenProvider` helper to authenticate using a JSON
 
 ```go
 // Create provider from key file
+// Note: projectID is the Zitadel Project ID (different from DMN Project ID) 
+// used to request project-specific audience and roles.
 tp, err := quantumdmn.NewZitadelTokenProvider(
     "./service-account.json",      // Path to JSON Key
     "https://auth.quantumdmn.com", // Issuer URL
-    nil,                           // Scopes (default: openid, profile)
+    "zitadel-project-id",          // Zitadel Project ID (required for accessing granted projects)
 )
 if err != nil {
     log.Fatal(err)
@@ -116,7 +118,7 @@ if err != nil {
 // Initialize client
 client, err := quantumdmn.NewEngineClient(
     "https://api.quantumdmn.com", 
-    "your-project-id", 
+    "your-project-id", // DMN Project ID (different from Zitadel Project ID)
     tp,
 )
 ```
