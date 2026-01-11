@@ -29,20 +29,38 @@ func NewEngineClient(baseURL string, projectID uuid.UUID, tokenProvider TokenPro
 	}, nil
 }
 
+// EvaluateOption defines a functional option for configuring evaluation requests.
+type EvaluateOption func(*EvaluateByXMLIDParams, *EvaluateByXMLIDJSONRequestBody)
+
+// WithVersion sets the specific version of the definition to evaluate.
+func WithVersion(version int) EvaluateOption {
+	return func(params *EvaluateByXMLIDParams, body *EvaluateByXMLIDJSONRequestBody) {
+		params.Version = &version
+	}
+}
+
+// WithBusinessID sets the Business ID for the evaluation context.
+func WithBusinessID(businessID string) EvaluateOption {
+	return func(params *EvaluateByXMLIDParams, body *EvaluateByXMLIDJSONRequestBody) {
+		body.BusinessId = &businessID
+	}
+}
+
 // Evaluate performs a DMN evaluation using the XML Definition ID.
 // This is the primary method for interacting with the engine.
-func (c *EngineClient) Evaluate(ctx context.Context, xmlId string, version *int, evalContext map[string]interface{}) (map[string]EvaluationResult, error) {
+func (c *EngineClient) Evaluate(ctx context.Context, xmlId string, evalContext map[string]interface{}, opts ...EvaluateOption) (map[string]EvaluationResult, error) {
 	fCtx, err := toFeelContext(evalContext)
 	if err != nil {
 		return nil, fmt.Errorf("failed to serialize context: %w", err)
 	}
 
-	params := &EvaluateByXMLIDParams{
-		Version: version,
-	}
-
+	params := &EvaluateByXMLIDParams{}
 	body := EvaluateByXMLIDJSONRequestBody{
 		Context: fCtx,
+	}
+
+	for _, opt := range opts {
+		opt(params, &body)
 	}
 
 	resp, err := c.Client.EvaluateByXMLIDWithResponse(ctx, c.projectID, xmlId, params, body)

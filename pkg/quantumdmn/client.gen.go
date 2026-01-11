@@ -105,12 +105,14 @@ type Error struct {
 
 // EvaluateStoredRequest defines model for EvaluateStoredRequest.
 type EvaluateStoredRequest struct {
-	Context FeelContext `json:"context"`
+	// BusinessId Optional identifier for the business object being processed. If provided, existing metrics for this businessId and XML Definition ID will be replaced.
+	BusinessId *string     `json:"businessId,omitempty"`
+	Context    FeelContext `json:"context"`
 
-	// DecisionServices List of Decision Services to evaluate
+	// DecisionServices Names of the Decision Services to evaluate (optional)
 	DecisionServices *[]string `json:"decisionServices,omitempty"`
 
-	// Decisions List of Decision or Decision Service names to evaluate
+	// Decisions List of Decision or Decision Service names to evaluate (optional)
 	Decisions *[]string `json:"decisions,omitempty"`
 	Version   *int      `json:"version,omitempty"`
 }
@@ -213,7 +215,6 @@ type OverviewResponse struct {
 		KpiTrends     *[]KpiTrend  `json:"kpiTrends,omitempty"`
 		RequestsTrend *[]DailyStat `json:"requestsTrend,omitempty"`
 		TotalCredits  *int         `json:"totalCredits,omitempty"`
-		TotalRequests *int         `json:"totalRequests,omitempty"`
 	} `json:"stats,omitempty"`
 }
 
@@ -389,7 +390,18 @@ type EvaluateDesignJSONBody struct {
 
 	// Decisions List of Decision or Decision Service names to evaluate (optional)
 	Decisions *[]string `json:"decisions,omitempty"`
-	Xml       string    `json:"xml"`
+
+	// KpiInitialState Initial state for windowed KPIs (KPI ID -> array of timestamped values)
+	KpiInitialState *map[string][]struct {
+		Metrics []struct {
+			Field string     `json:"field"`
+			Value *FeelValue `json:"value"`
+		} `json:"metrics"`
+
+		// Timestamp Timestamp of the measurement (ISO 8601)
+		Timestamp time.Time `json:"timestamp"`
+	} `json:"kpiInitialState,omitempty"`
+	Xml string `json:"xml"`
 }
 
 // ListDefinitionsParams defines parameters for ListDefinitions.

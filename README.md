@@ -69,8 +69,10 @@ Use the `Evaluate` method to execute a decision by its XML Definition ID (Busine
     }
 
     // Evaluate
-    // Arguments: Context, XML ID, Version (nil for latest), Inputs
-    results, err := client.Evaluate(ctx, "risk-scoring", nil, inputs)
+    // Arguments: Context, XML ID, Inputs, Options...
+    results, err := client.Evaluate(ctx, "risk-scoring", inputs)
+    // Or with version:
+    // results, err := client.Evaluate(ctx, "risk-scoring", inputs, quantumdmn.WithVersion(1))
     if err != nil {
         log.Fatal(err)
     }

@@ -48,7 +48,7 @@ func TestEvaluate(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	result, err := client.Evaluate(ctx, "my-model", nil, map[string]interface{}{"Input": 123})
+	result, err := client.Evaluate(ctx, "my-model", map[string]interface{}{"Input": 123})
 	if err != nil {
 		t.Fatalf("Evaluate failed: %v", err)
 	}

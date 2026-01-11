@@ -261,6 +261,33 @@ paths:
                   items:
                     type: string
                   description: List of Decision or Decision Service names to evaluate (optional)
+                kpiInitialState:
+                  type: object
+                  description: Initial state for windowed KPIs (KPI ID -> array of timestamped values)
+                  additionalProperties:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                        - metrics
+                        - timestamp
+                      properties:
+                        metrics:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                              - value
+                              - field
+                            properties:
+                              value:
+                                $ref: '#/components/schemas/FeelValue'
+                              field:
+                                type: string
+                        timestamp:
+                          type: string
+                          format: date-time
+                          description: Timestamp of the measurement (ISO 8601)
       responses:
         '200':
           description: OK
@@ -1471,16 +1498,19 @@ components:
           type: integer
         context:
           $ref: '#/components/schemas/FeelContext'
+        businessId:
+          type: string
+          description: "Optional identifier for the business object being processed. If provided, existing metrics for this businessId and XML Definition ID will be replaced."
         decisionServices:
           type: array
           items:
             type: string
-          description: List of Decision Services to evaluate
+          description: Names of the Decision Services to evaluate (optional)
         decisions:
           type: array
           items:
-            type: string
-          description: List of Decision or Decision Service names to evaluate
+             type: string
+          description: List of Decision or Decision Service names to evaluate (optional)
 
     SimulationRequest:
       type: object
@@ -1693,8 +1723,6 @@ components:
         stats:
           type: object
           properties:
-            totalRequests:
-              type: integer
             totalCredits:
               type: integer
             requestsTrend:
