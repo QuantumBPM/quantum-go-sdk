@@ -249,6 +249,10 @@ paths:
               properties:
                 xml:
                   type: string
+                additionalXmls:
+                  type: array
+                  items:
+                    type: string
                 context:
                   $ref: '#/components/schemas/FeelContext'
                 decisionServices:

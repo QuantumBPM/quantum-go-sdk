@@ -383,7 +383,8 @@ type CreateSubscriptionUpgradeTransactionJSONBody struct {
 
 // EvaluateDesignJSONBody defines parameters for EvaluateDesign.
 type EvaluateDesignJSONBody struct {
-	Context *FeelContext `json:"context,omitempty"`
+	AdditionalXmls *[]string    `json:"additionalXmls,omitempty"`
+	Context        *FeelContext `json:"context,omitempty"`
 
 	// DecisionServices Names of the Decision Services to evaluate (optional)
 	DecisionServices *[]string `json:"decisionServices,omitempty"`
