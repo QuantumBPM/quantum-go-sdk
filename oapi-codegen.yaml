@@ -1,5 +1,5 @@
-package: quantumdmn
-output: pkg/quantumdmn/client.gen.go
+package: generated
+output: generated/client.gen.go
 generate:
   client: true
   models: true
