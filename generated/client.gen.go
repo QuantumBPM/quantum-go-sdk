@@ -18,26 +18,32 @@ import (
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
-// Defines values for BpmnActivityStateStatus.
-const (
-	BpmnActivityStateStatusCanceled  BpmnActivityStateStatus = "Canceled"
-	BpmnActivityStateStatusCompleted BpmnActivityStateStatus = "Completed"
-	BpmnActivityStateStatusFailed    BpmnActivityStateStatus = "Failed"
-	BpmnActivityStateStatusStarted   BpmnActivityStateStatus = "Started"
-)
-
 // Defines values for BpmnIncidentErrorType.
 const (
-	BpmnError         BpmnIncidentErrorType = "BpmnError"
-	CompensationError BpmnIncidentErrorType = "CompensationError"
-	EscalationError   BpmnIncidentErrorType = "EscalationError"
-	FeelError         BpmnIncidentErrorType = "FeelError"
-	GatewayNoMatch    BpmnIncidentErrorType = "GatewayNoMatch"
-	LinkNotFound      BpmnIncidentErrorType = "LinkNotFound"
-	MigrationError    BpmnIncidentErrorType = "MigrationError"
-	NoHandler         BpmnIncidentErrorType = "NoHandler"
-	TimerResolution   BpmnIncidentErrorType = "TimerResolution"
-	Unknown           BpmnIncidentErrorType = "Unknown"
+	BpmnIncidentErrorTypeBpmnError         BpmnIncidentErrorType = "BpmnError"
+	BpmnIncidentErrorTypeCompensationError BpmnIncidentErrorType = "CompensationError"
+	BpmnIncidentErrorTypeEscalationError   BpmnIncidentErrorType = "EscalationError"
+	BpmnIncidentErrorTypeFeelError         BpmnIncidentErrorType = "FeelError"
+	BpmnIncidentErrorTypeGatewayNoMatch    BpmnIncidentErrorType = "GatewayNoMatch"
+	BpmnIncidentErrorTypeLinkNotFound      BpmnIncidentErrorType = "LinkNotFound"
+	BpmnIncidentErrorTypeMigrationError    BpmnIncidentErrorType = "MigrationError"
+	BpmnIncidentErrorTypeNoHandler         BpmnIncidentErrorType = "NoHandler"
+	BpmnIncidentErrorTypeTimerResolution   BpmnIncidentErrorType = "TimerResolution"
+	BpmnIncidentErrorTypeUnknown           BpmnIncidentErrorType = "Unknown"
+)
+
+// Defines values for BpmnIncidentRecordErrorType.
+const (
+	BpmnIncidentRecordErrorTypeBpmnError         BpmnIncidentRecordErrorType = "BpmnError"
+	BpmnIncidentRecordErrorTypeCompensationError BpmnIncidentRecordErrorType = "CompensationError"
+	BpmnIncidentRecordErrorTypeEscalationError   BpmnIncidentRecordErrorType = "EscalationError"
+	BpmnIncidentRecordErrorTypeFeelError         BpmnIncidentRecordErrorType = "FeelError"
+	BpmnIncidentRecordErrorTypeGatewayNoMatch    BpmnIncidentRecordErrorType = "GatewayNoMatch"
+	BpmnIncidentRecordErrorTypeLinkNotFound      BpmnIncidentRecordErrorType = "LinkNotFound"
+	BpmnIncidentRecordErrorTypeMigrationError    BpmnIncidentRecordErrorType = "MigrationError"
+	BpmnIncidentRecordErrorTypeNoHandler         BpmnIncidentRecordErrorType = "NoHandler"
+	BpmnIncidentRecordErrorTypeTimerResolution   BpmnIncidentRecordErrorType = "TimerResolution"
+	BpmnIncidentRecordErrorTypeUnknown           BpmnIncidentRecordErrorType = "Unknown"
 )
 
 // Defines values for BpmnInstanceStatus.
@@ -111,6 +117,26 @@ const (
 	ListBpmnExternalJobsParamsStatusPENDING   ListBpmnExternalJobsParamsStatus = "PENDING"
 )
 
+// Defines values for ListBpmnIncidentsParamsStatus.
+const (
+	Open     ListBpmnIncidentsParamsStatus = "open"
+	Resolved ListBpmnIncidentsParamsStatus = "resolved"
+)
+
+// Defines values for ListBpmnIncidentsParamsErrorType.
+const (
+	BpmnError         ListBpmnIncidentsParamsErrorType = "BpmnError"
+	CompensationError ListBpmnIncidentsParamsErrorType = "CompensationError"
+	EscalationError   ListBpmnIncidentsParamsErrorType = "EscalationError"
+	FeelError         ListBpmnIncidentsParamsErrorType = "FeelError"
+	GatewayNoMatch    ListBpmnIncidentsParamsErrorType = "GatewayNoMatch"
+	LinkNotFound      ListBpmnIncidentsParamsErrorType = "LinkNotFound"
+	MigrationError    ListBpmnIncidentsParamsErrorType = "MigrationError"
+	NoHandler         ListBpmnIncidentsParamsErrorType = "NoHandler"
+	TimerResolution   ListBpmnIncidentsParamsErrorType = "TimerResolution"
+	Unknown           ListBpmnIncidentsParamsErrorType = "Unknown"
+)
+
 // Defines values for ListBpmnInstancesParamsStatus.
 const (
 	ListBpmnInstancesParamsStatusCANCELED  ListBpmnInstancesParamsStatus = "CANCELED"
@@ -170,39 +196,6 @@ type BatchEvaluationResponse struct {
 		Results *map[string]EvaluationResult `json:"results,omitempty"`
 	} `json:"results,omitempty"`
 }
-
-// BpmnActivityState Execution record for a single BPMN activity (service task, user task, gateway, etc.).
-type BpmnActivityState struct {
-	// ChildWorkflowID For CallActivity nodes, the execution identifier of the child instance spawned by this execution. Empty for non-CallActivity nodes and for the brief window between activity start and child instance startup.
-	ChildWorkflowID *string `json:"childWorkflowID,omitempty"`
-
-	// EndTime Unix epoch nanoseconds when execution ended; 0 if still running.
-	EndTime *int64 `json:"endTime,omitempty"`
-
-	// ExecutionKey Unique key identifying this execution (used to correlate external jobs).
-	ExecutionKey *string `json:"executionKey,omitempty"`
-
-	// Inputs Input variables evaluated at activity entry.
-	Inputs *map[string]interface{} `json:"inputs,omitempty"`
-
-	// NodeID ID of the BPMN flow node.
-	NodeID *string `json:"nodeID,omitempty"`
-
-	// NodeType Type of the BPMN node (e.g. ServiceTask, UserTask, ExclusiveGateway).
-	NodeType *string `json:"nodeType,omitempty"`
-
-	// Outputs Output variables produced by the activity.
-	Outputs *map[string]interface{} `json:"outputs,omitempty"`
-
-	// StartTime Unix epoch nanoseconds when execution began.
-	StartTime *int64 `json:"startTime,omitempty"`
-
-	// Status Execution outcome — Started, Completed, Failed, or Canceled.
-	Status *BpmnActivityStateStatus `json:"status,omitempty"`
-}
-
-// BpmnActivityStateStatus Execution outcome — Started, Completed, Failed, or Canceled.
-type BpmnActivityStateStatus string
 
 // BpmnExternalJobPaginatedResponse Page of external jobs.
 type BpmnExternalJobPaginatedResponse struct {
@@ -265,6 +258,70 @@ type BpmnIncident struct {
 //   - `Unknown` — Internal error not classified above.
 type BpmnIncidentErrorType string
 
+// BpmnIncidentRecord A persisted incident — the cross-instance audit row that backs the
+// "Incidents" view. The same incident is also available in
+// `BpmnInstanceState.incidents` while it is still open in the engine; the
+// persisted row additionally carries `raisedAt` / `resolvedAt` /
+// `resolvedBy` and the parent process metadata so it can be listed and
+// filtered without joining back to the instance.
+type BpmnIncidentRecord struct {
+	// DefinitionID ID of the process definition the instance is running. May be absent when the source definition was deleted.
+	DefinitionID *openapi_types.UUID `json:"definitionID,omitempty"`
+
+	// ErrorCode BPMN error code from the process definition; empty for non-BPMN errors.
+	ErrorCode *string `json:"errorCode,omitempty"`
+
+	// ErrorMessage Human-readable description of the error.
+	ErrorMessage string `json:"errorMessage"`
+
+	// ErrorType Category of the error — same enum as `BpmnIncident.errorType`.
+	ErrorType BpmnIncidentRecordErrorType `json:"errorType"`
+
+	// ExecutionKey Execution key of the activity that failed.
+	ExecutionKey *string `json:"executionKey,omitempty"`
+
+	// Id Surrogate row identifier; stable across resolves.
+	Id openapi_types.UUID `json:"id"`
+
+	// IncidentID Engine-assigned incident identifier, unique within the workflow.
+	IncidentID string `json:"incidentID"`
+
+	// NodeID ID of the BPMN node where the error occurred.
+	NodeID string `json:"nodeID"`
+
+	// ProcessID BPMN process ID of the parent definition. Convenience field; absent when definitionID is unresolved.
+	ProcessID *string `json:"processID,omitempty"`
+
+	// ProcessName Human-readable name of the parent process definition.
+	ProcessName *string `json:"processName,omitempty"`
+
+	// RaisedAt Timestamp when the engine recorded the incident.
+	RaisedAt time.Time `json:"raisedAt"`
+
+	// ResolvedAt Timestamp when the incident was resolved. Empty while open.
+	ResolvedAt *time.Time `json:"resolvedAt,omitempty"`
+
+	// ResolvedBy Identifier of the user who resolved the incident, or "system:reconcile" when corrected by drift reconciliation. Empty for engine-internal resolves (boundary catches, modification cancel) and for open incidents.
+	ResolvedBy *string `json:"resolvedBy,omitempty"`
+
+	// ScopeID ID of the scope in which the error occurred.
+	ScopeID *string `json:"scopeID,omitempty"`
+
+	// WorkflowID Identifier of the instance that produced the incident.
+	WorkflowID string `json:"workflowID"`
+}
+
+// BpmnIncidentRecordErrorType Category of the error — same enum as `BpmnIncident.errorType`.
+type BpmnIncidentRecordErrorType string
+
+// BpmnIncidentRecordPaginatedResponse Page of persisted incidents.
+type BpmnIncidentRecordPaginatedResponse struct {
+	Data []BpmnIncidentRecord `json:"data"`
+
+	// Pagination Pagination metadata accompanying paginated list responses.
+	Pagination PaginationMetadata `json:"pagination"`
+}
+
 // BpmnInstance A running or completed execution of a BPMN process.
 type BpmnInstance struct {
 	// CompletedAt Timestamp when the instance reached a terminal status. Empty while running.
@@ -276,6 +333,9 @@ type BpmnInstance struct {
 	// DefinitionID ID of the deployed BPMN process definition this instance is running.
 	DefinitionID openapi_types.UUID `json:"definitionID"`
 
+	// HasIncident True when at least one unresolved incident is currently attached to this instance. Computed at query time against the open-incidents index — useful for rendering a "needs attention" indicator in instance lists without paying for a per-row state fetch from the engine.
+	HasIncident *bool `json:"hasIncident,omitempty"`
+
 	// ParentWorkflowID Execution identifier of the parent instance that started this one via a CallActivity. Empty for top-level instances.
 	ParentWorkflowID *string `json:"parentWorkflowID,omitempty"`
 
@@ -284,6 +344,18 @@ type BpmnInstance struct {
 
 	// Status Current lifecycle status of the instance.
 	Status BpmnInstanceStatus `json:"status"`
+
+	// SuspendReason Free-text reason captured at suspend time.
+	SuspendReason *string `json:"suspendReason,omitempty"`
+
+	// SuspendedAt Timestamp at which this instance was paused at INSTANCE scope. Empty
+	// when not instance-suspended. The instance may still be effectively
+	// suspended via its definition — call `GetBpmnInstance` to read both
+	// scopes if you need the full picture.
+	SuspendedAt *time.Time `json:"suspendedAt,omitempty"`
+
+	// SuspendedBy Operator who suspended this instance (instance scope). Empty when not instance-suspended.
+	SuspendedBy *string `json:"suspendedBy,omitempty"`
 
 	// WorkflowID Stable execution identifier for this instance. Use this to address the instance in all API calls — fetch state, send signals/messages, complete user tasks, list children, cancel, etc.
 	WorkflowID string `json:"workflowID"`
@@ -310,20 +382,37 @@ type BpmnInstanceState struct {
 	// ActiveScopes Scopes that currently hold at least one live token.
 	ActiveScopes *[]ActiveScope `json:"activeScopes,omitempty"`
 
+	// DefinitionSuspension Audit-shaped record of an active suspension at one scope (instance or
+	// definition). Returned inline on `BpmnInstanceState` — `null` when not
+	// suspended at that scope. An instance is "effectively suspended" if either
+	// scope's entry is present; the dispatcher pauses forward token dispatch
+	// while either flag is set.
+	DefinitionSuspension *SuspensionEntry `json:"definitionSuspension,omitempty"`
+
 	// Error True when the instance has an unresolved incident.
 	Error *bool `json:"error,omitempty"`
 
 	// FailureReason Error message from the workflow when status is FAILED.
 	FailureReason *string `json:"failureReason,omitempty"`
 
-	// History Ordered list of activity execution records.
-	History *[]BpmnActivityState `json:"history,omitempty"`
-
 	// Incidents Active incidents that require resolution before the process can continue.
 	Incidents *[]BpmnIncident `json:"incidents,omitempty"`
 
+	// InstanceSuspension Audit-shaped record of an active suspension at one scope (instance or
+	// definition). Returned inline on `BpmnInstanceState` — `null` when not
+	// suspended at that scope. An instance is "effectively suspended" if either
+	// scope's entry is present; the dispatcher pauses forward token dispatch
+	// while either flag is set.
+	InstanceSuspension *SuspensionEntry `json:"instanceSuspension,omitempty"`
+
 	// ParentWorkflowID Execution identifier of the parent instance that started this one via a CallActivity. Empty for top-level instances.
 	ParentWorkflowID *string `json:"parentWorkflowID,omitempty"`
+
+	// ProcessId BPMN process definition ID this instance was started from.
+	ProcessId *string `json:"processId,omitempty"`
+
+	// ProcessVersion Version of the BPMN process definition this instance is currently running. Updated by migration operations.
+	ProcessVersion *int `json:"processVersion,omitempty"`
 
 	// ResourceID ID of the BPMN resource (definition file) that produced this instance.
 	ResourceID openapi_types.UUID `json:"resourceID"`
@@ -407,6 +496,18 @@ type BpmnProcessVersion struct {
 
 	// RunningCount Instances of this version with status RUNNING.
 	RunningCount int `json:"runningCount"`
+
+	// SuspendReason Free-text reason captured at suspend time.
+	SuspendReason *string `json:"suspendReason,omitempty"`
+
+	// SuspendedAt Timestamp at which this definition was paused. While set, the start
+	// endpoint rejects new instances of this definition with 409, and every
+	// already-running instance was sent a definition-scope suspend signal.
+	// Empty when active.
+	SuspendedAt *time.Time `json:"suspendedAt,omitempty"`
+
+	// SuspendedBy Operator who suspended this definition. Empty when active.
+	SuspendedBy *string `json:"suspendedBy,omitempty"`
 
 	// TotalCount All instances of this version across statuses.
 	TotalCount int `json:"totalCount"`
@@ -648,6 +749,9 @@ type Definition struct {
 
 	// Version Auto-incremented version number, starting at 1 for the first upload of a `definitionsID`.
 	Version int `json:"version"`
+
+	// VersionCount Total number of stored versions under this `definitionsID`. Populated by the latest-listing endpoint; absent on single-version reads.
+	VersionCount *int `json:"versionCount,omitempty"`
 
 	// Xml The DMN XML body.
 	Xml string `json:"xml"`
@@ -1026,6 +1130,33 @@ type StartBpmnTestInstanceRequest struct {
 	Variables *map[string]interface{} `json:"variables,omitempty"`
 }
 
+// SuspendBpmnDefinitionRequest Optional metadata captured with a definition-scope suspension. The same reason cascades to each running instance.
+type SuspendBpmnDefinitionRequest struct {
+	Reason *string `json:"reason,omitempty"`
+}
+
+// SuspendBpmnInstanceRequest Optional metadata captured with an instance-scope suspension.
+type SuspendBpmnInstanceRequest struct {
+	// Reason Free-text rationale. Surfaces in the operator UI and the workflow's history audit.
+	Reason *string `json:"reason,omitempty"`
+}
+
+// SuspensionEntry Audit-shaped record of an active suspension at one scope (instance or
+// definition). Returned inline on `BpmnInstanceState` — `null` when not
+// suspended at that scope. An instance is "effectively suspended" if either
+// scope's entry is present; the dispatcher pauses forward token dispatch
+// while either flag is set.
+type SuspensionEntry struct {
+	// Reason Free-text reason captured at suspend time; surfaces in the operator UI alongside the action.
+	Reason *string `json:"reason,omitempty"`
+
+	// SuspendedAt Unix epoch nanoseconds at which the suspension was applied.
+	SuspendedAt int64 `json:"suspendedAt"`
+
+	// SuspendedBy Identifier of the operator (or service account) that initiated the suspension.
+	SuspendedBy *string `json:"suspendedBy,omitempty"`
+}
+
 // UpdateDefinitionRequest Payload for updating metadata on an existing definition version.
 type UpdateDefinitionRequest struct {
 	// Name New display name.
@@ -1213,12 +1344,61 @@ type HeartbeatBpmnExternalJobJSONBody struct {
 	LockDuration *string `json:"lockDuration,omitempty"`
 }
 
+// ListBpmnIncidentsParams defines parameters for ListBpmnIncidents.
+type ListBpmnIncidentsParams struct {
+	// DefinitionID Restrict to incidents on instances of a single process definition.
+	DefinitionID *openapi_types.UUID `form:"definitionID,omitempty" json:"definitionID,omitempty"`
+
+	// WorkflowID Restrict to incidents on a single instance — useful for an instance-detail "all incidents ever raised here" view that includes resolved rows.
+	WorkflowID *string `form:"workflowID,omitempty" json:"workflowID,omitempty"`
+
+	// Status Filter by lifecycle status. `open` returns unresolved incidents;
+	// `resolved` returns only resolved ones. Omit to return both.
+	Status *ListBpmnIncidentsParamsStatus `form:"status,omitempty" json:"status,omitempty"`
+
+	// ErrorType Restrict to a single error category (matches `BpmnIncidentRecord.errorType`).
+	ErrorType *ListBpmnIncidentsParamsErrorType `form:"errorType,omitempty" json:"errorType,omitempty"`
+
+	// Since Earliest `raisedAt` to include (inclusive).
+	Since *time.Time `form:"since,omitempty" json:"since,omitempty"`
+
+	// Until Latest `raisedAt` to include (exclusive).
+	Until    *time.Time `form:"until,omitempty" json:"until,omitempty"`
+	Page     *int       `form:"page,omitempty" json:"page,omitempty"`
+	PageSize *int       `form:"pageSize,omitempty" json:"pageSize,omitempty"`
+}
+
+// ListBpmnIncidentsParamsStatus defines parameters for ListBpmnIncidents.
+type ListBpmnIncidentsParamsStatus string
+
+// ListBpmnIncidentsParamsErrorType defines parameters for ListBpmnIncidents.
+type ListBpmnIncidentsParamsErrorType string
+
 // ListBpmnInstancesParams defines parameters for ListBpmnInstances.
 type ListBpmnInstancesParams struct {
 	DefinitionID *openapi_types.UUID            `form:"definitionID,omitempty" json:"definitionID,omitempty"`
 	Status       *ListBpmnInstancesParamsStatus `form:"status,omitempty" json:"status,omitempty"`
-	Page         *int                           `form:"page,omitempty" json:"page,omitempty"`
-	PageSize     *int                           `form:"pageSize,omitempty" json:"pageSize,omitempty"`
+
+	// HasIncident Filter by whether the instance has at least one unresolved incident.
+	// Omit to return all instances regardless of incident status; pass
+	// `true` to show only instances that need operator attention; pass
+	// `false` to exclude blocked instances.
+	HasIncident *bool `form:"hasIncident,omitempty" json:"hasIncident,omitempty"`
+
+	// Suspended Filter by instance-scope suspension. `true` → only instances with
+	// `suspendedAt` set; `false` → only running-and-not-paused. Omit for
+	// no filter. Does not consider definition-scope suspension; for a
+	// full "is this instance making progress?" view, callers should
+	// additionally join against the parent definition.
+	Suspended *bool `form:"suspended,omitempty" json:"suspended,omitempty"`
+
+	// CreatedAfter Only return instances created at or after this timestamp. Strongly
+	// recommended for monitoring views — terminal-state instance rows
+	// accumulate indefinitely, and unfiltered queries grow linearly with
+	// that history.
+	CreatedAfter *time.Time `form:"createdAfter,omitempty" json:"createdAfter,omitempty"`
+	Page         *int       `form:"page,omitempty" json:"page,omitempty"`
+	PageSize     *int       `form:"pageSize,omitempty" json:"pageSize,omitempty"`
 }
 
 // ListBpmnInstancesParamsStatus defines parameters for ListBpmnInstances.
@@ -1451,6 +1631,9 @@ type EvaluateDesignBatchJSONRequestBody = BatchEvaluateDesignRequest
 // CreateProjectJSONRequestBody defines body for CreateProject for application/json ContentType.
 type CreateProjectJSONRequestBody = CreateProjectRequest
 
+// SuspendBpmnDefinitionJSONRequestBody defines body for SuspendBpmnDefinition for application/json ContentType.
+type SuspendBpmnDefinitionJSONRequestBody = SuspendBpmnDefinitionRequest
+
 // CompleteBpmnExternalJobsBatchJSONRequestBody defines body for CompleteBpmnExternalJobsBatch for application/json ContentType.
 type CompleteBpmnExternalJobsBatchJSONRequestBody CompleteBpmnExternalJobsBatchJSONBody
 
@@ -1489,6 +1672,9 @@ type ValidateBpmnInstanceMigrationJSONRequestBody = MigrateBpmnInstanceRequest
 
 // ModifyBpmnInstanceJSONRequestBody defines body for ModifyBpmnInstance for application/json ContentType.
 type ModifyBpmnInstanceJSONRequestBody = ModifyBpmnInstanceRequest
+
+// SuspendBpmnInstanceJSONRequestBody defines body for SuspendBpmnInstance for application/json ContentType.
+type SuspendBpmnInstanceJSONRequestBody = SuspendBpmnInstanceRequest
 
 // UpdateBpmnInstanceVariablesJSONRequestBody defines body for UpdateBpmnInstanceVariables for application/json ContentType.
 type UpdateBpmnInstanceVariablesJSONRequestBody UpdateBpmnInstanceVariablesJSONBody
@@ -1886,6 +2072,14 @@ type ClientInterface interface {
 	// GetProject request
 	GetProject(ctx context.Context, projectID openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ResumeBpmnDefinition request
+	ResumeBpmnDefinition(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SuspendBpmnDefinitionWithBody request with any body
+	SuspendBpmnDefinitionWithBody(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	SuspendBpmnDefinition(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, body SuspendBpmnDefinitionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListBpmnExternalJobs request
 	ListBpmnExternalJobs(ctx context.Context, projectID openapi_types.UUID, params *ListBpmnExternalJobsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -1924,6 +2118,9 @@ type ClientInterface interface {
 	HeartbeatBpmnExternalJobWithBody(ctx context.Context, projectID openapi_types.UUID, executionKey string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	HeartbeatBpmnExternalJob(ctx context.Context, projectID openapi_types.UUID, executionKey string, body HeartbeatBpmnExternalJobJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListBpmnIncidents request
+	ListBpmnIncidents(ctx context.Context, projectID openapi_types.UUID, params *ListBpmnIncidentsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListBpmnInstances request
 	ListBpmnInstances(ctx context.Context, projectID openapi_types.UUID, params *ListBpmnInstancesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -1971,6 +2168,14 @@ type ClientInterface interface {
 	ModifyBpmnInstanceWithBody(ctx context.Context, projectID openapi_types.UUID, workflowID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	ModifyBpmnInstance(ctx context.Context, projectID openapi_types.UUID, workflowID string, body ModifyBpmnInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ResumeBpmnInstance request
+	ResumeBpmnInstance(ctx context.Context, projectID openapi_types.UUID, workflowID string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SuspendBpmnInstanceWithBody request with any body
+	SuspendBpmnInstanceWithBody(ctx context.Context, projectID openapi_types.UUID, workflowID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	SuspendBpmnInstance(ctx context.Context, projectID openapi_types.UUID, workflowID string, body SuspendBpmnInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetBpmnInstanceVariables request
 	GetBpmnInstanceVariables(ctx context.Context, projectID openapi_types.UUID, workflowID string, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -2232,6 +2437,42 @@ func (c *Client) GetProject(ctx context.Context, projectID openapi_types.UUID, r
 	return c.Client.Do(req)
 }
 
+func (c *Client) ResumeBpmnDefinition(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewResumeBpmnDefinitionRequest(c.Server, projectID, definitionID)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SuspendBpmnDefinitionWithBody(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSuspendBpmnDefinitionRequestWithBody(c.Server, projectID, definitionID, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SuspendBpmnDefinition(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, body SuspendBpmnDefinitionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSuspendBpmnDefinitionRequest(c.Server, projectID, definitionID, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) ListBpmnExternalJobs(ctx context.Context, projectID openapi_types.UUID, params *ListBpmnExternalJobsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListBpmnExternalJobsRequest(c.Server, projectID, params)
 	if err != nil {
@@ -2402,6 +2643,18 @@ func (c *Client) HeartbeatBpmnExternalJobWithBody(ctx context.Context, projectID
 
 func (c *Client) HeartbeatBpmnExternalJob(ctx context.Context, projectID openapi_types.UUID, executionKey string, body HeartbeatBpmnExternalJobJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewHeartbeatBpmnExternalJobRequest(c.Server, projectID, executionKey, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListBpmnIncidents(ctx context.Context, projectID openapi_types.UUID, params *ListBpmnIncidentsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListBpmnIncidentsRequest(c.Server, projectID, params)
 	if err != nil {
 		return nil, err
 	}
@@ -2618,6 +2871,42 @@ func (c *Client) ModifyBpmnInstanceWithBody(ctx context.Context, projectID opena
 
 func (c *Client) ModifyBpmnInstance(ctx context.Context, projectID openapi_types.UUID, workflowID string, body ModifyBpmnInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewModifyBpmnInstanceRequest(c.Server, projectID, workflowID, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ResumeBpmnInstance(ctx context.Context, projectID openapi_types.UUID, workflowID string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewResumeBpmnInstanceRequest(c.Server, projectID, workflowID)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SuspendBpmnInstanceWithBody(ctx context.Context, projectID openapi_types.UUID, workflowID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSuspendBpmnInstanceRequestWithBody(c.Server, projectID, workflowID, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SuspendBpmnInstance(ctx context.Context, projectID openapi_types.UUID, workflowID string, body SuspendBpmnInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSuspendBpmnInstanceRequest(c.Server, projectID, workflowID, body)
 	if err != nil {
 		return nil, err
 	}
@@ -3482,6 +3771,101 @@ func NewGetProjectRequest(server string, projectID openapi_types.UUID) (*http.Re
 	return req, nil
 }
 
+// NewResumeBpmnDefinitionRequest generates requests for ResumeBpmnDefinition
+func NewResumeBpmnDefinitionRequest(server string, projectID openapi_types.UUID, definitionID openapi_types.UUID) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "projectID", runtime.ParamLocationPath, projectID)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "definitionID", runtime.ParamLocationPath, definitionID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/projects/%s/bpmn/definitions/%s/resume", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewSuspendBpmnDefinitionRequest calls the generic SuspendBpmnDefinition builder with application/json body
+func NewSuspendBpmnDefinitionRequest(server string, projectID openapi_types.UUID, definitionID openapi_types.UUID, body SuspendBpmnDefinitionJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSuspendBpmnDefinitionRequestWithBody(server, projectID, definitionID, "application/json", bodyReader)
+}
+
+// NewSuspendBpmnDefinitionRequestWithBody generates requests for SuspendBpmnDefinition with any type of body
+func NewSuspendBpmnDefinitionRequestWithBody(server string, projectID openapi_types.UUID, definitionID openapi_types.UUID, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "projectID", runtime.ParamLocationPath, projectID)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "definitionID", runtime.ParamLocationPath, definitionID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/projects/%s/bpmn/definitions/%s/suspend", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewListBpmnExternalJobsRequest generates requests for ListBpmnExternalJobs
 func NewListBpmnExternalJobsRequest(server string, projectID openapi_types.UUID, params *ListBpmnExternalJobsParams) (*http.Request, error) {
 	var err error
@@ -4011,6 +4395,174 @@ func NewHeartbeatBpmnExternalJobRequestWithBody(server string, projectID openapi
 	return req, nil
 }
 
+// NewListBpmnIncidentsRequest generates requests for ListBpmnIncidents
+func NewListBpmnIncidentsRequest(server string, projectID openapi_types.UUID, params *ListBpmnIncidentsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "projectID", runtime.ParamLocationPath, projectID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/projects/%s/bpmn/incidents", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.DefinitionID != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "definitionID", runtime.ParamLocationQuery, *params.DefinitionID); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.WorkflowID != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "workflowID", runtime.ParamLocationQuery, *params.WorkflowID); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Status != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "status", runtime.ParamLocationQuery, *params.Status); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ErrorType != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "errorType", runtime.ParamLocationQuery, *params.ErrorType); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Since != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "since", runtime.ParamLocationQuery, *params.Since); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Until != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "until", runtime.ParamLocationQuery, *params.Until); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Page != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "page", runtime.ParamLocationQuery, *params.Page); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.PageSize != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "pageSize", runtime.ParamLocationQuery, *params.PageSize); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewListBpmnInstancesRequest generates requests for ListBpmnInstances
 func NewListBpmnInstancesRequest(server string, projectID openapi_types.UUID, params *ListBpmnInstancesParams) (*http.Request, error) {
 	var err error
@@ -4059,6 +4611,54 @@ func NewListBpmnInstancesRequest(server string, projectID openapi_types.UUID, pa
 		if params.Status != nil {
 
 			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "status", runtime.ParamLocationQuery, *params.Status); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.HasIncident != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "hasIncident", runtime.ParamLocationQuery, *params.HasIncident); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Suspended != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "suspended", runtime.ParamLocationQuery, *params.Suspended); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.CreatedAfter != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "createdAfter", runtime.ParamLocationQuery, *params.CreatedAfter); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -4611,6 +5211,101 @@ func NewModifyBpmnInstanceRequestWithBody(server string, projectID openapi_types
 	}
 
 	operationPath := fmt.Sprintf("/projects/%s/bpmn/instances/%s/modify", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewResumeBpmnInstanceRequest generates requests for ResumeBpmnInstance
+func NewResumeBpmnInstanceRequest(server string, projectID openapi_types.UUID, workflowID string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "projectID", runtime.ParamLocationPath, projectID)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "workflowID", runtime.ParamLocationPath, workflowID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/projects/%s/bpmn/instances/%s/resume", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewSuspendBpmnInstanceRequest calls the generic SuspendBpmnInstance builder with application/json body
+func NewSuspendBpmnInstanceRequest(server string, projectID openapi_types.UUID, workflowID string, body SuspendBpmnInstanceJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSuspendBpmnInstanceRequestWithBody(server, projectID, workflowID, "application/json", bodyReader)
+}
+
+// NewSuspendBpmnInstanceRequestWithBody generates requests for SuspendBpmnInstance with any type of body
+func NewSuspendBpmnInstanceRequestWithBody(server string, projectID openapi_types.UUID, workflowID string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "projectID", runtime.ParamLocationPath, projectID)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "workflowID", runtime.ParamLocationPath, workflowID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/projects/%s/bpmn/instances/%s/suspend", pathParam0, pathParam1)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -7017,6 +7712,14 @@ type ClientWithResponsesInterface interface {
 	// GetProjectWithResponse request
 	GetProjectWithResponse(ctx context.Context, projectID openapi_types.UUID, reqEditors ...RequestEditorFn) (*GetProjectResponse, error)
 
+	// ResumeBpmnDefinitionWithResponse request
+	ResumeBpmnDefinitionWithResponse(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, reqEditors ...RequestEditorFn) (*ResumeBpmnDefinitionResponse, error)
+
+	// SuspendBpmnDefinitionWithBodyWithResponse request with any body
+	SuspendBpmnDefinitionWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SuspendBpmnDefinitionResponse, error)
+
+	SuspendBpmnDefinitionWithResponse(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, body SuspendBpmnDefinitionJSONRequestBody, reqEditors ...RequestEditorFn) (*SuspendBpmnDefinitionResponse, error)
+
 	// ListBpmnExternalJobsWithResponse request
 	ListBpmnExternalJobsWithResponse(ctx context.Context, projectID openapi_types.UUID, params *ListBpmnExternalJobsParams, reqEditors ...RequestEditorFn) (*ListBpmnExternalJobsResponse, error)
 
@@ -7055,6 +7758,9 @@ type ClientWithResponsesInterface interface {
 	HeartbeatBpmnExternalJobWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, executionKey string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*HeartbeatBpmnExternalJobResponse, error)
 
 	HeartbeatBpmnExternalJobWithResponse(ctx context.Context, projectID openapi_types.UUID, executionKey string, body HeartbeatBpmnExternalJobJSONRequestBody, reqEditors ...RequestEditorFn) (*HeartbeatBpmnExternalJobResponse, error)
+
+	// ListBpmnIncidentsWithResponse request
+	ListBpmnIncidentsWithResponse(ctx context.Context, projectID openapi_types.UUID, params *ListBpmnIncidentsParams, reqEditors ...RequestEditorFn) (*ListBpmnIncidentsResponse, error)
 
 	// ListBpmnInstancesWithResponse request
 	ListBpmnInstancesWithResponse(ctx context.Context, projectID openapi_types.UUID, params *ListBpmnInstancesParams, reqEditors ...RequestEditorFn) (*ListBpmnInstancesResponse, error)
@@ -7102,6 +7808,14 @@ type ClientWithResponsesInterface interface {
 	ModifyBpmnInstanceWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ModifyBpmnInstanceResponse, error)
 
 	ModifyBpmnInstanceWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, body ModifyBpmnInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*ModifyBpmnInstanceResponse, error)
+
+	// ResumeBpmnInstanceWithResponse request
+	ResumeBpmnInstanceWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, reqEditors ...RequestEditorFn) (*ResumeBpmnInstanceResponse, error)
+
+	// SuspendBpmnInstanceWithBodyWithResponse request with any body
+	SuspendBpmnInstanceWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SuspendBpmnInstanceResponse, error)
+
+	SuspendBpmnInstanceWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, body SuspendBpmnInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*SuspendBpmnInstanceResponse, error)
 
 	// GetBpmnInstanceVariablesWithResponse request
 	GetBpmnInstanceVariablesWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, reqEditors ...RequestEditorFn) (*GetBpmnInstanceVariablesResponse, error)
@@ -7412,6 +8126,48 @@ func (r GetProjectResponse) StatusCode() int {
 	return 0
 }
 
+type ResumeBpmnDefinitionResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+}
+
+// Status returns HTTPResponse.Status
+func (r ResumeBpmnDefinitionResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ResumeBpmnDefinitionResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type SuspendBpmnDefinitionResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+}
+
+// Status returns HTTPResponse.Status
+func (r SuspendBpmnDefinitionResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SuspendBpmnDefinitionResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ListBpmnExternalJobsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -7607,6 +8363,28 @@ func (r HeartbeatBpmnExternalJobResponse) StatusCode() int {
 	return 0
 }
 
+type ListBpmnIncidentsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *BpmnIncidentRecordPaginatedResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r ListBpmnIncidentsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListBpmnIncidentsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ListBpmnInstancesResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -7636,6 +8414,9 @@ type StartBpmnInstanceResponse struct {
 		// WorkflowID Stable execution identifier of the new instance.
 		WorkflowID *string `json:"workflowID,omitempty"`
 	}
+	JSON400 *BadRequest
+	JSON401 *Unauthorized
+	JSON500 *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -7840,6 +8621,48 @@ func (r ModifyBpmnInstanceResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r ModifyBpmnInstanceResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ResumeBpmnInstanceResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+}
+
+// Status returns HTTPResponse.Status
+func (r ResumeBpmnInstanceResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ResumeBpmnInstanceResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type SuspendBpmnInstanceResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+}
+
+// Status returns HTTPResponse.Status
+func (r SuspendBpmnInstanceResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SuspendBpmnInstanceResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -8801,6 +9624,32 @@ func (c *ClientWithResponses) GetProjectWithResponse(ctx context.Context, projec
 	return ParseGetProjectResponse(rsp)
 }
 
+// ResumeBpmnDefinitionWithResponse request returning *ResumeBpmnDefinitionResponse
+func (c *ClientWithResponses) ResumeBpmnDefinitionWithResponse(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, reqEditors ...RequestEditorFn) (*ResumeBpmnDefinitionResponse, error) {
+	rsp, err := c.ResumeBpmnDefinition(ctx, projectID, definitionID, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseResumeBpmnDefinitionResponse(rsp)
+}
+
+// SuspendBpmnDefinitionWithBodyWithResponse request with arbitrary body returning *SuspendBpmnDefinitionResponse
+func (c *ClientWithResponses) SuspendBpmnDefinitionWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SuspendBpmnDefinitionResponse, error) {
+	rsp, err := c.SuspendBpmnDefinitionWithBody(ctx, projectID, definitionID, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSuspendBpmnDefinitionResponse(rsp)
+}
+
+func (c *ClientWithResponses) SuspendBpmnDefinitionWithResponse(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, body SuspendBpmnDefinitionJSONRequestBody, reqEditors ...RequestEditorFn) (*SuspendBpmnDefinitionResponse, error) {
+	rsp, err := c.SuspendBpmnDefinition(ctx, projectID, definitionID, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSuspendBpmnDefinitionResponse(rsp)
+}
+
 // ListBpmnExternalJobsWithResponse request returning *ListBpmnExternalJobsResponse
 func (c *ClientWithResponses) ListBpmnExternalJobsWithResponse(ctx context.Context, projectID openapi_types.UUID, params *ListBpmnExternalJobsParams, reqEditors ...RequestEditorFn) (*ListBpmnExternalJobsResponse, error) {
 	rsp, err := c.ListBpmnExternalJobs(ctx, projectID, params, reqEditors...)
@@ -8928,6 +9777,15 @@ func (c *ClientWithResponses) HeartbeatBpmnExternalJobWithResponse(ctx context.C
 		return nil, err
 	}
 	return ParseHeartbeatBpmnExternalJobResponse(rsp)
+}
+
+// ListBpmnIncidentsWithResponse request returning *ListBpmnIncidentsResponse
+func (c *ClientWithResponses) ListBpmnIncidentsWithResponse(ctx context.Context, projectID openapi_types.UUID, params *ListBpmnIncidentsParams, reqEditors ...RequestEditorFn) (*ListBpmnIncidentsResponse, error) {
+	rsp, err := c.ListBpmnIncidents(ctx, projectID, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListBpmnIncidentsResponse(rsp)
 }
 
 // ListBpmnInstancesWithResponse request returning *ListBpmnInstancesResponse
@@ -9083,6 +9941,32 @@ func (c *ClientWithResponses) ModifyBpmnInstanceWithResponse(ctx context.Context
 		return nil, err
 	}
 	return ParseModifyBpmnInstanceResponse(rsp)
+}
+
+// ResumeBpmnInstanceWithResponse request returning *ResumeBpmnInstanceResponse
+func (c *ClientWithResponses) ResumeBpmnInstanceWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, reqEditors ...RequestEditorFn) (*ResumeBpmnInstanceResponse, error) {
+	rsp, err := c.ResumeBpmnInstance(ctx, projectID, workflowID, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseResumeBpmnInstanceResponse(rsp)
+}
+
+// SuspendBpmnInstanceWithBodyWithResponse request with arbitrary body returning *SuspendBpmnInstanceResponse
+func (c *ClientWithResponses) SuspendBpmnInstanceWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SuspendBpmnInstanceResponse, error) {
+	rsp, err := c.SuspendBpmnInstanceWithBody(ctx, projectID, workflowID, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSuspendBpmnInstanceResponse(rsp)
+}
+
+func (c *ClientWithResponses) SuspendBpmnInstanceWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, body SuspendBpmnInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*SuspendBpmnInstanceResponse, error) {
+	rsp, err := c.SuspendBpmnInstance(ctx, projectID, workflowID, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSuspendBpmnInstanceResponse(rsp)
 }
 
 // GetBpmnInstanceVariablesWithResponse request returning *GetBpmnInstanceVariablesResponse
@@ -9805,6 +10689,38 @@ func ParseGetProjectResponse(rsp *http.Response) (*GetProjectResponse, error) {
 	return response, nil
 }
 
+// ParseResumeBpmnDefinitionResponse parses an HTTP response from a ResumeBpmnDefinitionWithResponse call
+func ParseResumeBpmnDefinitionResponse(rsp *http.Response) (*ResumeBpmnDefinitionResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ResumeBpmnDefinitionResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	return response, nil
+}
+
+// ParseSuspendBpmnDefinitionResponse parses an HTTP response from a SuspendBpmnDefinitionWithResponse call
+func ParseSuspendBpmnDefinitionResponse(rsp *http.Response) (*SuspendBpmnDefinitionResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SuspendBpmnDefinitionResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	return response, nil
+}
+
 // ParseListBpmnExternalJobsResponse parses an HTTP response from a ListBpmnExternalJobsWithResponse call
 func ParseListBpmnExternalJobsResponse(rsp *http.Response) (*ListBpmnExternalJobsResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -10009,6 +10925,32 @@ func ParseHeartbeatBpmnExternalJobResponse(rsp *http.Response) (*HeartbeatBpmnEx
 	return response, nil
 }
 
+// ParseListBpmnIncidentsResponse parses an HTTP response from a ListBpmnIncidentsWithResponse call
+func ParseListBpmnIncidentsResponse(rsp *http.Response) (*ListBpmnIncidentsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListBpmnIncidentsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest BpmnIncidentRecordPaginatedResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseListBpmnInstancesResponse parses an HTTP response from a ListBpmnInstancesWithResponse call
 func ParseListBpmnInstancesResponse(rsp *http.Response) (*ListBpmnInstancesResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -10058,6 +11000,27 @@ func ParseStartBpmnInstanceResponse(rsp *http.Response) (*StartBpmnInstanceRespo
 			return nil, err
 		}
 		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
 
 	}
 
@@ -10231,6 +11194,38 @@ func ParseModifyBpmnInstanceResponse(rsp *http.Response) (*ModifyBpmnInstanceRes
 	}
 
 	response := &ModifyBpmnInstanceResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	return response, nil
+}
+
+// ParseResumeBpmnInstanceResponse parses an HTTP response from a ResumeBpmnInstanceWithResponse call
+func ParseResumeBpmnInstanceResponse(rsp *http.Response) (*ResumeBpmnInstanceResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ResumeBpmnInstanceResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	return response, nil
+}
+
+// ParseSuspendBpmnInstanceResponse parses an HTTP response from a SuspendBpmnInstanceWithResponse call
+func ParseSuspendBpmnInstanceResponse(rsp *http.Response) (*SuspendBpmnInstanceResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SuspendBpmnInstanceResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}

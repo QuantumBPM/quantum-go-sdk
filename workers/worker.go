@@ -14,6 +14,7 @@ import (
 	"os"
 	"sync"
 	"time"
+	"unicode/utf8"
 
 	openapi_types "github.com/oapi-codegen/runtime/types"
 
@@ -23,11 +24,12 @@ import (
 
 // Defaults tuned to match the server-side defaults documented in the API.
 const (
-	defaultMaxJobs      = 1
-	defaultPollTimeout  = 30 * time.Second
-	defaultLockDuration = 30 * time.Second
-	heartbeatRatio      = 2 // heartbeat at lockDuration/heartbeatRatio
-	pollErrorBackoff    = 2 * time.Second
+	defaultMaxJobs              = 1
+	defaultPollTimeout          = 30 * time.Second
+	defaultLockDuration         = 30 * time.Second
+	defaultMaxErrorMessageBytes = 2048
+	heartbeatRatio              = 2 // heartbeat at lockDuration/heartbeatRatio
+	pollErrorBackoff            = 2 * time.Second
 )
 
 // Job is the work unit handed to a Handler. It wraps the generated
@@ -83,10 +85,11 @@ type registration struct {
 // Use Worker.Handle to register a handler; Worker.Run starts the polling
 // goroutines and blocks until ctx is cancelled.
 type Worker struct {
-	api       *generated.ClientWithResponses
-	projectID openapi_types.UUID
-	clientID  string
-	logger    *log.Logger
+	api                  *generated.ClientWithResponses
+	projectID            openapi_types.UUID
+	clientID             string
+	logger               *log.Logger
+	maxErrorMessageBytes int
 
 	mu           sync.Mutex
 	registrations map[string]*registration
@@ -101,6 +104,10 @@ type Config struct {
 	// Logger receives lifecycle messages (poll errors, fatal handler errors).
 	// Nil disables logging.
 	Logger *log.Logger
+	// MaxErrorMessageBytes caps the byte length of the auto-built
+	// WORKER_ERROR message attached when a handler returns a non-BpmnError.
+	// Zero falls back to 2048. User-thrown BpmnError variables are not clamped.
+	MaxErrorMessageBytes int
 }
 
 // New constructs a Worker bound to projectID. api should be an authenticated
@@ -115,12 +122,17 @@ func New(api *generated.ClientWithResponses, projectID openapi_types.UUID, cfg C
 	if logger == nil {
 		logger = log.New(os.Stderr, "[quantumbpm-worker] ", log.LstdFlags)
 	}
+	maxErrMsg := cfg.MaxErrorMessageBytes
+	if maxErrMsg <= 0 {
+		maxErrMsg = defaultMaxErrorMessageBytes
+	}
 	return &Worker{
-		api:           api,
-		projectID:     projectID,
-		clientID:      clientID,
-		logger:        logger,
-		registrations: make(map[string]*registration),
+		api:                  api,
+		projectID:            projectID,
+		clientID:             clientID,
+		logger:               logger,
+		maxErrorMessageBytes: maxErrMsg,
+		registrations:        make(map[string]*registration),
 	}
 }
 
@@ -306,8 +318,31 @@ func (w *Worker) dispatch(parent context.Context, r *registration, job *generate
 		w.throwError(finalCtx, job, be.Code, be.Variables)
 	default:
 		w.logger.Printf("handler %s: %v", r.taskType, err)
-		w.throwError(finalCtx, job, "WORKER_ERROR", variables.New().Set("error", err.Error()))
+		msg := w.clampWorkerErrorMessage(r.taskType, err.Error())
+		w.throwError(finalCtx, job, "WORKER_ERROR", variables.New().Set("error", msg))
 	}
+}
+
+// clampWorkerErrorMessage shortens an unhandled handler exception's message
+// to the configured byte budget. UTF-8 safe (cuts on rune boundary). Logs a
+// WARN and appends a truncation marker when it triggers.
+func (w *Worker) clampWorkerErrorMessage(taskType, msg string) string {
+	limit := w.maxErrorMessageBytes
+	if limit <= 0 || len(msg) <= limit {
+		return msg
+	}
+	marker := fmt.Sprintf("…[truncated, original %d bytes]", len(msg))
+	budget := limit - len(marker)
+	if budget < 0 {
+		budget = 0
+	}
+	// Cut on a rune boundary so we never emit a half-codepoint.
+	cut := budget
+	for cut > 0 && !utf8.RuneStart(msg[cut]) {
+		cut--
+	}
+	w.logger.Printf("workers: WORKER_ERROR message truncated for task=%s from %d to %d bytes", taskType, len(msg), limit)
+	return msg[:cut] + marker
 }
 
 // safeRun invokes handler and recovers panics into errors.
