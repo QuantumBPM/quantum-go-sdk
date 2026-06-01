@@ -324,6 +324,9 @@ type BpmnIncidentRecordPaginatedResponse struct {
 
 // BpmnInstance A running or completed execution of a BPMN process.
 type BpmnInstance struct {
+	// BusinessId Caller-supplied correlation key set when the instance was started. Inherited unchanged on child instances spawned via CallActivity.
+	BusinessId *string `json:"businessId,omitempty"`
+
 	// CompletedAt Timestamp when the instance reached a terminal status. Empty while running.
 	CompletedAt *time.Time `json:"completedAt,omitempty"`
 
@@ -381,6 +384,9 @@ type BpmnInstancePaginatedResponse struct {
 type BpmnInstanceState struct {
 	// ActiveScopes Scopes that currently hold at least one live token.
 	ActiveScopes *[]ActiveScope `json:"activeScopes,omitempty"`
+
+	// BusinessId Caller-supplied correlation key set when the instance was started.
+	BusinessId *string `json:"businessId,omitempty"`
 
 	// DefinitionSuspension Audit-shaped record of an active suspension at one scope (instance or
 	// definition). Returned inline on `BpmnInstanceState` — `null` when not
@@ -793,6 +799,9 @@ type ErrorCode string
 
 // EvaluateStoredRequest Payload for evaluating a stored DMN definition.
 type EvaluateStoredRequest struct {
+	// BusinessId Optional caller-supplied correlation key persisted with the resulting execution row for cross-system tracing.
+	BusinessId *string `json:"businessId,omitempty"`
+
 	// Context FEEL context (a name → value map). The DMN equivalent of an object.
 	Context FeelContext `json:"context"`
 
@@ -843,6 +852,9 @@ type EvaluationResultType string
 
 // Execution A single recorded DMN evaluation against a stored definition.
 type Execution struct {
+	// BusinessId Caller-supplied correlation key passed at evaluation time (REST) or inherited from the parent BPMN process (business rule task).
+	BusinessId *string `json:"businessId,omitempty"`
+
 	// DefinitionID Platform identifier of the definition version that was evaluated.
 	DefinitionID openapi_types.UUID `json:"definitionID"`
 
@@ -867,6 +879,9 @@ type Execution struct {
 
 // ExternalJob A unit of work emitted by a BPMN service task that an external worker is expected to handle.
 type ExternalJob struct {
+	// BusinessId Caller-supplied correlation key inherited from the parent BPMN process. Workers can use it for log correlation or downstream tracing.
+	BusinessId *string `json:"businessId,omitempty"`
+
 	// CancelReason Best-effort label describing why a CANCELED job was interrupted (e.g. instance cancelled, instance terminated).
 	CancelReason *string `json:"cancelReason,omitempty"`
 
@@ -1114,6 +1129,9 @@ type Project struct {
 
 // StartBpmnInstanceRequest Payload for starting a new BPMN process instance.
 type StartBpmnInstanceRequest struct {
+	// BusinessId Optional caller-supplied correlation key (order number, ticket ID, etc.) indexed for filtering and stamped on every child instance, external job, user task, and DMN execution emitted by this process.
+	BusinessId *string `json:"businessId,omitempty"`
+
 	// ProcessDefinitionID ID of a deployed `BpmnProcessDefinition` to start.
 	ProcessDefinitionID openapi_types.UUID `json:"processDefinitionID"`
 
@@ -1123,6 +1141,9 @@ type StartBpmnInstanceRequest struct {
 
 // StartBpmnTestInstanceRequest Payload for starting a non-deployed BPMN process instance against a draft resource for testing.
 type StartBpmnTestInstanceRequest struct {
+	// BusinessId Optional caller-supplied correlation key.
+	BusinessId *string `json:"businessId,omitempty"`
+
 	// ProcessID BPMN process ID (the `id` attribute on `<bpmn:process>`) to start. Defaults to the first executable process in the resource.
 	ProcessID *string `json:"processID,omitempty"`
 
@@ -1183,6 +1204,9 @@ type UpdateUserTaskAssignmentRequest struct {
 type UserTask struct {
 	// Assignee User the task is currently assigned to. Empty when the task is in a candidate pool but not yet claimed.
 	Assignee *string `json:"assignee,omitempty"`
+
+	// BusinessId Caller-supplied correlation key inherited from the parent BPMN process.
+	BusinessId *string `json:"businessId,omitempty"`
 
 	// CancelReason Best-effort label describing why a CANCELED task was interrupted (e.g. instance cancelled, boundary event interrupted).
 	CancelReason *string `json:"cancelReason,omitempty"`
@@ -1285,6 +1309,9 @@ type ListBpmnExternalJobsParams struct {
 
 	// WorkflowID Filter jobs by workflow ID
 	WorkflowID *string `form:"workflowID,omitempty" json:"workflowID,omitempty"`
+
+	// BusinessId Exact-match filter on the caller-supplied correlation key.
+	BusinessId *string `form:"businessId,omitempty" json:"businessId,omitempty"`
 
 	// CreatedAfter Only return jobs created at or after this timestamp. Strongly
 	// recommended for monitoring views — completed-job records accumulate
@@ -1397,8 +1424,11 @@ type ListBpmnInstancesParams struct {
 	// accumulate indefinitely, and unfiltered queries grow linearly with
 	// that history.
 	CreatedAfter *time.Time `form:"createdAfter,omitempty" json:"createdAfter,omitempty"`
-	Page         *int       `form:"page,omitempty" json:"page,omitempty"`
-	PageSize     *int       `form:"pageSize,omitempty" json:"pageSize,omitempty"`
+
+	// BusinessId Exact-match filter on the caller-supplied correlation key set at start time.
+	BusinessId *string `form:"businessId,omitempty" json:"businessId,omitempty"`
+	Page       *int    `form:"page,omitempty" json:"page,omitempty"`
+	PageSize   *int    `form:"pageSize,omitempty" json:"pageSize,omitempty"`
 }
 
 // ListBpmnInstancesParamsStatus defines parameters for ListBpmnInstances.
@@ -1520,8 +1550,11 @@ type ListBpmnUserTasksParams struct {
 	Assignee       *string                        `form:"assignee,omitempty" json:"assignee,omitempty"`
 	CandidateUser  *string                        `form:"candidateUser,omitempty" json:"candidateUser,omitempty"`
 	CandidateGroup *string                        `form:"candidateGroup,omitempty" json:"candidateGroup,omitempty"`
-	Page           *int                           `form:"page,omitempty" json:"page,omitempty"`
-	PageSize       *int                           `form:"pageSize,omitempty" json:"pageSize,omitempty"`
+
+	// BusinessId Exact-match filter on the caller-supplied correlation key.
+	BusinessId *string `form:"businessId,omitempty" json:"businessId,omitempty"`
+	Page       *int    `form:"page,omitempty" json:"page,omitempty"`
+	PageSize   *int    `form:"pageSize,omitempty" json:"pageSize,omitempty"`
 }
 
 // ListBpmnUserTasksParamsStatus defines parameters for ListBpmnUserTasks.
@@ -1603,6 +1636,9 @@ type ListExecutionsParams struct {
 	// StartDate Filter executions after this date (ISO 8601)
 	StartDate *time.Time `form:"startDate,omitempty" json:"startDate,omitempty"`
 
+	// BusinessId Exact-match filter on the caller-supplied correlation key.
+	BusinessId *string `form:"businessId,omitempty" json:"businessId,omitempty"`
+
 	// Page Page number (1-indexed)
 	Page *int `form:"page,omitempty" json:"page,omitempty"`
 
@@ -1614,6 +1650,9 @@ type ListExecutionsParams struct {
 type ListProjectExecutionsParams struct {
 	// DefinitionsID Filter by DMN `<definitions id>` (XML id).
 	DefinitionsID *string `form:"definitionsID,omitempty" json:"definitionsID,omitempty"`
+
+	// BusinessId Exact-match filter on the caller-supplied correlation key.
+	BusinessId *string `form:"businessId,omitempty" json:"businessId,omitempty"`
 
 	// Page Page number (1-indexed)
 	Page *int `form:"page,omitempty" json:"page,omitempty"`
@@ -3943,6 +3982,22 @@ func NewListBpmnExternalJobsRequest(server string, projectID openapi_types.UUID,
 
 		}
 
+		if params.BusinessId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "businessId", runtime.ParamLocationQuery, *params.BusinessId); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
 		if params.CreatedAfter != nil {
 
 			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "createdAfter", runtime.ParamLocationQuery, *params.CreatedAfter); err != nil {
@@ -4659,6 +4714,22 @@ func NewListBpmnInstancesRequest(server string, projectID openapi_types.UUID, pa
 		if params.CreatedAfter != nil {
 
 			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "createdAfter", runtime.ParamLocationQuery, *params.CreatedAfter); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.BusinessId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "businessId", runtime.ParamLocationQuery, *params.BusinessId); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -6323,6 +6394,22 @@ func NewListBpmnUserTasksRequest(server string, projectID openapi_types.UUID, pa
 
 		}
 
+		if params.BusinessId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "businessId", runtime.ParamLocationQuery, *params.BusinessId); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
 		if params.Page != nil {
 
 			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "page", runtime.ParamLocationQuery, *params.Page); err != nil {
@@ -7443,6 +7530,22 @@ func NewListExecutionsRequest(server string, projectID openapi_types.UUID, defin
 
 		}
 
+		if params.BusinessId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "businessId", runtime.ParamLocationQuery, *params.BusinessId); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
 		if params.Page != nil {
 
 			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "page", runtime.ParamLocationQuery, *params.Page); err != nil {
@@ -7518,6 +7621,22 @@ func NewListProjectExecutionsRequest(server string, projectID openapi_types.UUID
 		if params.DefinitionsID != nil {
 
 			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "definitionsID", runtime.ParamLocationQuery, *params.DefinitionsID); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.BusinessId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "businessId", runtime.ParamLocationQuery, *params.BusinessId); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err

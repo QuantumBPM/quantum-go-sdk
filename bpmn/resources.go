@@ -80,10 +80,12 @@ func (c *Client) DeployResource(ctx context.Context, resourceID openapi_types.UU
 
 // StartTestInstance starts a non-deployed instance against a draft resource
 // for testing.
-func (c *Client) StartTestInstance(ctx context.Context, resourceID openapi_types.UUID, processID *string, vars variables.Vars) (string, error) {
+func (c *Client) StartTestInstance(ctx context.Context, resourceID openapi_types.UUID, processID *string, vars variables.Vars, opts ...StartInstanceOption) (string, error) {
+	o := applyStartInstanceOpts(opts...)
 	resp, err := c.api.StartBpmnTestInstanceWithResponse(ctx, c.projectID, resourceID, generated.StartBpmnTestInstanceJSONRequestBody{
-		ProcessID: processID,
-		Variables: vars.ToWireMap(),
+		ProcessID:  processID,
+		Variables:  vars.ToWireMap(),
+		BusinessId: o.businessID,
 	})
 	if err != nil {
 		return "", err

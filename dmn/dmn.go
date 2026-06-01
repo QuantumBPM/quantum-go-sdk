@@ -38,6 +38,7 @@ type evaluateOpts struct {
 	version          *int
 	decisions        *[]string
 	decisionServices *[]string
+	businessID       *string
 }
 
 // WithVersion pins the evaluation to a specific version of the definition.
@@ -55,6 +56,12 @@ func WithDecisions(names ...string) EvaluateOption {
 // WithDecisionServices selects decision services to evaluate.
 func WithDecisionServices(names ...string) EvaluateOption {
 	return func(o *evaluateOpts) { o.decisionServices = &names }
+}
+
+// WithBusinessID stamps the resulting DMN execution row with a
+// caller-supplied correlation key for cross-system tracing.
+func WithBusinessID(id string) EvaluateOption {
+	return func(o *evaluateOpts) { o.businessID = &id }
 }
 
 // Evaluate runs a stored DMN definition identified by its DMN XML
@@ -77,6 +84,7 @@ func (c *Client) Evaluate(ctx context.Context, definitionsID string, vars variab
 		Version:          o.version,
 		Decisions:        o.decisions,
 		DecisionServices: o.decisionServices,
+		BusinessId:       o.businessID,
 	}
 	params := &generated.EvaluateByDefinitionsIDParams{Version: o.version}
 
@@ -110,6 +118,7 @@ func (c *Client) EvaluateByID(ctx context.Context, definitionID openapi_types.UU
 		Version:          o.version,
 		Decisions:        o.decisions,
 		DecisionServices: o.decisionServices,
+		BusinessId:       o.businessID,
 	}
 
 	resp, err := c.api.EvaluateStoredWithResponse(ctx, c.projectID, definitionID, body)

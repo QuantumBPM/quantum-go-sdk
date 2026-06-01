@@ -17,6 +17,7 @@ type userTaskListOpts struct {
 	assignee       *string
 	candidateUser  *string
 	candidateGroup *string
+	businessID     *string
 }
 
 // WithUserTaskWorkflowID filters tasks by originating instance.
@@ -45,6 +46,12 @@ func WithUserTaskCandidateGroup(group string) UserTaskListOption {
 	return func(o *userTaskListOpts) { o.candidateGroup = &group }
 }
 
+// WithUserTaskBusinessID filters tasks by the originating instance's
+// caller-supplied correlation key.
+func WithUserTaskBusinessID(id string) UserTaskListOption {
+	return func(o *userTaskListOpts) { o.businessID = &id }
+}
+
 // WithUserTaskPage sets the 1-indexed page number.
 func WithUserTaskPage(p int) UserTaskListOption {
 	return func(o *userTaskListOpts) { o.page = &p }
@@ -67,6 +74,7 @@ func (c *Client) ListUserTasks(ctx context.Context, opts ...UserTaskListOption) 
 		Assignee:       o.assignee,
 		CandidateUser:  o.candidateUser,
 		CandidateGroup: o.candidateGroup,
+		BusinessId:     o.businessID,
 		Page:           o.page,
 		PageSize:       o.pageSize,
 	})

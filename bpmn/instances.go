@@ -16,6 +16,7 @@ type instanceListOpts struct {
 	pageOpts
 	definitionID *openapi_types.UUID
 	status       *generated.ListBpmnInstancesParamsStatus
+	businessID   *string
 }
 
 // WithInstanceDefinitionID filters listings to a specific deployed definition.
@@ -29,6 +30,12 @@ func WithInstanceStatus(status string) InstanceListOption {
 	return func(o *instanceListOpts) { o.status = &s }
 }
 
+// WithInstanceBusinessID filters listings to a single caller-supplied
+// correlation key (the value passed to StartInstance via WithStartBusinessID).
+func WithInstanceBusinessID(id string) InstanceListOption {
+	return func(o *instanceListOpts) { o.businessID = &id }
+}
+
 // WithInstancePage sets the 1-indexed page number.
 func WithInstancePage(p int) InstanceListOption {
 	return func(o *instanceListOpts) { o.page = &p }
@@ -39,12 +46,36 @@ func WithInstancePageSize(s int) InstanceListOption {
 	return func(o *instanceListOpts) { o.pageSize = &s }
 }
 
+// StartInstanceOption tunes a StartInstance / StartTestInstance call.
+type StartInstanceOption func(*startInstanceOpts)
+
+type startInstanceOpts struct {
+	businessID *string
+}
+
+// WithStartBusinessID stamps the new instance with a caller-supplied
+// correlation key (order number, ticket ID, etc.). Inherited by every child
+// instance, external job, user task, and DMN execution emitted by it.
+func WithStartBusinessID(id string) StartInstanceOption {
+	return func(o *startInstanceOpts) { o.businessID = &id }
+}
+
+func applyStartInstanceOpts(opts ...StartInstanceOption) startInstanceOpts {
+	o := startInstanceOpts{}
+	for _, opt := range opts {
+		opt(&o)
+	}
+	return o
+}
+
 // StartInstance launches a new BPMN process instance from a deployed
 // definition, returning the workflow ID assigned to it.
-func (c *Client) StartInstance(ctx context.Context, processDefinitionID openapi_types.UUID, vars variables.Vars) (string, error) {
+func (c *Client) StartInstance(ctx context.Context, processDefinitionID openapi_types.UUID, vars variables.Vars, opts ...StartInstanceOption) (string, error) {
+	o := applyStartInstanceOpts(opts...)
 	resp, err := c.api.StartBpmnInstanceWithResponse(ctx, c.projectID, generated.StartBpmnInstanceJSONRequestBody{
 		ProcessDefinitionID: processDefinitionID,
 		Variables:           vars.ToWireMap(),
+		BusinessId:          o.businessID,
 	})
 	if err != nil {
 		return "", err
@@ -88,6 +119,7 @@ func (c *Client) ListInstances(ctx context.Context, opts ...InstanceListOption) 
 	resp, err := c.api.ListBpmnInstancesWithResponse(ctx, c.projectID, &generated.ListBpmnInstancesParams{
 		DefinitionID: o.definitionID,
 		Status:       o.status,
+		BusinessId:   o.businessID,
 		Page:         o.page,
 		PageSize:     o.pageSize,
 	})
