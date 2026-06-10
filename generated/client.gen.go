@@ -921,6 +921,9 @@ type ExternalJob struct {
 	// TaskType Worker selector. Workers poll for jobs by `taskType`.
 	TaskType string `json:"taskType"`
 
+	// TraceContext W3C trace-propagation carrier (e.g. `traceparent`/`tracestate`) captured from the originating process instance. Present only when distributed tracing is enabled on the server. SDK workers pass this map to their OpenTelemetry propagator's extract so the worker span joins the instance's trace; plain workers can ignore it.
+	TraceContext *map[string]string `json:"traceContext,omitempty"`
+
 	// Variables Input variables resolved by the service task at activity entry.
 	Variables *map[string]interface{} `json:"variables,omitempty"`
 

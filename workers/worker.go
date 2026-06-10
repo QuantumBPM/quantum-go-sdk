@@ -17,6 +17,8 @@ import (
 	"unicode/utf8"
 
 	openapi_types "github.com/oapi-codegen/runtime/types"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
 
 	"github.com/QuantumBPM/quantum-go-sdk/generated"
 	"github.com/QuantumBPM/quantum-go-sdk/variables"
@@ -91,7 +93,7 @@ type Worker struct {
 	logger               *log.Logger
 	maxErrorMessageBytes int
 
-	mu           sync.Mutex
+	mu            sync.Mutex
 	registrations map[string]*registration
 }
 
@@ -290,7 +292,10 @@ func (w *Worker) poll(ctx context.Context, r *registration) ([]generated.Externa
 // dispatch runs the handler for one job, sending Heartbeats and finalizing
 // with Complete or ThrowError.
 func (w *Worker) dispatch(parent context.Context, r *registration, job *generated.ExternalJob) {
-	ctx, cancel := context.WithCancel(parent)
+	spanCtx, span := startJobSpan(parent, job)
+	defer span.End()
+
+	ctx, cancel := context.WithCancel(spanCtx)
 	defer cancel()
 
 	// Heartbeat goroutine — refresh the lock at lockDuration/heartbeatRatio.
@@ -306,7 +311,7 @@ func (w *Worker) dispatch(parent context.Context, r *registration, job *generate
 	// Stop heartbeating before finalizing so we don't race with the terminal call.
 	cancel()
 
-	finalCtx, finalCancel := context.WithTimeout(parent, 15*time.Second)
+	finalCtx, finalCancel := context.WithTimeout(spanCtx, 15*time.Second)
 	defer finalCancel()
 
 	switch {
@@ -315,9 +320,12 @@ func (w *Worker) dispatch(parent context.Context, r *registration, job *generate
 	case isBpmnError(err):
 		var be *BpmnError
 		_ = errors.As(err, &be)
+		span.SetAttributes(attribute.String("bpmn.error_code", be.Code))
 		w.throwError(finalCtx, job, be.Code, be.Variables)
 	default:
 		w.logger.Printf("handler %s: %v", r.taskType, err)
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
 		msg := w.clampWorkerErrorMessage(r.taskType, err.Error())
 		w.throwError(finalCtx, job, "WORKER_ERROR", variables.New().Set("error", msg))
 	}
