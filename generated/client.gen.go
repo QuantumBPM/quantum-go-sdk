@@ -934,17 +934,6 @@ type ExternalJob struct {
 // ExternalJobStatus Lifecycle status of the job.
 type ExternalJobStatus string
 
-// ExternalJobActiveWorkersItem Active long-poll worker count for a single task type.
-type ExternalJobActiveWorkersItem struct {
-	ActiveWorkers int    `json:"activeWorkers"`
-	TaskType      string `json:"taskType"`
-}
-
-// ExternalJobActiveWorkersResponse Per-task-type breakdown of currently-connected job workers.
-type ExternalJobActiveWorkersResponse struct {
-	Items []ExternalJobActiveWorkersItem `json:"items"`
-}
-
 // ExternalJobBatchResponse Per-item result of a batch complete or batch error call.
 type ExternalJobBatchResponse struct {
 	Results []struct {
@@ -2143,9 +2132,6 @@ type ClientInterface interface {
 	// GetBpmnExternalJobsQueueDepth request
 	GetBpmnExternalJobsQueueDepth(ctx context.Context, projectID openapi_types.UUID, params *GetBpmnExternalJobsQueueDepthParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// GetBpmnExternalJobsActiveWorkers request
-	GetBpmnExternalJobsActiveWorkers(ctx context.Context, projectID openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error)
-
 	// CompleteBpmnExternalJobWithBody request with any body
 	CompleteBpmnExternalJobWithBody(ctx context.Context, projectID openapi_types.UUID, executionKey string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -2601,18 +2587,6 @@ func (c *Client) PollBpmnExternalJobs(ctx context.Context, projectID openapi_typ
 
 func (c *Client) GetBpmnExternalJobsQueueDepth(ctx context.Context, projectID openapi_types.UUID, params *GetBpmnExternalJobsQueueDepthParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetBpmnExternalJobsQueueDepthRequest(c.Server, projectID, params)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) GetBpmnExternalJobsActiveWorkers(ctx context.Context, projectID openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetBpmnExternalJobsActiveWorkersRequest(c.Server, projectID)
 	if err != nil {
 		return nil, err
 	}
@@ -4247,40 +4221,6 @@ func NewGetBpmnExternalJobsQueueDepthRequest(server string, projectID openapi_ty
 		}
 
 		queryURL.RawQuery = queryValues.Encode()
-	}
-
-	req, err := http.NewRequest("GET", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
-// NewGetBpmnExternalJobsActiveWorkersRequest generates requests for GetBpmnExternalJobsActiveWorkers
-func NewGetBpmnExternalJobsActiveWorkersRequest(server string, projectID openapi_types.UUID) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "projectID", runtime.ParamLocationPath, projectID)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/projects/%s/bpmn/external-jobs/workers", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
 	}
 
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
@@ -7863,9 +7803,6 @@ type ClientWithResponsesInterface interface {
 	// GetBpmnExternalJobsQueueDepthWithResponse request
 	GetBpmnExternalJobsQueueDepthWithResponse(ctx context.Context, projectID openapi_types.UUID, params *GetBpmnExternalJobsQueueDepthParams, reqEditors ...RequestEditorFn) (*GetBpmnExternalJobsQueueDepthResponse, error)
 
-	// GetBpmnExternalJobsActiveWorkersWithResponse request
-	GetBpmnExternalJobsActiveWorkersWithResponse(ctx context.Context, projectID openapi_types.UUID, reqEditors ...RequestEditorFn) (*GetBpmnExternalJobsActiveWorkersResponse, error)
-
 	// CompleteBpmnExternalJobWithBodyWithResponse request with any body
 	CompleteBpmnExternalJobWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, executionKey string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CompleteBpmnExternalJobResponse, error)
 
@@ -8394,28 +8331,6 @@ func (r GetBpmnExternalJobsQueueDepthResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetBpmnExternalJobsQueueDepthResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type GetBpmnExternalJobsActiveWorkersResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *ExternalJobActiveWorkersResponse
-}
-
-// Status returns HTTPResponse.Status
-func (r GetBpmnExternalJobsActiveWorkersResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r GetBpmnExternalJobsActiveWorkersResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -9841,15 +9756,6 @@ func (c *ClientWithResponses) GetBpmnExternalJobsQueueDepthWithResponse(ctx cont
 	return ParseGetBpmnExternalJobsQueueDepthResponse(rsp)
 }
 
-// GetBpmnExternalJobsActiveWorkersWithResponse request returning *GetBpmnExternalJobsActiveWorkersResponse
-func (c *ClientWithResponses) GetBpmnExternalJobsActiveWorkersWithResponse(ctx context.Context, projectID openapi_types.UUID, reqEditors ...RequestEditorFn) (*GetBpmnExternalJobsActiveWorkersResponse, error) {
-	rsp, err := c.GetBpmnExternalJobsActiveWorkers(ctx, projectID, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseGetBpmnExternalJobsActiveWorkersResponse(rsp)
-}
-
 // CompleteBpmnExternalJobWithBodyWithResponse request with arbitrary body returning *CompleteBpmnExternalJobResponse
 func (c *ClientWithResponses) CompleteBpmnExternalJobWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, executionKey string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CompleteBpmnExternalJobResponse, error) {
 	rsp, err := c.CompleteBpmnExternalJobWithBody(ctx, projectID, executionKey, contentType, body, reqEditors...)
@@ -10963,32 +10869,6 @@ func ParseGetBpmnExternalJobsQueueDepthResponse(rsp *http.Response) (*GetBpmnExt
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest ExternalJobQueueDepthResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseGetBpmnExternalJobsActiveWorkersResponse parses an HTTP response from a GetBpmnExternalJobsActiveWorkersWithResponse call
-func ParseGetBpmnExternalJobsActiveWorkersResponse(rsp *http.Response) (*GetBpmnExternalJobsActiveWorkersResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &GetBpmnExternalJobsActiveWorkersResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest ExternalJobActiveWorkersResponse
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
