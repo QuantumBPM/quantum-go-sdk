@@ -191,9 +191,13 @@ func (c *Client) EvaluateDesign(ctx context.Context, xml string, vars variables.
 // EvaluateDesignBatch evaluates the same XML against many input rows in a
 // single request, returning per-row results.
 func (c *Client) EvaluateDesignBatch(ctx context.Context, xml string, rows []variables.Vars) (BatchResult, error) {
-	inputs := make([]map[string]interface{}, len(rows))
+	inputs := make([]generated.FeelContext, len(rows))
 	for i, row := range rows {
-		inputs[i] = map[string]interface{}(row)
+		fctx, err := row.ToFeelContext()
+		if err != nil {
+			return BatchResult{}, fmt.Errorf("dmn: batch-evaluate-design row %d: %w", i, err)
+		}
+		inputs[i] = fctx
 	}
 	body := generated.EvaluateDesignBatchJSONRequestBody{
 		Xml:    &xml,

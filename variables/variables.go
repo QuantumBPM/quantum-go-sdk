@@ -108,22 +108,23 @@ func FromFeelContext(fctx generated.FeelContext) (Vars, error) {
 	return v, nil
 }
 
-// ToWireMap returns the Vars as the *map[string]interface{} shape the
+// ToWireMap returns the Vars as the *generated.VariableMap shape the
 // generated BPMN endpoints accept. Returns nil for an empty/nil Vars so that
 // the optional field can be omitted from the request body.
-func (v Vars) ToWireMap() *map[string]interface{} {
+func (v Vars) ToWireMap() *generated.VariableMap {
 	if len(v) == 0 {
 		return nil
 	}
-	m := map[string]interface{}(v)
+	m := generated.VariableMap(v)
 	return &m
 }
 
-// FromWireMap copies a *map[string]interface{} (typical generated BPMN
-// response shape) into a Vars.
-func FromWireMap(m *map[string]interface{}) Vars {
+// FromWireMap copies a *generated.VariableMap (typical generated BPMN
+// response shape) into a Vars. Numbers arrive as json.Number - exact
+// decimals survive the read path.
+func FromWireMap(m *generated.VariableMap) Vars {
 	if m == nil {
 		return New()
 	}
-	return From(*m)
+	return From(map[string]interface{}(*m))
 }

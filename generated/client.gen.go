@@ -171,13 +171,13 @@ type ActiveScope struct {
 	ScopeID *string `json:"scopeID,omitempty"`
 
 	// Variables Variables scoped to this instance, excluding inherited parent-scope variables.
-	Variables *map[string]interface{} `json:"variables,omitempty"`
+	Variables *VariableMap `json:"variables,omitempty"`
 }
 
 // BatchEvaluateDesignRequest Payload for batch evaluating ad-hoc DMN XML against multiple input rows.
 type BatchEvaluateDesignRequest struct {
 	// Inputs One input context per row to evaluate.
-	Inputs *[]map[string]interface{} `json:"inputs,omitempty"`
+	Inputs *[]FeelContext `json:"inputs,omitempty"`
 
 	// Xml DMN XML to evaluate.
 	Xml *string `json:"xml,omitempty"`
@@ -242,7 +242,7 @@ type BpmnIncident struct {
 	Timestamp *int64 `json:"timestamp,omitempty"`
 
 	// Variables Variables in scope at the time of the error.
-	Variables *map[string]interface{} `json:"variables,omitempty"`
+	Variables *VariableMap `json:"variables,omitempty"`
 }
 
 // BpmnIncidentErrorType Category of the error. Values:
@@ -427,7 +427,7 @@ type BpmnInstanceState struct {
 	Status *string `json:"status,omitempty"`
 
 	// Variables All variables currently in scope for the root process.
-	Variables *map[string]interface{} `json:"variables,omitempty"`
+	Variables *VariableMap `json:"variables,omitempty"`
 
 	// WorkflowID Execution identifier for this instance.
 	WorkflowID *string `json:"workflowID,omitempty"`
@@ -925,7 +925,7 @@ type ExternalJob struct {
 	TraceContext *map[string]string `json:"traceContext,omitempty"`
 
 	// Variables Input variables resolved by the service task at activity entry.
-	Variables *map[string]interface{} `json:"variables,omitempty"`
+	Variables *VariableMap `json:"variables,omitempty"`
 
 	// WorkflowID Identifier of the instance that produced the job. Required when calling Complete / ThrowError.
 	WorkflowID string `json:"workflowID"`
@@ -979,8 +979,8 @@ type FeelContext map[string]*FeelValue
 // FeelList FEEL list. Lists may contain mixed types.
 type FeelList = []FeelValue
 
-// FeelNumber FEEL number. Maps to a decimal value at runtime.
-type FeelNumber = float32
+// FeelNumber FEEL number. Maps to a decimal value at runtime. Exact decimal semantics end-to-end — the Go types use json.Number so values are never narrowed through float64.
+type FeelNumber = json.Number
 
 // FeelString FEEL string. Date, time, and duration values are also represented as strings using the FEEL textual forms (e.g. `"2026-01-31"`, `"PT1H"`).
 type FeelString = string
@@ -1008,7 +1008,7 @@ type MigrateBpmnInstanceRequest struct {
 	TargetVersion int `json:"targetVersion"`
 
 	// Variables Variables to merge into the instance scope as part of the migration. Useful for filling in inputs introduced in the target version.
-	Variables *map[string]interface{} `json:"variables,omitempty"`
+	Variables *VariableMap `json:"variables,omitempty"`
 }
 
 // MigrationValidationResult Outcome of validating a migration plan without executing it.
@@ -1034,7 +1034,7 @@ type ModificationInstruction struct {
 	Type ModificationInstructionType `json:"type"`
 
 	// Variables Variables to inject into the scope for `START_BEFORE_NODE`.
-	Variables *map[string]interface{} `json:"variables,omitempty"`
+	Variables *VariableMap `json:"variables,omitempty"`
 }
 
 // ModificationInstructionType Kind of operation:
@@ -1128,7 +1128,7 @@ type StartBpmnInstanceRequest struct {
 	ProcessDefinitionID openapi_types.UUID `json:"processDefinitionID"`
 
 	// Variables Initial process variables. Available to FEEL expressions and service tasks from the first activity onward.
-	Variables *map[string]interface{} `json:"variables,omitempty"`
+	Variables *VariableMap `json:"variables,omitempty"`
 }
 
 // StartBpmnTestInstanceRequest Payload for starting a non-deployed BPMN process instance against a draft resource for testing.
@@ -1140,7 +1140,7 @@ type StartBpmnTestInstanceRequest struct {
 	ProcessID *string `json:"processID,omitempty"`
 
 	// Variables Initial process variables.
-	Variables *map[string]interface{} `json:"variables,omitempty"`
+	Variables *VariableMap `json:"variables,omitempty"`
 }
 
 // SuspendBpmnDefinitionRequest Optional metadata captured with a definition-scope suspension. The same reason cascades to each running instance.
@@ -1213,7 +1213,7 @@ type UserTask struct {
 	CompletedAt *time.Time `json:"completedAt,omitempty"`
 
 	// CompletionVariables Variables submitted alongside the completion or error call. Set for COMPLETED and FAILED tasks.
-	CompletionVariables *map[string]interface{} `json:"completionVariables,omitempty"`
+	CompletionVariables *VariableMap `json:"completionVariables,omitempty"`
 
 	// CreatedAt Timestamp when the task was created.
 	CreatedAt time.Time `json:"createdAt"`
@@ -1249,7 +1249,7 @@ type UserTask struct {
 	TaskType *string `json:"taskType,omitempty"`
 
 	// Variables Input variables resolved at activity entry. Available for rendering form defaults.
-	Variables *map[string]interface{} `json:"variables,omitempty"`
+	Variables *VariableMap `json:"variables,omitempty"`
 
 	// WorkflowID Identifier of the instance that produced the task.
 	WorkflowID string `json:"workflowID"`
@@ -1319,19 +1319,19 @@ type ListBpmnExternalJobsParamsStatus string
 // CompleteBpmnExternalJobsBatchJSONBody defines parameters for CompleteBpmnExternalJobsBatch.
 type CompleteBpmnExternalJobsBatchJSONBody struct {
 	Items []struct {
-		ExecutionKey string                  `json:"executionKey"`
-		Variables    *map[string]interface{} `json:"variables,omitempty"`
-		WorkflowID   string                  `json:"workflowID"`
+		ExecutionKey string       `json:"executionKey"`
+		Variables    *VariableMap `json:"variables,omitempty"`
+		WorkflowID   string       `json:"workflowID"`
 	} `json:"items"`
 }
 
 // ThrowBpmnExternalJobErrorsBatchJSONBody defines parameters for ThrowBpmnExternalJobErrorsBatch.
 type ThrowBpmnExternalJobErrorsBatchJSONBody struct {
 	Items []struct {
-		ErrorCode    string                  `json:"errorCode"`
-		ExecutionKey string                  `json:"executionKey"`
-		Variables    *map[string]interface{} `json:"variables,omitempty"`
-		WorkflowID   string                  `json:"workflowID"`
+		ErrorCode    string       `json:"errorCode"`
+		ExecutionKey string       `json:"executionKey"`
+		Variables    *VariableMap `json:"variables,omitempty"`
+		WorkflowID   string       `json:"workflowID"`
 	} `json:"items"`
 }
 
@@ -1343,7 +1343,7 @@ type GetBpmnExternalJobsQueueDepthParams struct {
 
 // CompleteBpmnExternalJobJSONBody defines parameters for CompleteBpmnExternalJob.
 type CompleteBpmnExternalJobJSONBody struct {
-	Variables *map[string]interface{} `json:"variables,omitempty"`
+	Variables *VariableMap `json:"variables,omitempty"`
 
 	// WorkflowID Workflow ID returned by the poll response.
 	WorkflowID string `json:"workflowID"`
@@ -1351,8 +1351,8 @@ type CompleteBpmnExternalJobJSONBody struct {
 
 // ThrowBpmnExternalJobErrorJSONBody defines parameters for ThrowBpmnExternalJobError.
 type ThrowBpmnExternalJobErrorJSONBody struct {
-	ErrorCode string                  `json:"errorCode"`
-	Variables *map[string]interface{} `json:"variables,omitempty"`
+	ErrorCode string       `json:"errorCode"`
+	Variables *VariableMap `json:"variables,omitempty"`
 }
 
 // HeartbeatBpmnExternalJobJSONBody defines parameters for HeartbeatBpmnExternalJob.
@@ -1433,17 +1433,17 @@ type TriggerBpmnAdHocNodeJSONBody struct {
 
 // SetBpmnAdHocVariablesJSONBody defines parameters for SetBpmnAdHocVariables.
 type SetBpmnAdHocVariablesJSONBody struct {
-	Variables *map[string]interface{} `json:"variables,omitempty"`
+	Variables *VariableMap `json:"variables,omitempty"`
 }
 
 // ResolveBpmnIncidentJSONBody defines parameters for ResolveBpmnIncident.
 type ResolveBpmnIncidentJSONBody struct {
-	Variables *map[string]interface{} `json:"variables,omitempty"`
+	Variables *VariableMap `json:"variables,omitempty"`
 }
 
 // UpdateBpmnInstanceVariablesJSONBody defines parameters for UpdateBpmnInstanceVariables.
 type UpdateBpmnInstanceVariablesJSONBody struct {
-	Variables map[string]interface{} `json:"variables"`
+	Variables VariableMap `json:"variables"`
 }
 
 // PublishBpmnMessageJSONBody defines parameters for PublishBpmnMessage.
@@ -1471,7 +1471,7 @@ type PublishBpmnMessageJSONBody struct {
 	Ttl *string `json:"ttl,omitempty"`
 
 	// Variables Variables to pass into the receiving instance when the message is delivered.
-	Variables *map[string]interface{} `json:"variables,omitempty"`
+	Variables *VariableMap `json:"variables,omitempty"`
 }
 
 // ListBpmnProcessesParams defines parameters for ListBpmnProcesses.
@@ -1532,7 +1532,7 @@ type PublishBpmnSignalJSONBody struct {
 	Ttl *string `json:"ttl,omitempty"`
 
 	// Variables Variables to pass into each receiving instance.
-	Variables *map[string]interface{} `json:"variables,omitempty"`
+	Variables *VariableMap `json:"variables,omitempty"`
 }
 
 // ListBpmnUserTasksParams defines parameters for ListBpmnUserTasks.
@@ -1560,13 +1560,13 @@ type ListBpmnUserTasksForCallerParams struct {
 
 // CompleteBpmnUserTaskJSONBody defines parameters for CompleteBpmnUserTask.
 type CompleteBpmnUserTaskJSONBody struct {
-	Variables *map[string]interface{} `json:"variables,omitempty"`
+	Variables *VariableMap `json:"variables,omitempty"`
 }
 
 // ThrowBpmnUserTaskErrorJSONBody defines parameters for ThrowBpmnUserTaskError.
 type ThrowBpmnUserTaskErrorJSONBody struct {
-	ErrorCode string                  `json:"errorCode"`
-	Variables *map[string]interface{} `json:"variables,omitempty"`
+	ErrorCode string       `json:"errorCode"`
+	Variables *VariableMap `json:"variables,omitempty"`
 }
 
 // ListDecisionsParams defines parameters for ListDecisions.
@@ -8710,7 +8710,7 @@ type GetBpmnInstanceVariablesResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
-		Variables *map[string]interface{} `json:"variables,omitempty"`
+		Variables *VariableMap `json:"variables,omitempty"`
 	}
 }
 
@@ -11251,7 +11251,7 @@ func ParseGetBpmnInstanceVariablesResponse(rsp *http.Response) (*GetBpmnInstance
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
-			Variables *map[string]interface{} `json:"variables,omitempty"`
+			Variables *VariableMap `json:"variables,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
