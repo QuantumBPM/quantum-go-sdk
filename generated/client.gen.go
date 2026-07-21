@@ -2086,9 +2086,6 @@ type ClientInterface interface {
 
 	EvaluateDesignBatch(ctx context.Context, body EvaluateDesignBatchJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// GetHealth request
-	GetHealth(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
-
 	// ListProjects request
 	ListProjects(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -2383,18 +2380,6 @@ func (c *Client) EvaluateDesignBatchWithBody(ctx context.Context, contentType st
 
 func (c *Client) EvaluateDesignBatch(ctx context.Context, body EvaluateDesignBatchJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewEvaluateDesignBatchRequest(c.Server, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) GetHealth(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetHealthRequest(c.Server)
 	if err != nil {
 		return nil, err
 	}
@@ -3621,33 +3606,6 @@ func NewEvaluateDesignBatchRequestWithBody(server string, contentType string, bo
 	}
 
 	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewGetHealthRequest generates requests for GetHealth
-func NewGetHealthRequest(server string) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/health")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("GET", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
 
 	return req, nil
 }
@@ -7757,9 +7715,6 @@ type ClientWithResponsesInterface interface {
 
 	EvaluateDesignBatchWithResponse(ctx context.Context, body EvaluateDesignBatchJSONRequestBody, reqEditors ...RequestEditorFn) (*EvaluateDesignBatchResponse, error)
 
-	// GetHealthWithResponse request
-	GetHealthWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetHealthResponse, error)
-
 	// ListProjectsWithResponse request
 	ListProjectsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListProjectsResponse, error)
 
@@ -8058,30 +8013,6 @@ func (r EvaluateDesignBatchResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r EvaluateDesignBatchResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type GetHealthResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *struct {
-		Status *string `json:"status,omitempty"`
-	}
-}
-
-// Status returns HTTPResponse.Status
-func (r GetHealthResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r GetHealthResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -9608,15 +9539,6 @@ func (c *ClientWithResponses) EvaluateDesignBatchWithResponse(ctx context.Contex
 	return ParseEvaluateDesignBatchResponse(rsp)
 }
 
-// GetHealthWithResponse request returning *GetHealthResponse
-func (c *ClientWithResponses) GetHealthWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetHealthResponse, error) {
-	rsp, err := c.GetHealth(ctx, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseGetHealthResponse(rsp)
-}
-
 // ListProjectsWithResponse request returning *ListProjectsResponse
 func (c *ClientWithResponses) ListProjectsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListProjectsResponse, error) {
 	rsp, err := c.ListProjects(ctx, reqEditors...)
@@ -10516,34 +10438,6 @@ func ParseEvaluateDesignBatchResponse(rsp *http.Response) (*EvaluateDesignBatchR
 			return nil, err
 		}
 		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseGetHealthResponse parses an HTTP response from a GetHealthWithResponse call
-func ParseGetHealthResponse(rsp *http.Response) (*GetHealthResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &GetHealthResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Status *string `json:"status,omitempty"`
-		}
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
 
 	}
 
