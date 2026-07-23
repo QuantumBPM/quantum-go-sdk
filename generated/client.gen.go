@@ -176,7 +176,7 @@ type ActiveScope struct {
 
 // BatchEvaluateDesignRequest Payload for batch evaluating ad-hoc DMN XML against multiple input rows.
 type BatchEvaluateDesignRequest struct {
-	// Inputs One input context per row to evaluate.
+	// Inputs One input context per row to evaluate. At most 500 rows per request.
 	Inputs *[]FeelContext `json:"inputs,omitempty"`
 
 	// Xml DMN XML to evaluate.
@@ -1318,7 +1318,13 @@ type ListBpmnExternalJobsParamsStatus string
 
 // CompleteBpmnExternalJobsBatchJSONBody defines parameters for CompleteBpmnExternalJobsBatch.
 type CompleteBpmnExternalJobsBatchJSONBody struct {
-	Items []struct {
+	// ClientID Optional worker identity (the same `clientID` used to poll)
+	// applied to every item in the batch — a batch is one worker's
+	// report. When supplied, an item is completed only if this
+	// worker still holds its lock; items re-acquired by a peer drop
+	// out silently. Omit for the legacy unchecked behavior.
+	ClientID *string `json:"clientID,omitempty"`
+	Items    []struct {
 		ExecutionKey string       `json:"executionKey"`
 		Variables    *VariableMap `json:"variables,omitempty"`
 		WorkflowID   string       `json:"workflowID"`
@@ -1327,7 +1333,14 @@ type CompleteBpmnExternalJobsBatchJSONBody struct {
 
 // ThrowBpmnExternalJobErrorsBatchJSONBody defines parameters for ThrowBpmnExternalJobErrorsBatch.
 type ThrowBpmnExternalJobErrorsBatchJSONBody struct {
-	Items []struct {
+	// ClientID Optional worker identity (the same `clientID` used to poll)
+	// applied to every item in the batch — a batch is one worker's
+	// report. When supplied, an item is requeued/failed only if this
+	// worker still holds its lock; items held by a peer are reported
+	// as an error and left untouched. Omit for the legacy unchecked
+	// behavior.
+	ClientID *string `json:"clientID,omitempty"`
+	Items    []struct {
 		ErrorCode    string       `json:"errorCode"`
 		ExecutionKey string       `json:"executionKey"`
 		Variables    *VariableMap `json:"variables,omitempty"`
@@ -1343,6 +1356,12 @@ type GetBpmnExternalJobsQueueDepthParams struct {
 
 // CompleteBpmnExternalJobJSONBody defines parameters for CompleteBpmnExternalJob.
 type CompleteBpmnExternalJobJSONBody struct {
+	// ClientID Optional worker identity (the same `clientID` used to poll).
+	// When supplied, the completion is applied only if this worker
+	// still holds the job's lock; a stale worker whose lease lapsed
+	// and whose job a peer re-acquired is rejected as a no-op.
+	// Omit for the legacy unchecked behavior.
+	ClientID  *string      `json:"clientID,omitempty"`
 	Variables *VariableMap `json:"variables,omitempty"`
 
 	// WorkflowID Workflow ID returned by the poll response.
@@ -1351,6 +1370,12 @@ type CompleteBpmnExternalJobJSONBody struct {
 
 // ThrowBpmnExternalJobErrorJSONBody defines parameters for ThrowBpmnExternalJobError.
 type ThrowBpmnExternalJobErrorJSONBody struct {
+	// ClientID Optional worker identity (the same `clientID` used to poll).
+	// When supplied, the error is applied only if this worker still
+	// holds the job's lock, so a stale report can't requeue or fail
+	// a job a peer is actively holding. Omit for the legacy
+	// unchecked behavior.
+	ClientID  *string      `json:"clientID,omitempty"`
 	ErrorCode string       `json:"errorCode"`
 	Variables *VariableMap `json:"variables,omitempty"`
 }

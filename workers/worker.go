@@ -394,6 +394,7 @@ func (w *Worker) heartbeat(ctx context.Context, r *registration, job *generated.
 func (w *Worker) complete(ctx context.Context, job *generated.ExternalJob, vars variables.Vars) {
 	resp, err := w.api.CompleteBpmnExternalJobWithResponse(ctx, w.projectID, job.ExecutionKey, generated.CompleteBpmnExternalJobJSONRequestBody{
 		WorkflowID: job.WorkflowID,
+		ClientID:   &w.clientID,
 		Variables:  vars.ToWireMap(),
 	})
 	if err != nil {
@@ -408,6 +409,7 @@ func (w *Worker) complete(ctx context.Context, job *generated.ExternalJob, vars 
 func (w *Worker) throwError(ctx context.Context, job *generated.ExternalJob, code string, vars variables.Vars) {
 	resp, err := w.api.ThrowBpmnExternalJobErrorWithResponse(ctx, w.projectID, job.ExecutionKey, generated.ThrowBpmnExternalJobErrorJSONRequestBody{
 		ErrorCode: code,
+		ClientID:  &w.clientID,
 		Variables: vars.ToWireMap(),
 	})
 	if err != nil {
