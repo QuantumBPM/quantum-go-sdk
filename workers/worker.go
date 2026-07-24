@@ -45,8 +45,11 @@ type Job struct {
 
 // Handler processes a single job. Return value semantics:
 //   - (vars, nil)              → Complete with vars merged into instance
-//   - (_, *BpmnError)          → ThrowError with the supplied code
-//   - (_, any other error)     → ThrowError with a generic code; retry budget decrements
+//   - (_, *BpmnError)          → ThrowError with the supplied code as a business
+//     error (retryable=false): routed to a matching boundary error event
+//     immediately, bypassing the retry budget
+//   - (_, any other error)     → ThrowError with a generic code as a retryable
+//     technical failure: the retry budget is consumed before the error surfaces
 type Handler func(ctx context.Context, job *Job) (variables.Vars, error)
 
 // HandleOption tunes per-task-type registration.
@@ -321,13 +324,17 @@ func (w *Worker) dispatch(parent context.Context, r *registration, job *generate
 		var be *BpmnError
 		_ = errors.As(err, &be)
 		span.SetAttributes(attribute.String("bpmn.error_code", be.Code))
-		w.throwError(finalCtx, job, be.Code, be.Variables)
+		// A BpmnError is a business outcome: route it to the boundary
+		// immediately (retryable=false) rather than burning the retry budget.
+		w.throwError(finalCtx, job, be.Code, be.Variables, false)
 	default:
 		w.logger.Printf("handler %s: %v", r.taskType, err)
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
 		msg := w.clampWorkerErrorMessage(r.taskType, err.Error())
-		w.throwError(finalCtx, job, "WORKER_ERROR", variables.New().Set("error", msg))
+		// Any other error is a technical failure: retryable, so the server
+		// consumes the retry budget before surfacing it.
+		w.throwError(finalCtx, job, "WORKER_ERROR", variables.New().Set("error", msg), true)
 	}
 }
 
@@ -406,10 +413,11 @@ func (w *Worker) complete(ctx context.Context, job *generated.ExternalJob, vars 
 	}
 }
 
-func (w *Worker) throwError(ctx context.Context, job *generated.ExternalJob, code string, vars variables.Vars) {
+func (w *Worker) throwError(ctx context.Context, job *generated.ExternalJob, code string, vars variables.Vars, retryable bool) {
 	resp, err := w.api.ThrowBpmnExternalJobErrorWithResponse(ctx, w.projectID, job.ExecutionKey, generated.ThrowBpmnExternalJobErrorJSONRequestBody{
 		ErrorCode: code,
 		ClientID:  &w.clientID,
+		Retryable: &retryable,
 		Variables: vars.ToWireMap(),
 	})
 	if err != nil {

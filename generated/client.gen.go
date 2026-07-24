@@ -1346,6 +1346,13 @@ type ThrowBpmnExternalJobErrorsBatchJSONBody struct {
 		Variables    *VariableMap `json:"variables,omitempty"`
 		WorkflowID   string       `json:"workflowID"`
 	} `json:"items"`
+
+	// Retryable Applies to every item in the batch. `true` (default) consumes
+	// each item's retry budget before raising its BPMN error; `false`
+	// raises every item's `errorCode` as a business BPMN error
+	// immediately, bypassing retries. See the single-job error
+	// endpoint for the full semantics.
+	Retryable *bool `json:"retryable,omitempty"`
 }
 
 // GetBpmnExternalJobsQueueDepthParams defines parameters for GetBpmnExternalJobsQueueDepth.
@@ -1375,8 +1382,18 @@ type ThrowBpmnExternalJobErrorJSONBody struct {
 	// holds the job's lock, so a stale report can't requeue or fail
 	// a job a peer is actively holding. Omit for the legacy
 	// unchecked behavior.
-	ClientID  *string      `json:"clientID,omitempty"`
-	ErrorCode string       `json:"errorCode"`
+	ClientID  *string `json:"clientID,omitempty"`
+	ErrorCode string  `json:"errorCode"`
+
+	// Retryable Whether this failure should consume the retry budget before
+	// reaching the process. `true` (default) treats it as a
+	// technical failure: requeue while retries remain, raise the
+	// BPMN error only at exhaustion. `false` treats `errorCode` as a
+	// business BPMN error and raises it immediately, bypassing
+	// retries so a boundary error event fires (or an incident is
+	// raised) at once. SDK workers set `false` for a handler-thrown
+	// `BpmnError` and `true` for any other exception.
+	Retryable *bool        `json:"retryable,omitempty"`
 	Variables *VariableMap `json:"variables,omitempty"`
 }
 
