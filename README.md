@@ -1,6 +1,6 @@
 # QuantumBPM Go SDK
 
-Official Go SDK for the [QuantumBPM](https://quantumbpm.com) platform — DMN evaluation, BPMN process orchestration, and external job workers.
+Official Go SDK for the [QuantumBPM](https://quantumbpm.com) platform - DMN evaluation, BPMN process orchestration, and external job workers.
 
 ## Installation
 
@@ -18,7 +18,7 @@ Requires Go 1.23+.
 | `quantumbpm/auth`                  | `TokenProvider` interface, `ZitadelTokenProvider`, `StaticTokenProvider`      |
 | `quantumbpm/dmn`                   | DMN evaluation: stored definitions, ad-hoc XML, batch                         |
 | `quantumbpm/bpmn`                  | BPMN resources, instances, messaging, user tasks, processes                   |
-| `quantumbpm/workers`               | External job worker runtime — long-poll, lock heartbeat, dispatch             |
+| `quantumbpm/workers`               | External job worker runtime - long-poll, lock heartbeat, dispatch             |
 | `quantumbpm/variables`             | `Vars` map type with typed accessors and FEEL-context conversion              |
 | `quantumbpm/generated`             | OpenAPI-generated client. Reachable via `Client.Raw()`, never hand-edited     |
 
@@ -329,4 +329,4 @@ resp, err := raw.MigrateBpmnInstanceWithResponse(ctx, projectID, workflowID, bod
 
 ## License
 
-MIT License — see [LICENSE](LICENSE) for details.
+MIT License - see [LICENSE](LICENSE) for details.

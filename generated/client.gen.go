@@ -20,30 +20,40 @@ import (
 
 // Defines values for BpmnIncidentErrorType.
 const (
-	BpmnIncidentErrorTypeBpmnError         BpmnIncidentErrorType = "BpmnError"
-	BpmnIncidentErrorTypeCompensationError BpmnIncidentErrorType = "CompensationError"
-	BpmnIncidentErrorTypeEscalationError   BpmnIncidentErrorType = "EscalationError"
-	BpmnIncidentErrorTypeFeelError         BpmnIncidentErrorType = "FeelError"
-	BpmnIncidentErrorTypeGatewayNoMatch    BpmnIncidentErrorType = "GatewayNoMatch"
-	BpmnIncidentErrorTypeLinkNotFound      BpmnIncidentErrorType = "LinkNotFound"
-	BpmnIncidentErrorTypeMigrationError    BpmnIncidentErrorType = "MigrationError"
-	BpmnIncidentErrorTypeNoHandler         BpmnIncidentErrorType = "NoHandler"
-	BpmnIncidentErrorTypeTimerResolution   BpmnIncidentErrorType = "TimerResolution"
-	BpmnIncidentErrorTypeUnknown           BpmnIncidentErrorType = "Unknown"
+	BpmnIncidentErrorTypeBpmnError               BpmnIncidentErrorType = "BpmnError"
+	BpmnIncidentErrorTypeCallActivityCanceled    BpmnIncidentErrorType = "CallActivityCanceled"
+	BpmnIncidentErrorTypeCompensationError       BpmnIncidentErrorType = "CompensationError"
+	BpmnIncidentErrorTypeEscalationError         BpmnIncidentErrorType = "EscalationError"
+	BpmnIncidentErrorTypeExternalRowRefreshError BpmnIncidentErrorType = "ExternalRowRefreshError"
+	BpmnIncidentErrorTypeFeelError               BpmnIncidentErrorType = "FeelError"
+	BpmnIncidentErrorTypeGatewayNoMatch          BpmnIncidentErrorType = "GatewayNoMatch"
+	BpmnIncidentErrorTypeLinkNotFound            BpmnIncidentErrorType = "LinkNotFound"
+	BpmnIncidentErrorTypeMigrationError          BpmnIncidentErrorType = "MigrationError"
+	BpmnIncidentErrorTypeNoHandler               BpmnIncidentErrorType = "NoHandler"
+	BpmnIncidentErrorTypeRotationLimitError      BpmnIncidentErrorType = "RotationLimitError"
+	BpmnIncidentErrorTypeSnapshotSizeExceeded    BpmnIncidentErrorType = "SnapshotSizeExceeded"
+	BpmnIncidentErrorTypeSubscriptionError       BpmnIncidentErrorType = "SubscriptionError"
+	BpmnIncidentErrorTypeTimerResolution         BpmnIncidentErrorType = "TimerResolution"
+	BpmnIncidentErrorTypeUnknown                 BpmnIncidentErrorType = "Unknown"
 )
 
 // Defines values for BpmnIncidentRecordErrorType.
 const (
-	BpmnIncidentRecordErrorTypeBpmnError         BpmnIncidentRecordErrorType = "BpmnError"
-	BpmnIncidentRecordErrorTypeCompensationError BpmnIncidentRecordErrorType = "CompensationError"
-	BpmnIncidentRecordErrorTypeEscalationError   BpmnIncidentRecordErrorType = "EscalationError"
-	BpmnIncidentRecordErrorTypeFeelError         BpmnIncidentRecordErrorType = "FeelError"
-	BpmnIncidentRecordErrorTypeGatewayNoMatch    BpmnIncidentRecordErrorType = "GatewayNoMatch"
-	BpmnIncidentRecordErrorTypeLinkNotFound      BpmnIncidentRecordErrorType = "LinkNotFound"
-	BpmnIncidentRecordErrorTypeMigrationError    BpmnIncidentRecordErrorType = "MigrationError"
-	BpmnIncidentRecordErrorTypeNoHandler         BpmnIncidentRecordErrorType = "NoHandler"
-	BpmnIncidentRecordErrorTypeTimerResolution   BpmnIncidentRecordErrorType = "TimerResolution"
-	BpmnIncidentRecordErrorTypeUnknown           BpmnIncidentRecordErrorType = "Unknown"
+	BpmnIncidentRecordErrorTypeBpmnError               BpmnIncidentRecordErrorType = "BpmnError"
+	BpmnIncidentRecordErrorTypeCallActivityCanceled    BpmnIncidentRecordErrorType = "CallActivityCanceled"
+	BpmnIncidentRecordErrorTypeCompensationError       BpmnIncidentRecordErrorType = "CompensationError"
+	BpmnIncidentRecordErrorTypeEscalationError         BpmnIncidentRecordErrorType = "EscalationError"
+	BpmnIncidentRecordErrorTypeExternalRowRefreshError BpmnIncidentRecordErrorType = "ExternalRowRefreshError"
+	BpmnIncidentRecordErrorTypeFeelError               BpmnIncidentRecordErrorType = "FeelError"
+	BpmnIncidentRecordErrorTypeGatewayNoMatch          BpmnIncidentRecordErrorType = "GatewayNoMatch"
+	BpmnIncidentRecordErrorTypeLinkNotFound            BpmnIncidentRecordErrorType = "LinkNotFound"
+	BpmnIncidentRecordErrorTypeMigrationError          BpmnIncidentRecordErrorType = "MigrationError"
+	BpmnIncidentRecordErrorTypeNoHandler               BpmnIncidentRecordErrorType = "NoHandler"
+	BpmnIncidentRecordErrorTypeRotationLimitError      BpmnIncidentRecordErrorType = "RotationLimitError"
+	BpmnIncidentRecordErrorTypeSnapshotSizeExceeded    BpmnIncidentRecordErrorType = "SnapshotSizeExceeded"
+	BpmnIncidentRecordErrorTypeSubscriptionError       BpmnIncidentRecordErrorType = "SubscriptionError"
+	BpmnIncidentRecordErrorTypeTimerResolution         BpmnIncidentRecordErrorType = "TimerResolution"
+	BpmnIncidentRecordErrorTypeUnknown                 BpmnIncidentRecordErrorType = "Unknown"
 )
 
 // Defines values for BpmnInstanceStatus.
@@ -125,16 +135,21 @@ const (
 
 // Defines values for ListBpmnIncidentsParamsErrorType.
 const (
-	BpmnError         ListBpmnIncidentsParamsErrorType = "BpmnError"
-	CompensationError ListBpmnIncidentsParamsErrorType = "CompensationError"
-	EscalationError   ListBpmnIncidentsParamsErrorType = "EscalationError"
-	FeelError         ListBpmnIncidentsParamsErrorType = "FeelError"
-	GatewayNoMatch    ListBpmnIncidentsParamsErrorType = "GatewayNoMatch"
-	LinkNotFound      ListBpmnIncidentsParamsErrorType = "LinkNotFound"
-	MigrationError    ListBpmnIncidentsParamsErrorType = "MigrationError"
-	NoHandler         ListBpmnIncidentsParamsErrorType = "NoHandler"
-	TimerResolution   ListBpmnIncidentsParamsErrorType = "TimerResolution"
-	Unknown           ListBpmnIncidentsParamsErrorType = "Unknown"
+	BpmnError               ListBpmnIncidentsParamsErrorType = "BpmnError"
+	CallActivityCanceled    ListBpmnIncidentsParamsErrorType = "CallActivityCanceled"
+	CompensationError       ListBpmnIncidentsParamsErrorType = "CompensationError"
+	EscalationError         ListBpmnIncidentsParamsErrorType = "EscalationError"
+	ExternalRowRefreshError ListBpmnIncidentsParamsErrorType = "ExternalRowRefreshError"
+	FeelError               ListBpmnIncidentsParamsErrorType = "FeelError"
+	GatewayNoMatch          ListBpmnIncidentsParamsErrorType = "GatewayNoMatch"
+	LinkNotFound            ListBpmnIncidentsParamsErrorType = "LinkNotFound"
+	MigrationError          ListBpmnIncidentsParamsErrorType = "MigrationError"
+	NoHandler               ListBpmnIncidentsParamsErrorType = "NoHandler"
+	RotationLimitError      ListBpmnIncidentsParamsErrorType = "RotationLimitError"
+	SnapshotSizeExceeded    ListBpmnIncidentsParamsErrorType = "SnapshotSizeExceeded"
+	SubscriptionError       ListBpmnIncidentsParamsErrorType = "SubscriptionError"
+	TimerResolution         ListBpmnIncidentsParamsErrorType = "TimerResolution"
+	Unknown                 ListBpmnIncidentsParamsErrorType = "Unknown"
 )
 
 // Defines values for ListBpmnInstancesParamsStatus.
@@ -155,8 +170,8 @@ const (
 
 // ActiveScope A scope (sub-process, multi-instance body, or root process) that currently holds at least one live execution token.
 type ActiveScope struct {
-	// ActiveNodes IDs of flow nodes that currently hold live tokens within this scope.
-	ActiveNodes *[]string `json:"activeNodes,omitempty"`
+	// ActiveNodes Live token count per flow node in this scope, keyed by node ID. A node can hold more than one token at a time (a parallel fork whose branches re-converge without a join, a non-interrupting boundary handler, a loop edge re-entering a node a prior token has not left yet), so the count matters: a presence-only list cannot tell one token from five. Absent keys mean no live token.
+	ActiveNodes *map[string]int `json:"activeNodes,omitempty"`
 
 	// NodeID ID of the BPMN element that created this scope (e.g. a sub-process node). Empty for the root scope.
 	NodeID *string `json:"nodeID,omitempty"`
@@ -214,16 +229,21 @@ type BpmnIncident struct {
 	ErrorMessage *string `json:"errorMessage,omitempty"`
 
 	// ErrorType Category of the error. Values:
-	//   * `BpmnError` — A `bpmn:error` thrown by the process or an external job worker.
-	//   * `EscalationError` — A `bpmn:escalation` raised by the process.
-	//   * `CompensationError` — Failure during compensation handler execution.
-	//   * `FeelError` — A FEEL expression failed to evaluate.
-	//   * `NoHandler` — A thrown error/escalation has no matching catch event.
-	//   * `GatewayNoMatch` — An exclusive gateway evaluated all conditions to false with no default flow.
-	//   * `TimerResolution` — A timer expression could not be parsed or resolved.
-	//   * `LinkNotFound` — A link throw event has no matching link catch.
-	//   * `MigrationError` — A process instance migration could not be applied.
-	//   * `Unknown` — Internal error not classified above.
+	//   * `BpmnError` - A `bpmn:error` thrown by the process or an external job worker.
+	//   * `EscalationError` - A `bpmn:escalation` raised by the process.
+	//   * `CompensationError` - Failure during compensation handler execution.
+	//   * `FeelError` - A FEEL expression failed to evaluate.
+	//   * `NoHandler` - A thrown error/escalation has no matching catch event.
+	//   * `GatewayNoMatch` - An exclusive gateway evaluated all conditions to false with no default flow.
+	//   * `TimerResolution` - A timer expression could not be parsed or resolved.
+	//   * `LinkNotFound` - A link throw event has no matching link catch.
+	//   * `MigrationError` - A process instance migration could not be applied.
+	//   * `SubscriptionError` - A message/signal listener's registry row could not be written; the listener is dead until resolved.
+	//   * `RotationLimitError` - The instance reached its ContinueAsNew rotation cap.
+	//   * `SnapshotSizeExceeded` - A ContinueAsNew snapshot exceeded the configured size cap.
+	//   * `CallActivityCanceled` - A call-activity child terminated as Canceled out-of-band.
+	//   * `ExternalRowRefreshError` - A migration could not rewrite a parked wait's external row (job, user task or subscription) against the target definition. Resolving re-runs the refresh.
+	//   * `Unknown` - Internal error not classified above.
 	ErrorType *BpmnIncidentErrorType `json:"errorType,omitempty"`
 
 	// ExecutionKey Execution key of the activity that failed.
@@ -232,8 +252,14 @@ type BpmnIncident struct {
 	// IncidentID Unique identifier of this incident.
 	IncidentID *string `json:"incidentID,omitempty"`
 
+	// MiIndex Zero-based multi-instance body index when the failure happened inside one iteration of a multi-instance activity. Absent otherwise.
+	MiIndex *int `json:"miIndex,omitempty"`
+
 	// NodeID ID of the BPMN node where the error occurred.
 	NodeID *string `json:"nodeID,omitempty"`
+
+	// ParentScopeID ID of the scope containing `scopeID`, empty for the root scope. Scope IDs are opaque, so this is how a client walks a failure back up the process tree.
+	ParentScopeID *string `json:"parentScopeID,omitempty"`
 
 	// ScopeID ID of the scope in which the error occurred.
 	ScopeID *string `json:"scopeID,omitempty"`
@@ -246,19 +272,24 @@ type BpmnIncident struct {
 }
 
 // BpmnIncidentErrorType Category of the error. Values:
-//   - `BpmnError` — A `bpmn:error` thrown by the process or an external job worker.
-//   - `EscalationError` — A `bpmn:escalation` raised by the process.
-//   - `CompensationError` — Failure during compensation handler execution.
-//   - `FeelError` — A FEEL expression failed to evaluate.
-//   - `NoHandler` — A thrown error/escalation has no matching catch event.
-//   - `GatewayNoMatch` — An exclusive gateway evaluated all conditions to false with no default flow.
-//   - `TimerResolution` — A timer expression could not be parsed or resolved.
-//   - `LinkNotFound` — A link throw event has no matching link catch.
-//   - `MigrationError` — A process instance migration could not be applied.
-//   - `Unknown` — Internal error not classified above.
+//   - `BpmnError` - A `bpmn:error` thrown by the process or an external job worker.
+//   - `EscalationError` - A `bpmn:escalation` raised by the process.
+//   - `CompensationError` - Failure during compensation handler execution.
+//   - `FeelError` - A FEEL expression failed to evaluate.
+//   - `NoHandler` - A thrown error/escalation has no matching catch event.
+//   - `GatewayNoMatch` - An exclusive gateway evaluated all conditions to false with no default flow.
+//   - `TimerResolution` - A timer expression could not be parsed or resolved.
+//   - `LinkNotFound` - A link throw event has no matching link catch.
+//   - `MigrationError` - A process instance migration could not be applied.
+//   - `SubscriptionError` - A message/signal listener's registry row could not be written; the listener is dead until resolved.
+//   - `RotationLimitError` - The instance reached its ContinueAsNew rotation cap.
+//   - `SnapshotSizeExceeded` - A ContinueAsNew snapshot exceeded the configured size cap.
+//   - `CallActivityCanceled` - A call-activity child terminated as Canceled out-of-band.
+//   - `ExternalRowRefreshError` - A migration could not rewrite a parked wait's external row (job, user task or subscription) against the target definition. Resolving re-runs the refresh.
+//   - `Unknown` - Internal error not classified above.
 type BpmnIncidentErrorType string
 
-// BpmnIncidentRecord A persisted incident — the cross-instance audit row that backs the
+// BpmnIncidentRecord A persisted incident - the cross-instance audit row that backs the
 // "Incidents" view. The same incident is also available in
 // `BpmnInstanceState.incidents` while it is still open in the engine; the
 // persisted row additionally carries `raisedAt` / `resolvedAt` /
@@ -274,7 +305,7 @@ type BpmnIncidentRecord struct {
 	// ErrorMessage Human-readable description of the error.
 	ErrorMessage string `json:"errorMessage"`
 
-	// ErrorType Category of the error — same enum as `BpmnIncident.errorType`.
+	// ErrorType Category of the error - same enum as `BpmnIncident.errorType`.
 	ErrorType BpmnIncidentRecordErrorType `json:"errorType"`
 
 	// ExecutionKey Execution key of the activity that failed.
@@ -286,8 +317,14 @@ type BpmnIncidentRecord struct {
 	// IncidentID Engine-assigned incident identifier, unique within the workflow.
 	IncidentID string `json:"incidentID"`
 
+	// MiIndex Zero-based multi-instance body index when the failure happened inside one iteration of a multi-instance activity. Absent otherwise.
+	MiIndex *int `json:"miIndex,omitempty"`
+
 	// NodeID ID of the BPMN node where the error occurred.
 	NodeID string `json:"nodeID"`
+
+	// ParentScopeID ID of the scope containing `scopeID`, empty for the root scope. Scope IDs are opaque, so this is how a client walks a failure back up the process tree.
+	ParentScopeID *string `json:"parentScopeID,omitempty"`
 
 	// ProcessID BPMN process ID of the parent definition. Convenience field; absent when definitionID is unresolved.
 	ProcessID *string `json:"processID,omitempty"`
@@ -311,7 +348,7 @@ type BpmnIncidentRecord struct {
 	WorkflowID string `json:"workflowID"`
 }
 
-// BpmnIncidentRecordErrorType Category of the error — same enum as `BpmnIncident.errorType`.
+// BpmnIncidentRecordErrorType Category of the error - same enum as `BpmnIncident.errorType`.
 type BpmnIncidentRecordErrorType string
 
 // BpmnIncidentRecordPaginatedResponse Page of persisted incidents.
@@ -336,7 +373,13 @@ type BpmnInstance struct {
 	// DefinitionID ID of the deployed BPMN process definition this instance is running.
 	DefinitionID openapi_types.UUID `json:"definitionID"`
 
-	// HasIncident True when at least one unresolved incident is currently attached to this instance. Computed at query time against the open-incidents index — useful for rendering a "needs attention" indicator in instance lists without paying for a per-row state fetch from the engine.
+	// DefinitionSuspended True when the process definition this instance runs is paused. Token
+	// dispatch stops while either scope is set, so an instance is
+	// effectively paused if this is true or `suspendedAt` is present. The
+	// two stay separate because resume acts on one scope at a time.
+	DefinitionSuspended *bool `json:"definitionSuspended,omitempty"`
+
+	// HasIncident True when at least one unresolved incident is currently attached to this instance. Computed at query time against the open-incidents index - useful for rendering a "needs attention" indicator in instance lists without paying for a per-row state fetch from the engine.
 	HasIncident *bool `json:"hasIncident,omitempty"`
 
 	// ParentWorkflowID Execution identifier of the parent instance that started this one via a CallActivity. Empty for top-level instances.
@@ -353,14 +396,13 @@ type BpmnInstance struct {
 
 	// SuspendedAt Timestamp at which this instance was paused at INSTANCE scope. Empty
 	// when not instance-suspended. The instance may still be effectively
-	// suspended via its definition — call `GetBpmnInstance` to read both
-	// scopes if you need the full picture.
+	// suspended via its definition - see `definitionSuspended`.
 	SuspendedAt *time.Time `json:"suspendedAt,omitempty"`
 
 	// SuspendedBy Operator who suspended this instance (instance scope). Empty when not instance-suspended.
 	SuspendedBy *string `json:"suspendedBy,omitempty"`
 
-	// WorkflowID Stable execution identifier for this instance. Use this to address the instance in all API calls — fetch state, send signals/messages, complete user tasks, list children, cancel, etc.
+	// WorkflowID Stable execution identifier for this instance. Use this to address the instance in all API calls - fetch state, send signals/messages, complete user tasks, list children, cancel, etc.
 	WorkflowID string `json:"workflowID"`
 }
 
@@ -389,7 +431,7 @@ type BpmnInstanceState struct {
 	BusinessId *string `json:"businessId,omitempty"`
 
 	// DefinitionSuspension Audit-shaped record of an active suspension at one scope (instance or
-	// definition). Returned inline on `BpmnInstanceState` — `null` when not
+	// definition). Returned inline on `BpmnInstanceState` - `null` when not
 	// suspended at that scope. An instance is "effectively suspended" if either
 	// scope's entry is present; the dispatcher pauses forward token dispatch
 	// while either flag is set.
@@ -405,7 +447,7 @@ type BpmnInstanceState struct {
 	Incidents *[]BpmnIncident `json:"incidents,omitempty"`
 
 	// InstanceSuspension Audit-shaped record of an active suspension at one scope (instance or
-	// definition). Returned inline on `BpmnInstanceState` — `null` when not
+	// definition). Returned inline on `BpmnInstanceState` - `null` when not
 	// suspended at that scope. An instance is "effectively suspended" if either
 	// scope's entry is present; the dispatcher pauses forward token dispatch
 	// while either flag is set.
@@ -450,6 +492,12 @@ type BpmnProcessDefinition struct {
 	// ResourceID Platform identifier of the owning BPMN resource.
 	ResourceID openapi_types.UUID `json:"resourceID"`
 
+	// SuspendReason Free-text reason captured at suspend time.
+	SuspendReason *string `json:"suspendReason,omitempty"`
+
+	// SuspendedAt Timestamp at which this process definition was paused. Empty when active.
+	SuspendedAt *time.Time `json:"suspendedAt,omitempty"`
+
 	// Version Process version. Auto-incremented per `processID` on deploy.
 	Version int `json:"version"`
 }
@@ -464,6 +512,12 @@ type BpmnProcessSummary struct {
 
 	// RunningCount Instances with status RUNNING across all versions.
 	RunningCount int `json:"runningCount"`
+
+	// SuspendedVersionCount How many versions of this process are paused. Zero means the process
+	// starts and dispatches normally; anything higher means at least one
+	// version rejects new instances. Filter the list with `suspended=true`
+	// to see only these.
+	SuspendedVersionCount *int `json:"suspendedVersionCount,omitempty"`
 
 	// TotalCount All instances across all versions.
 	TotalCount int `json:"totalCount"`
@@ -544,6 +598,11 @@ type BpmnResource struct {
 	// DeployedAt Timestamp when the resource was deployed. Empty for drafts.
 	DeployedAt *time.Time `json:"deployedAt,omitempty"`
 
+	// HasSuspendedDefinition True when at least one process definition inside this resource version
+	// is paused. Populated on list endpoints; absent on single-resource
+	// reads, where the per-process `suspendedAt` is the precise answer.
+	HasSuspendedDefinition *bool `json:"hasSuspendedDefinition,omitempty"`
+
 	// Id Platform identifier for this specific resource version.
 	Id openapi_types.UUID `json:"id"`
 
@@ -570,6 +629,11 @@ type BpmnResourceDetail struct {
 
 	// DeployedAt Timestamp when the resource was deployed. Empty for drafts.
 	DeployedAt *time.Time `json:"deployedAt,omitempty"`
+
+	// HasSuspendedDefinition True when at least one process definition inside this resource version
+	// is paused. Populated on list endpoints; absent on single-resource
+	// reads, where the per-process `suspendedAt` is the precise answer.
+	HasSuspendedDefinition *bool `json:"hasSuspendedDefinition,omitempty"`
 
 	// Id Platform identifier for this specific resource version.
 	Id openapi_types.UUID `json:"id"`
@@ -602,6 +666,11 @@ type BpmnResourceSummary struct {
 
 	// DefinitionsID Stable BPMN definitions identifier.
 	DefinitionsID string `json:"definitionsID"`
+
+	// HasSuspendedDefinition True when any version under this `definitionsID` contains a paused
+	// process definition - including older versions, since a pause on a
+	// superseded version is exactly what's hard to find otherwise.
+	HasSuspendedDefinition *bool `json:"hasSuspendedDefinition,omitempty"`
 
 	// IsDeployed Whether the latest version is deployed.
 	IsDeployed bool `json:"isDeployed"`
@@ -667,7 +736,7 @@ type CorrelationKeyString = string
 
 // CorrelationKeys Selects which subscription(s) receive a published message.
 //
-// The provided value — primitive (string, number, boolean) or object —
+// The provided value - primitive (string, number, boolean) or object -
 // is matched against the subscription's resolved correlation value.
 // Matching is type-sensitive (the number `123` does not match the
 // string `"123"`); for objects, the publisher's keys must be a
@@ -775,11 +844,11 @@ type ElementMapping struct {
 // Error A standard error response. The HTTP status code carries the broad category; `code` is the machine-readable identifier within that category.
 type Error struct {
 	// Code Machine-readable error category. Values:
-	//   * `BAD_REQUEST` — request is malformed or fails validation.
-	//   * `UNAUTHORIZED` — request lacks or has an invalid authentication token.
-	//   * `FORBIDDEN` — caller is authenticated but lacks permission, or has hit a quota.
-	//   * `NOT_FOUND` — the addressed resource does not exist.
-	//   * `INTERNAL_ERROR` — unexpected server-side failure.
+	//   * `BAD_REQUEST` - request is malformed or fails validation.
+	//   * `UNAUTHORIZED` - request lacks or has an invalid authentication token.
+	//   * `FORBIDDEN` - caller is authenticated but lacks permission, or has hit a quota.
+	//   * `NOT_FOUND` - the addressed resource does not exist.
+	//   * `INTERNAL_ERROR` - unexpected server-side failure.
 	Code ErrorCode `json:"code"`
 
 	// Details Optional structured context (e.g. the field that failed validation, the limit that was exceeded). Shape is per-error and not generally guaranteed.
@@ -790,11 +859,11 @@ type Error struct {
 }
 
 // ErrorCode Machine-readable error category. Values:
-//   - `BAD_REQUEST` — request is malformed or fails validation.
-//   - `UNAUTHORIZED` — request lacks or has an invalid authentication token.
-//   - `FORBIDDEN` — caller is authenticated but lacks permission, or has hit a quota.
-//   - `NOT_FOUND` — the addressed resource does not exist.
-//   - `INTERNAL_ERROR` — unexpected server-side failure.
+//   - `BAD_REQUEST` - request is malformed or fails validation.
+//   - `UNAUTHORIZED` - request lacks or has an invalid authentication token.
+//   - `FORBIDDEN` - caller is authenticated but lacks permission, or has hit a quota.
+//   - `NOT_FOUND` - the addressed resource does not exist.
+//   - `INTERNAL_ERROR` - unexpected server-side failure.
 type ErrorCode string
 
 // EvaluateStoredRequest Payload for evaluating a stored DMN definition.
@@ -833,10 +902,10 @@ type EvaluationResult struct {
 	Name *string `json:"name,omitempty"`
 
 	// Type Kind of DMN element that produced this result:
-	//   * `DECISION` — a decision node, the typical case.
-	//   * `DECISION_SERVICE` — a decision service that aggregates multiple decisions.
-	//   * `BKM` — a business knowledge model (reusable invocable logic).
-	//   * `INPUT_DATA` — an input variable, included for context, not evaluated.
+	//   * `DECISION` - a decision node, the typical case.
+	//   * `DECISION_SERVICE` - a decision service that aggregates multiple decisions.
+	//   * `BKM` - a business knowledge model (reusable invocable logic).
+	//   * `INPUT_DATA` - an input variable, included for context, not evaluated.
 	Type *EvaluationResultType `json:"type,omitempty"`
 
 	// Value A FEEL-typed value as it appears in DMN inputs and outputs. May be a number, string, boolean, list, or nested context.
@@ -844,10 +913,10 @@ type EvaluationResult struct {
 }
 
 // EvaluationResultType Kind of DMN element that produced this result:
-//   - `DECISION` — a decision node, the typical case.
-//   - `DECISION_SERVICE` — a decision service that aggregates multiple decisions.
-//   - `BKM` — a business knowledge model (reusable invocable logic).
-//   - `INPUT_DATA` — an input variable, included for context, not evaluated.
+//   - `DECISION` - a decision node, the typical case.
+//   - `DECISION_SERVICE` - a decision service that aggregates multiple decisions.
+//   - `BKM` - a business knowledge model (reusable invocable logic).
+//   - `INPUT_DATA` - an input variable, included for context, not evaluated.
 type EvaluationResultType string
 
 // Execution A single recorded DMN evaluation against a stored definition.
@@ -944,19 +1013,19 @@ type ExternalJobBatchResponse struct {
 		ExecutionKey string `json:"executionKey"`
 
 		// Status Outcome for this item:
-		//   * `completed` — the job was completed successfully.
-		//   * `failed` — the job exhausted its retries and surfaced as an incident.
-		//   * `requeued` — a retry budget remained, the job is back in PENDING.
-		//   * `error` — the per-item operation itself failed; the job's state is unchanged.
+		//   * `completed` - the job was completed successfully.
+		//   * `failed` - the job exhausted its retries and surfaced as an incident.
+		//   * `requeued` - a retry budget remained, the job is back in PENDING.
+		//   * `error` - the per-item operation itself failed; the job's state is unchanged.
 		Status ExternalJobBatchResponseResultsStatus `json:"status"`
 	} `json:"results"`
 }
 
 // ExternalJobBatchResponseResultsStatus Outcome for this item:
-//   - `completed` — the job was completed successfully.
-//   - `failed` — the job exhausted its retries and surfaced as an incident.
-//   - `requeued` — a retry budget remained, the job is back in PENDING.
-//   - `error` — the per-item operation itself failed; the job's state is unchanged.
+//   - `completed` - the job was completed successfully.
+//   - `failed` - the job exhausted its retries and surfaced as an incident.
+//   - `requeued` - a retry budget remained, the job is back in PENDING.
+//   - `error` - the per-item operation itself failed; the job's state is unchanged.
 type ExternalJobBatchResponseResultsStatus string
 
 // ExternalJobQueueDepthItem PENDING job count for a single task type.
@@ -979,7 +1048,7 @@ type FeelContext map[string]*FeelValue
 // FeelList FEEL list. Lists may contain mixed types.
 type FeelList = []FeelValue
 
-// FeelNumber FEEL number. Maps to a decimal value at runtime. Exact decimal semantics end-to-end — the Go types use json.Number so values are never narrowed through float64.
+// FeelNumber FEEL number. Maps to a decimal value at runtime. Exact decimal semantics end-to-end - the Go types use json.Number so values are never narrowed through float64.
 type FeelNumber = json.Number
 
 // FeelString FEEL string. Date, time, and duration values are also represented as strings using the FEEL textual forms (e.g. `"2026-01-31"`, `"PT1H"`).
@@ -1029,8 +1098,8 @@ type ModificationInstruction struct {
 	ScopeID *string `json:"scopeID,omitempty"`
 
 	// Type Kind of operation:
-	//   * `START_BEFORE_NODE` — activate `nodeID` in the given scope, optionally seeding `variables` first.
-	//   * `CANCEL_TOKEN` — cancel the active token at `nodeID` in the given scope.
+	//   * `START_BEFORE_NODE` - activate `nodeID` in the given scope, optionally seeding `variables` first.
+	//   * `CANCEL_TOKEN` - cancel the active token at `nodeID` in the given scope.
 	Type ModificationInstructionType `json:"type"`
 
 	// Variables Variables to inject into the scope for `START_BEFORE_NODE`.
@@ -1038,8 +1107,8 @@ type ModificationInstruction struct {
 }
 
 // ModificationInstructionType Kind of operation:
-//   - `START_BEFORE_NODE` — activate `nodeID` in the given scope, optionally seeding `variables` first.
-//   - `CANCEL_TOKEN` — cancel the active token at `nodeID` in the given scope.
+//   - `START_BEFORE_NODE` - activate `nodeID` in the given scope, optionally seeding `variables` first.
+//   - `CANCEL_TOKEN` - cancel the active token at `nodeID` in the given scope.
 type ModificationInstructionType string
 
 // ModifyBpmnInstanceRequest Payload for an ad-hoc modification of a running instance. Instructions are applied in order.
@@ -1155,7 +1224,7 @@ type SuspendBpmnInstanceRequest struct {
 }
 
 // SuspensionEntry Audit-shaped record of an active suspension at one scope (instance or
-// definition). Returned inline on `BpmnInstanceState` — `null` when not
+// definition). Returned inline on `BpmnInstanceState` - `null` when not
 // suspended at that scope. An instance is "effectively suspended" if either
 // scope's entry is present; the dispatcher pauses forward token dispatch
 // while either flag is set.
@@ -1183,7 +1252,7 @@ type UpdateDefinitionRequest struct {
 }
 
 // UpdateUserTaskAssignmentRequest Reassign a CREATED user task. All fields are optional but at least one
-// must be present. Fields are REPLACED atomically — pass the full set of
+// must be present. Fields are REPLACED atomically - pass the full set of
 // candidateUsers / candidateGroups you want stored, not a delta.
 type UpdateUserTaskAssignmentRequest struct {
 	// Assignee New assignee. Pass null to clear.
@@ -1245,7 +1314,7 @@ type UserTask struct {
 	// Status Lifecycle status of the task.
 	Status UserTaskStatus `json:"status"`
 
-	// TaskType BPMN element type — typically `UserTask` or `ManualTask`.
+	// TaskType BPMN element type - typically `UserTask` or `ManualTask`.
 	TaskType *string `json:"taskType,omitempty"`
 
 	// Variables Input variables resolved at activity entry. Available for rendering form defaults.
@@ -1306,7 +1375,7 @@ type ListBpmnExternalJobsParams struct {
 	BusinessId *string `form:"businessId,omitempty" json:"businessId,omitempty"`
 
 	// CreatedAfter Only return jobs created at or after this timestamp. Strongly
-	// recommended for monitoring views — completed-job records accumulate
+	// recommended for monitoring views - completed-job records accumulate
 	// indefinitely, and unfiltered queries grow linearly with that history.
 	CreatedAfter *time.Time `form:"createdAfter,omitempty" json:"createdAfter,omitempty"`
 	Page         *int       `form:"page,omitempty" json:"page,omitempty"`
@@ -1319,7 +1388,7 @@ type ListBpmnExternalJobsParamsStatus string
 // CompleteBpmnExternalJobsBatchJSONBody defines parameters for CompleteBpmnExternalJobsBatch.
 type CompleteBpmnExternalJobsBatchJSONBody struct {
 	// ClientID Optional worker identity (the same `clientID` used to poll)
-	// applied to every item in the batch — a batch is one worker's
+	// applied to every item in the batch - a batch is one worker's
 	// report. When supplied, an item is completed only if this
 	// worker still holds its lock; items re-acquired by a peer drop
 	// out silently. Omit for the legacy unchecked behavior.
@@ -1334,7 +1403,7 @@ type CompleteBpmnExternalJobsBatchJSONBody struct {
 // ThrowBpmnExternalJobErrorsBatchJSONBody defines parameters for ThrowBpmnExternalJobErrorsBatch.
 type ThrowBpmnExternalJobErrorsBatchJSONBody struct {
 	// ClientID Optional worker identity (the same `clientID` used to poll)
-	// applied to every item in the batch — a batch is one worker's
+	// applied to every item in the batch - a batch is one worker's
 	// report. When supplied, an item is requeued/failed only if this
 	// worker still holds its lock; items held by a peer are reported
 	// as an error and left untouched. Omit for the legacy unchecked
@@ -1410,7 +1479,7 @@ type ListBpmnIncidentsParams struct {
 	// DefinitionID Restrict to incidents on instances of a single process definition.
 	DefinitionID *openapi_types.UUID `form:"definitionID,omitempty" json:"definitionID,omitempty"`
 
-	// WorkflowID Restrict to incidents on a single instance — useful for an instance-detail "all incidents ever raised here" view that includes resolved rows.
+	// WorkflowID Restrict to incidents on a single instance - useful for an instance-detail "all incidents ever raised here" view that includes resolved rows.
 	WorkflowID *string `form:"workflowID,omitempty" json:"workflowID,omitempty"`
 
 	// Status Filter by lifecycle status. `open` returns unresolved incidents;
@@ -1446,15 +1515,16 @@ type ListBpmnInstancesParams struct {
 	// `false` to exclude blocked instances.
 	HasIncident *bool `form:"hasIncident,omitempty" json:"hasIncident,omitempty"`
 
-	// Suspended Filter by instance-scope suspension. `true` → only instances with
-	// `suspendedAt` set; `false` → only running-and-not-paused. Omit for
-	// no filter. Does not consider definition-scope suspension; for a
-	// full "is this instance making progress?" view, callers should
-	// additionally join against the parent definition.
+	// Suspended Filter by effective suspension - either scope counts. `true` → only
+	// instances paused at instance scope (`suspendedAt` set) or whose
+	// definition is paused (`definitionSuspended`); `false` → only
+	// instances paused at neither scope. Omit for no filter. Read those
+	// two row fields to tell the scopes apart; resume acts on one scope
+	// at a time.
 	Suspended *bool `form:"suspended,omitempty" json:"suspended,omitempty"`
 
 	// CreatedAfter Only return instances created at or after this timestamp. Strongly
-	// recommended for monitoring views — terminal-state instance rows
+	// recommended for monitoring views - terminal-state instance rows
 	// accumulate indefinitely, and unfiltered queries grow linearly with
 	// that history.
 	CreatedAfter *time.Time `form:"createdAfter,omitempty" json:"createdAfter,omitempty"`
@@ -1492,7 +1562,7 @@ type UpdateBpmnInstanceVariablesJSONBody struct {
 type PublishBpmnMessageJSONBody struct {
 	// CorrelationKeys Selects which subscription(s) receive a published message.
 	//
-	// The provided value — primitive (string, number, boolean) or object —
+	// The provided value - primitive (string, number, boolean) or object -
 	// is matched against the subscription's resolved correlation value.
 	// Matching is type-sensitive (the number `123` does not match the
 	// string `"123"`); for objects, the publisher's keys must be a
@@ -1525,11 +1595,17 @@ type ListBpmnProcessesParams struct {
 	Q *string `form:"q,omitempty" json:"q,omitempty"`
 
 	// CreatedAfter Bounds the totalCount aggregate to instances created at or after this
-	// timestamp. Strongly recommended for monitoring views — instance
+	// timestamp. Strongly recommended for monitoring views - instance
 	// history accumulates indefinitely and unfiltered totals scan the full
 	// table per definition. runningCount ignores this filter (it is always
 	// point-in-time).
 	CreatedAfter *time.Time `form:"createdAfter,omitempty" json:"createdAfter,omitempty"`
+
+	// Suspended Filter by paused versions. `true` → only processes with at least one
+	// paused version; `false` → only processes with none. Omit for no
+	// filter. This is the cross-process answer to "which definitions are
+	// paused?"; `suspendedVersionCount` on each row says how many.
+	Suspended *bool `form:"suspended,omitempty" json:"suspended,omitempty"`
 }
 
 // ListBpmnProcessVersionsParams defines parameters for ListBpmnProcessVersions.
@@ -1541,6 +1617,10 @@ type ListBpmnProcessVersionsParams struct {
 	// timestamp. See ListBpmnProcesses for rationale. runningCount ignores
 	// this filter.
 	CreatedAfter *time.Time `form:"createdAfter,omitempty" json:"createdAfter,omitempty"`
+
+	// Suspended Filter by definition-scope suspension. `true` → only paused versions;
+	// `false` → only active ones. Omit for no filter.
+	Suspended *bool `form:"suspended,omitempty" json:"suspended,omitempty"`
 }
 
 // ListBpmnResourcesParams defines parameters for ListBpmnResources.
@@ -1687,6 +1767,9 @@ type ListProjectExecutionsParams struct {
 
 	// BusinessId Exact-match filter on the caller-supplied correlation key.
 	BusinessId *string `form:"businessId,omitempty" json:"businessId,omitempty"`
+
+	// StartDate Only return executions at or after this instant (ISO 8601). Bounds the scan and the reported total; omit for the full unbounded history.
+	StartDate *time.Time `form:"startDate,omitempty" json:"startDate,omitempty"`
 
 	// Page Page number (1-indexed)
 	Page *int `form:"page,omitempty" json:"page,omitempty"`
@@ -5574,6 +5657,22 @@ func NewListBpmnProcessesRequest(server string, projectID openapi_types.UUID, pa
 
 		}
 
+		if params.Suspended != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "suspended", runtime.ParamLocationQuery, *params.Suspended); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
 		queryURL.RawQuery = queryValues.Encode()
 	}
 
@@ -5656,6 +5755,22 @@ func NewListBpmnProcessVersionsRequest(server string, projectID openapi_types.UU
 		if params.CreatedAfter != nil {
 
 			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "createdAfter", runtime.ParamLocationQuery, *params.CreatedAfter); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Suspended != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "suspended", runtime.ParamLocationQuery, *params.Suspended); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -7580,6 +7695,22 @@ func NewListProjectExecutionsRequest(server string, projectID openapi_types.UUID
 		if params.BusinessId != nil {
 
 			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "businessId", runtime.ParamLocationQuery, *params.BusinessId); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.StartDate != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "startDate", runtime.ParamLocationQuery, *params.StartDate); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err

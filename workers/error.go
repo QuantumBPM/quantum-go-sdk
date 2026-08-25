@@ -8,7 +8,7 @@ import (
 
 // BpmnError is a typed error a handler can return to fail a job with a BPMN
 // error code. The runtime translates it into a ThrowError call against the
-// originating service task — matching boundary error events on the task can
+// originating service task - matching boundary error events on the task can
 // then route the exception in the model.
 //
 // Variables, when provided, are merged into the instance scope as part of

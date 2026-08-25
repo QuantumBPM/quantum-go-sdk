@@ -1,4 +1,5 @@
-// Package quantumbpm is the top-level entry point of the QuantumBPM Go SDK.
+// Package quantumbpm is the Go SDK for QuantumBPM: BPMN 2.0 workflow
+// orchestration, DMN 1.5 decision evaluation with FEEL, and external job workers.
 //
 // Construct a Client with quantumbpm.New, then reach the per-domain
 // sub-clients via .DMN and .BPMN. To run external job workers, call

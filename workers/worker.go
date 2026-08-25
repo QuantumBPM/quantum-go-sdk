@@ -301,7 +301,7 @@ func (w *Worker) dispatch(parent context.Context, r *registration, job *generate
 	ctx, cancel := context.WithCancel(spanCtx)
 	defer cancel()
 
-	// Heartbeat goroutine — refresh the lock at lockDuration/heartbeatRatio.
+	// Heartbeat goroutine - refresh the lock at lockDuration/heartbeatRatio.
 	go w.heartbeat(ctx, r, job)
 
 	wrapped := &Job{

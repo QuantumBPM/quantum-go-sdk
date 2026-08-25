@@ -116,7 +116,7 @@ func (c *Client) GetUserTask(ctx context.Context, executionKey string) (*UserTas
 }
 
 // UpdateUserTaskAssignment reassigns or modifies the candidate set for a
-// CREATED user task. Pass the full body — fields are replaced atomically.
+// CREATED user task. Pass the full body - fields are replaced atomically.
 func (c *Client) UpdateUserTaskAssignment(ctx context.Context, executionKey string, body UpdateAssignmentBody) (*UserTask, error) {
 	resp, err := c.api.UpdateBpmnUserTaskAssignmentWithResponse(ctx, c.projectID, executionKey, body)
 	if err != nil {
