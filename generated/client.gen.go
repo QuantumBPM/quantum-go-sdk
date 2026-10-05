@@ -81,6 +81,12 @@ const (
 	UNAUTHORIZED  ErrorCode = "UNAUTHORIZED"
 )
 
+// Defines values for ErrorMode.
+const (
+	Lenient ErrorMode = "lenient"
+	Strict  ErrorMode = "strict"
+)
+
 // Defines values for EvaluationResultType.
 const (
 	BKM             EvaluationResultType = "BKM"
@@ -191,6 +197,16 @@ type ActiveScope struct {
 
 // BatchEvaluateDesignRequest Payload for batch evaluating ad-hoc DMN XML against multiple input rows.
 type BatchEvaluateDesignRequest struct {
+	// ErrorMode How the evaluation reacts to FEEL errors and failing decisions (DMN 1.5, section 7.3.8):
+	//   * `strict` - the evaluation stops at the first error and the call reports it, with the
+	//     line and column where the failing part of the expression starts.
+	//   * `lenient` - a FEEL runtime error such as `string length(null)` makes only that part of
+	//     the expression `null` and is listed in the `warnings` of the decision's result. A
+	//     decision that still fails evaluates to `null` and carries its message in the `error`
+	//     field of its own result, while the decisions around it keep evaluating.
+	// Omit it to use the mode the server is configured with.
+	ErrorMode *ErrorMode `json:"errorMode,omitempty"`
+
 	// Inputs One input context per row to evaluate. At most 500 rows per request.
 	Inputs *[]FeelContext `json:"inputs,omitempty"`
 
@@ -332,6 +348,9 @@ type BpmnIncidentRecord struct {
 	// ProcessName Human-readable name of the parent process definition.
 	ProcessName *string `json:"processName,omitempty"`
 
+	// ProcessVersion Version of that process definition. With `processID` it addresses the exact version the incident was raised on.
+	ProcessVersion *int `json:"processVersion,omitempty"`
+
 	// RaisedAt Timestamp when the engine recorded the incident.
 	RaisedAt time.Time `json:"raisedAt"`
 
@@ -384,6 +403,15 @@ type BpmnInstance struct {
 
 	// ParentWorkflowID Execution identifier of the parent instance that started this one via a CallActivity. Empty for top-level instances.
 	ParentWorkflowID *string `json:"parentWorkflowID,omitempty"`
+
+	// ProcessId BPMN process ID of the definition this instance was started from. Together with `processVersion` it addresses the version, which `definitionID` alone does not.
+	ProcessId *string `json:"processId,omitempty"`
+
+	// ProcessName Human-readable name of that process definition.
+	ProcessName *string `json:"processName,omitempty"`
+
+	// ProcessVersion Version of the process definition this instance was started from.
+	ProcessVersion *int `json:"processVersion,omitempty"`
 
 	// StartedBy User or service account that initiated the instance.
 	StartedBy *string `json:"startedBy,omitempty"`
@@ -866,6 +894,17 @@ type Error struct {
 //   - `INTERNAL_ERROR` - unexpected server-side failure.
 type ErrorCode string
 
+// ErrorMode How the evaluation reacts to FEEL errors and failing decisions (DMN 1.5, section 7.3.8):
+//   - `strict` - the evaluation stops at the first error and the call reports it, with the
+//     line and column where the failing part of the expression starts.
+//   - `lenient` - a FEEL runtime error such as `string length(null)` makes only that part of
+//     the expression `null` and is listed in the `warnings` of the decision's result. A
+//     decision that still fails evaluates to `null` and carries its message in the `error`
+//     field of its own result, while the decisions around it keep evaluating.
+//
+// Omit it to use the mode the server is configured with.
+type ErrorMode string
+
 // EvaluateStoredRequest Payload for evaluating a stored DMN definition.
 type EvaluateStoredRequest struct {
 	// BusinessId Optional caller-supplied correlation key persisted with the resulting execution row for cross-system tracing.
@@ -879,6 +918,16 @@ type EvaluateStoredRequest struct {
 
 	// Decisions Names of decisions or decision services to evaluate. If empty, all decisions are evaluated.
 	Decisions *[]string `json:"decisions,omitempty"`
+
+	// ErrorMode How the evaluation reacts to FEEL errors and failing decisions (DMN 1.5, section 7.3.8):
+	//   * `strict` - the evaluation stops at the first error and the call reports it, with the
+	//     line and column where the failing part of the expression starts.
+	//   * `lenient` - a FEEL runtime error such as `string length(null)` makes only that part of
+	//     the expression `null` and is listed in the `warnings` of the decision's result. A
+	//     decision that still fails evaluates to `null` and carries its message in the `error`
+	//     field of its own result, while the decisions around it keep evaluating.
+	// Omit it to use the mode the server is configured with.
+	ErrorMode *ErrorMode `json:"errorMode,omitempty"`
 
 	// Version Specific definition version to evaluate. Defaults to the latest version.
 	Version *int `json:"version,omitempty"`
@@ -910,6 +959,9 @@ type EvaluationResult struct {
 
 	// Value A FEEL-typed value as it appears in DMN inputs and outputs. May be a number, string, boolean, list, or nested context.
 	Value *FeelValue `json:"value"`
+
+	// Warnings FEEL runtime errors that lenient mode replaced with `null` while this decision was evaluated. Absent when there were none.
+	Warnings *[]FeelWarning `json:"warnings,omitempty"`
 }
 
 // EvaluationResultType Kind of DMN element that produced this result:
@@ -1059,6 +1111,18 @@ type FeelValue struct {
 	union json.RawMessage
 }
 
+// FeelWarning A FEEL runtime error that lenient mode replaced with `null`.
+type FeelWarning struct {
+	// Column Column in the expression where the failing part starts. Absent when unknown.
+	Column *int `json:"column,omitempty"`
+
+	// Line Line in the expression where the failing part starts. Absent when unknown.
+	Line *int `json:"line,omitempty"`
+
+	// Message What failed, for example `string length: argument cannot be null`.
+	Message string `json:"message"`
+}
+
 // HitRule A single rule that matched during decision-table evaluation.
 type HitRule struct {
 	// Outputs A FEEL-typed value as it appears in DMN inputs and outputs. May be a number, string, boolean, list, or nested context.
@@ -1094,7 +1158,7 @@ type ModificationInstruction struct {
 	// NodeID BPMN flow node id the instruction targets.
 	NodeID string `json:"nodeID"`
 
-	// ScopeID Scope to apply the instruction in. Empty applies to the root process scope.
+	// ScopeID Scope to apply the instruction in, as reported by the instance's active scopes. Empty applies to the root process scope, for both instruction types. A scope that is not live on the instance is rejected with a 400.
 	ScopeID *string `json:"scopeID,omitempty"`
 
 	// Type Kind of operation:
@@ -1239,15 +1303,15 @@ type SuspensionEntry struct {
 	SuspendedBy *string `json:"suspendedBy,omitempty"`
 }
 
-// UpdateDefinitionRequest Payload for updating metadata on an existing definition version.
+// UpdateDefinitionRequest Payload for updating an existing definition version.
 type UpdateDefinitionRequest struct {
 	// Name New display name.
 	Name *string `json:"name,omitempty"`
 
-	// Version Optional explicit version override. Generally not used during update.
+	// Version Omit to overwrite the version in place. 0 stores the change as the next version instead.
 	Version *int `json:"version,omitempty"`
 
-	// Xml Replacement XML. The `definitionsID` and `version` from the original are preserved.
+	// Xml Replacement XML. The `definitionsID` is read from its `<definitions id>`, falling back to the original.
 	Xml *string `json:"xml,omitempty"`
 }
 
@@ -1339,6 +1403,9 @@ type BadRequest = Error
 // InternalError A standard error response. The HTTP status code carries the broad category; `code` is the machine-readable identifier within that category.
 type InternalError = Error
 
+// NotFound A standard error response. The HTTP status code carries the broad category; `code` is the machine-readable identifier within that category.
+type NotFound = Error
+
 // Unauthorized A standard error response. The HTTP status code carries the broad category; `code` is the machine-readable identifier within that category.
 type Unauthorized = Error
 
@@ -1355,6 +1422,16 @@ type EvaluateDesignJSONBody struct {
 
 	// Decisions Names of decisions or decision services to evaluate. If empty, all decisions in the document are evaluated.
 	Decisions *[]string `json:"decisions,omitempty"`
+
+	// ErrorMode How the evaluation reacts to FEEL errors and failing decisions (DMN 1.5, section 7.3.8):
+	//   * `strict` - the evaluation stops at the first error and the call reports it, with the
+	//     line and column where the failing part of the expression starts.
+	//   * `lenient` - a FEEL runtime error such as `string length(null)` makes only that part of
+	//     the expression `null` and is listed in the `warnings` of the decision's result. A
+	//     decision that still fails evaluates to `null` and carries its message in the `error`
+	//     field of its own result, while the decisions around it keep evaluating.
+	// Omit it to use the mode the server is configured with.
+	ErrorMode *ErrorMode `json:"errorMode,omitempty"`
 
 	// Xml DMN XML to evaluate.
 	Xml string `json:"xml"`
@@ -8750,6 +8827,8 @@ func (r ValidateBpmnInstanceMigrationResponse) StatusCode() int {
 type ModifyBpmnInstanceResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON400      *BadRequest
+	JSON404      *NotFound
 }
 
 // Status returns HTTPResponse.Status
@@ -11265,6 +11344,23 @@ func ParseModifyBpmnInstanceResponse(rsp *http.Response) (*ModifyBpmnInstanceRes
 	response := &ModifyBpmnInstanceResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
 	}
 
 	return response, nil
