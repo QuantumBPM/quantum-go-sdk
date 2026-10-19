@@ -235,14 +235,15 @@ worker.Handle("send-email", func(ctx context.Context, j *workers.Job) (variables
     return variables.New().Set("messageID", "msg-123"), nil  // → Complete
 })
 
-ctx, cancel := context.WithCancel(context.Background())
-defer cancel()
+// Cancel ctx on Ctrl+C and on SIGTERM (sent by Kubernetes and Docker on stop).
+ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+defer stop()
 if err := worker.Run(ctx); err != nil {
     log.Fatal(err)
 }
 ```
 
-`Run` blocks until `ctx` is cancelled. In-flight handlers are allowed to finish before it returns.
+`Run` blocks until `ctx` is cancelled, then shuts down gracefully (see [Locks, heartbeats, and shutdown](#locks-heartbeats-and-shutdown)).
 
 ### Concurrency, polling, and locks
 
@@ -255,6 +256,27 @@ worker.Handle("send-email", handler,
 ```
 
 Concurrency is per task type. Different task types run in independent goroutine pools. The runtime auto-renews the lock at half the lock-duration interval while the handler runs.
+
+### Locks, heartbeats, and shutdown
+
+A polled job is locked to the worker's `ClientID`. Each heartbeat extends the lock by the lock duration, and the server caps one attempt at 30 minutes by default (`BPMN_JOB_MAX_HOLD`). If the lock runs out (missed heartbeats, the cap, or a crashed worker), the server charges the job a retry and offers it again, or raises an incident when no retries are left. So abandoning a running job always costs a retry.
+
+When a heartbeat answers that the worker no longer holds the job, the runtime stops heartbeating it, cancels the handler's `ctx` and drops its result. Handlers doing long work should watch `ctx.Done()`.
+
+Cancelling the `ctx` passed to `Run` starts a graceful shutdown:
+
+1. Polling stops at once, including a long-poll in progress. The worker only ever polls for free slots, so it holds no job it is not running.
+2. Running handlers keep going. Their `ctx` stays alive, heartbeats continue, and their results are reported.
+3. After the shutdown timeout (default 20s), handlers still running are cancelled and not reported, and `Run` returns. Their locks run out on the server, which costs each of them a retry.
+
+```go
+worker := client.NewWorker(workers.Config{
+    ClientID:        "billing-svc",
+    ShutdownTimeout: 45 * time.Second,
+})
+```
+
+On Kubernetes, set the pod's `terminationGracePeriodSeconds` above the shutdown timeout, so the pod is not killed before `Run` returns. The Kubernetes default of 30s covers the 20s default.
 
 ### Throwing typed BPMN errors
 

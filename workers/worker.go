@@ -11,6 +11,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"sync"
 	"time"
@@ -30,6 +31,7 @@ const (
 	defaultPollTimeout          = 30 * time.Second
 	defaultLockDuration         = 30 * time.Second
 	defaultMaxErrorMessageBytes = 2048
+	defaultShutdownTimeout      = 20 * time.Second
 	heartbeatRatio              = 2 // heartbeat at lockDuration/heartbeatRatio
 	pollErrorBackoff            = 2 * time.Second
 )
@@ -95,6 +97,7 @@ type Worker struct {
 	clientID             string
 	logger               *log.Logger
 	maxErrorMessageBytes int
+	shutdownTimeout      time.Duration
 
 	mu            sync.Mutex
 	registrations map[string]*registration
@@ -113,6 +116,10 @@ type Config struct {
 	// WORKER_ERROR message attached when a handler returns a non-BpmnError.
 	// Zero falls back to 2048. User-thrown BpmnError variables are not clamped.
 	MaxErrorMessageBytes int
+	// ShutdownTimeout bounds how long Run waits for running handlers after its
+	// ctx is cancelled. Handlers still running then are cancelled and not
+	// reported, so their locks run out on the server. Zero falls back to 20s.
+	ShutdownTimeout time.Duration
 }
 
 // New constructs a Worker bound to projectID. api should be an authenticated
@@ -131,12 +138,17 @@ func New(api *generated.ClientWithResponses, projectID openapi_types.UUID, cfg C
 	if maxErrMsg <= 0 {
 		maxErrMsg = defaultMaxErrorMessageBytes
 	}
+	shutdownTimeout := cfg.ShutdownTimeout
+	if shutdownTimeout <= 0 {
+		shutdownTimeout = defaultShutdownTimeout
+	}
 	return &Worker{
 		api:                  api,
 		projectID:            projectID,
 		clientID:             clientID,
 		logger:               logger,
 		maxErrorMessageBytes: maxErrMsg,
+		shutdownTimeout:      shutdownTimeout,
 		registrations:        make(map[string]*registration),
 	}
 }
@@ -176,12 +188,10 @@ func HandleTyped[T any](w *Worker, taskType string, handler func(ctx context.Con
 	}, opts...)
 }
 
-// Run starts the polling loops and blocks until ctx is cancelled. Each
-// registered task type is polled in its own goroutine; jobs are dispatched
-// concurrently per task type up to maxJobs.
-//
-// Returns nil when ctx is cancelled (graceful shutdown after in-flight jobs
-// finish), or an error if Run is invoked with no registered handlers.
+// Run polls each registered task type in its own goroutine until ctx is
+// cancelled. It then stops polling and waits up to Config.ShutdownTimeout for
+// running jobs to finish and report. Returns nil after shutdown, or an error
+// if no handlers are registered.
 func (w *Worker) Run(ctx context.Context) error {
 	w.mu.Lock()
 	regs := make([]*registration, 0, len(w.registrations))
@@ -206,32 +216,35 @@ func (w *Worker) Run(ctx context.Context) error {
 	return nil
 }
 
-// runTaskType is the per-task-type long-poll loop.
+// runTaskType is the per-task-type long-poll loop. Cancelling ctx stops
+// polling at once, then the loop waits for running jobs (see awaitJobs).
 func (w *Worker) runTaskType(ctx context.Context, r *registration) {
+	// Jobs run detached from ctx so they can finish during shutdown.
+	// cancelJobs stops the ones still running when the shutdown timeout passes.
+	jobsCtx, cancelJobs := context.WithCancel(context.WithoutCancel(ctx))
+	defer cancelJobs()
+
 	sem := make(chan struct{}, r.opts.maxJobs)
 	var inflight sync.WaitGroup
 
-	for {
-		if ctx.Err() != nil {
-			break
-		}
-
-		// Bound the next poll to maxJobs - currently in-flight. Acquire one
-		// slot before polling so we never carry more leases than the cap.
-		select {
-		case sem <- struct{}{}:
-		case <-ctx.Done():
+	for ctx.Err() == nil {
+		free := acquireSlots(ctx, sem)
+		if free == 0 {
 			break
 		}
 
 		// Use a poll timeout slightly larger than the configured one so the
 		// HTTP context doesn't fire before the server's 204.
 		pollCtx, cancel := context.WithTimeout(ctx, r.opts.pollTimeout+10*time.Second)
-		jobs, err := w.poll(pollCtx, r)
+		jobs, err := w.poll(pollCtx, r, free)
 		cancel()
 
-		if err != nil {
+		// Give back the slots the poll did not fill.
+		for range free - len(jobs) {
 			<-sem
+		}
+
+		if err != nil {
 			if ctx.Err() != nil {
 				break
 			}
@@ -243,38 +256,61 @@ func (w *Worker) runTaskType(ctx context.Context, r *registration) {
 			continue
 		}
 
-		if len(jobs) == 0 {
-			<-sem
-			continue
-		}
-
-		// First job uses the slot already acquired; remaining jobs each
-		// acquire their own.
-		for i, job := range jobs {
-			if i > 0 {
-				select {
-				case sem <- struct{}{}:
-				case <-ctx.Done():
-					return
-				}
-			}
+		for _, job := range jobs {
 			inflight.Add(1)
 			go func(j generated.ExternalJob) {
 				defer inflight.Done()
 				defer func() { <-sem }()
-				w.dispatch(ctx, r, &j)
+				w.dispatch(jobsCtx, r, &j)
 			}(job)
 		}
 	}
 
-	inflight.Wait()
+	w.awaitJobs(r, &inflight, cancelJobs)
 }
 
-// poll executes one long-poll. Returns nil, nil on 204.
-func (w *Worker) poll(ctx context.Context, r *registration) ([]generated.ExternalJob, error) {
+// acquireSlots blocks until one job slot is free, then also takes every other
+// free slot without blocking. Returns the number taken, or 0 if ctx ends first.
+func acquireSlots(ctx context.Context, sem chan struct{}) int {
+	select {
+	case sem <- struct{}{}:
+	case <-ctx.Done():
+		return 0
+	}
+	n := 1
+	for n < cap(sem) {
+		select {
+		case sem <- struct{}{}:
+			n++
+		default:
+			return n
+		}
+	}
+	return n
+}
+
+// awaitJobs waits for the running jobs once polling has stopped. After the
+// shutdown timeout it cancels the jobs still running and returns without them.
+func (w *Worker) awaitJobs(r *registration, inflight *sync.WaitGroup, cancelJobs context.CancelFunc) {
+	done := make(chan struct{})
+	go func() {
+		inflight.Wait()
+		close(done)
+	}()
+	t := time.NewTimer(w.shutdownTimeout)
+	defer t.Stop()
+	select {
+	case <-done:
+	case <-t.C:
+		cancelJobs()
+		w.logger.Printf("WARN shutdown %s: running jobs abandoned after %s, their locks run out on the server", r.taskType, w.shutdownTimeout)
+	}
+}
+
+// poll executes one long-poll for up to maxJobs jobs. Returns nil, nil on 204.
+func (w *Worker) poll(ctx context.Context, r *registration, maxJobs int) ([]generated.ExternalJob, error) {
 	timeoutStr := r.opts.pollTimeout.String()
 	lockStr := r.opts.lockDuration.String()
-	maxJobs := r.opts.maxJobs
 
 	resp, err := w.api.PollBpmnExternalJobsWithResponse(ctx, w.projectID, generated.PollBpmnExternalJobsJSONRequestBody{
 		ClientID:     w.clientID,
@@ -286,14 +322,18 @@ func (w *Worker) poll(ctx context.Context, r *registration) ([]generated.Externa
 	if err != nil {
 		return nil, err
 	}
-	if resp.StatusCode() == 204 || resp.JSON200 == nil {
+	if resp.StatusCode() == http.StatusNoContent {
 		return nil, nil
+	}
+	if resp.JSON200 == nil {
+		return nil, fmt.Errorf("status %d", resp.StatusCode())
 	}
 	return *resp.JSON200, nil
 }
 
 // dispatch runs the handler for one job, sending Heartbeats and finalizing
-// with Complete or ThrowError.
+// with Complete or ThrowError. The handler's ctx ends only when the lock is
+// lost or the shutdown timeout passes, and then the job is not reported.
 func (w *Worker) dispatch(parent context.Context, r *registration, job *generated.ExternalJob) {
 	spanCtx, span := startJobSpan(parent, job)
 	defer span.End()
@@ -302,7 +342,12 @@ func (w *Worker) dispatch(parent context.Context, r *registration, job *generate
 	defer cancel()
 
 	// Heartbeat goroutine - refresh the lock at lockDuration/heartbeatRatio.
-	go w.heartbeat(ctx, r, job)
+	hbCtx, stopHeartbeat := context.WithCancel(ctx)
+	hbDone := make(chan struct{})
+	go func() {
+		defer close(hbDone)
+		w.heartbeat(hbCtx, r, job, cancel)
+	}()
 
 	wrapped := &Job{
 		ExternalJob: job,
@@ -312,8 +357,16 @@ func (w *Worker) dispatch(parent context.Context, r *registration, job *generate
 	resultVars, err := w.safeRun(ctx, r.handler, wrapped)
 
 	// Stop heartbeating before finalizing so we don't race with the terminal call.
-	cancel()
+	stopHeartbeat()
+	<-hbDone
 
+	if ctx.Err() != nil {
+		span.SetStatus(codes.Error, "job abandoned: lock lost or shutdown timeout")
+		return
+	}
+
+	// spanCtx is detached from Run's ctx, so results are still reported
+	// during shutdown. Only the shutdown timeout cancels it.
 	finalCtx, finalCancel := context.WithTimeout(spanCtx, 15*time.Second)
 	defer finalCancel()
 
@@ -370,8 +423,9 @@ func (w *Worker) safeRun(ctx context.Context, h Handler, job *Job) (out variable
 	return h(ctx, job)
 }
 
-// heartbeat refreshes the job lock until ctx is cancelled.
-func (w *Worker) heartbeat(ctx context.Context, r *registration, job *generated.ExternalJob) {
+// heartbeat refreshes the job lock until ctx is cancelled. When the server
+// answers that this worker no longer holds the job, it calls lockLost and stops.
+func (w *Worker) heartbeat(ctx context.Context, r *registration, job *generated.ExternalJob, lockLost context.CancelFunc) {
 	interval := r.opts.lockDuration / heartbeatRatio
 	if interval < time.Second {
 		interval = time.Second
@@ -385,14 +439,23 @@ func (w *Worker) heartbeat(ctx context.Context, r *registration, job *generated.
 		case <-ctx.Done():
 			return
 		case <-t.C:
-			hbCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-			_, err := w.api.HeartbeatBpmnExternalJobWithResponse(hbCtx, w.projectID, job.ExecutionKey, generated.HeartbeatBpmnExternalJobJSONRequestBody{
+			reqCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
+			resp, err := w.api.HeartbeatBpmnExternalJobWithResponse(reqCtx, w.projectID, job.ExecutionKey, generated.HeartbeatBpmnExternalJobJSONRequestBody{
 				ClientID:     w.clientID,
 				LockDuration: &lockStr,
 			})
 			cancel()
-			if err != nil {
+			switch {
+			case ctx.Err() != nil:
+				return
+			case err != nil:
 				w.logger.Printf("heartbeat %s: %v", job.ExecutionKey, err)
+			case resp.StatusCode() == http.StatusConflict || resp.StatusCode() == http.StatusNotFound:
+				w.logger.Printf("WARN heartbeat %s: lock lost (status %d), handler cancelled and result discarded", job.ExecutionKey, resp.StatusCode())
+				lockLost()
+				return
+			case resp.StatusCode() < 200 || resp.StatusCode() >= 300:
+				w.logger.Printf("heartbeat %s: status %d", job.ExecutionKey, resp.StatusCode())
 			}
 		}
 	}
@@ -408,8 +471,17 @@ func (w *Worker) complete(ctx context.Context, job *generated.ExternalJob, vars 
 		w.logger.Printf("complete %s: %v", job.ExecutionKey, err)
 		return
 	}
-	if resp.StatusCode() < 200 || resp.StatusCode() >= 300 {
-		w.logger.Printf("complete %s: status %d", job.ExecutionKey, resp.StatusCode())
+	w.logReportStatus("complete", job, resp.StatusCode())
+}
+
+// logReportStatus logs a non-2xx answer to complete or throw-error. A 409
+// means this worker no longer holds the lock and the server dropped the result.
+func (w *Worker) logReportStatus(op string, job *generated.ExternalJob, status int) {
+	switch {
+	case status == http.StatusConflict:
+		w.logger.Printf("WARN %s %s: lock lost, result discarded", op, job.ExecutionKey)
+	case status < 200 || status >= 300:
+		w.logger.Printf("%s %s: status %d", op, job.ExecutionKey, status)
 	}
 }
 
@@ -424,9 +496,7 @@ func (w *Worker) throwError(ctx context.Context, job *generated.ExternalJob, cod
 		w.logger.Printf("throw-error %s: %v", job.ExecutionKey, err)
 		return
 	}
-	if resp.StatusCode() < 200 || resp.StatusCode() >= 300 {
-		w.logger.Printf("throw-error %s: status %d", job.ExecutionKey, resp.StatusCode())
-	}
+	w.logReportStatus("throw-error", job, resp.StatusCode())
 }
 
 func isBpmnError(err error) bool {
