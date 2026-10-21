@@ -23,10 +23,12 @@ const (
 	BpmnIncidentErrorTypeBpmnError               BpmnIncidentErrorType = "BpmnError"
 	BpmnIncidentErrorTypeCallActivityCanceled    BpmnIncidentErrorType = "CallActivityCanceled"
 	BpmnIncidentErrorTypeCompensationError       BpmnIncidentErrorType = "CompensationError"
+	BpmnIncidentErrorTypeDecisionNotFound        BpmnIncidentErrorType = "DecisionNotFound"
 	BpmnIncidentErrorTypeEscalationError         BpmnIncidentErrorType = "EscalationError"
 	BpmnIncidentErrorTypeExternalRowRefreshError BpmnIncidentErrorType = "ExternalRowRefreshError"
 	BpmnIncidentErrorTypeFeelError               BpmnIncidentErrorType = "FeelError"
 	BpmnIncidentErrorTypeGatewayNoMatch          BpmnIncidentErrorType = "GatewayNoMatch"
+	BpmnIncidentErrorTypeJobLockLost             BpmnIncidentErrorType = "JobLockLost"
 	BpmnIncidentErrorTypeLinkNotFound            BpmnIncidentErrorType = "LinkNotFound"
 	BpmnIncidentErrorTypeMigrationError          BpmnIncidentErrorType = "MigrationError"
 	BpmnIncidentErrorTypeNoHandler               BpmnIncidentErrorType = "NoHandler"
@@ -42,10 +44,12 @@ const (
 	BpmnIncidentRecordErrorTypeBpmnError               BpmnIncidentRecordErrorType = "BpmnError"
 	BpmnIncidentRecordErrorTypeCallActivityCanceled    BpmnIncidentRecordErrorType = "CallActivityCanceled"
 	BpmnIncidentRecordErrorTypeCompensationError       BpmnIncidentRecordErrorType = "CompensationError"
+	BpmnIncidentRecordErrorTypeDecisionNotFound        BpmnIncidentRecordErrorType = "DecisionNotFound"
 	BpmnIncidentRecordErrorTypeEscalationError         BpmnIncidentRecordErrorType = "EscalationError"
 	BpmnIncidentRecordErrorTypeExternalRowRefreshError BpmnIncidentRecordErrorType = "ExternalRowRefreshError"
 	BpmnIncidentRecordErrorTypeFeelError               BpmnIncidentRecordErrorType = "FeelError"
 	BpmnIncidentRecordErrorTypeGatewayNoMatch          BpmnIncidentRecordErrorType = "GatewayNoMatch"
+	BpmnIncidentRecordErrorTypeJobLockLost             BpmnIncidentRecordErrorType = "JobLockLost"
 	BpmnIncidentRecordErrorTypeLinkNotFound            BpmnIncidentRecordErrorType = "LinkNotFound"
 	BpmnIncidentRecordErrorTypeMigrationError          BpmnIncidentRecordErrorType = "MigrationError"
 	BpmnIncidentRecordErrorTypeNoHandler               BpmnIncidentRecordErrorType = "NoHandler"
@@ -75,10 +79,12 @@ const (
 // Defines values for ErrorCode.
 const (
 	BADREQUEST    ErrorCode = "BAD_REQUEST"
+	CONFLICT      ErrorCode = "CONFLICT"
 	FORBIDDEN     ErrorCode = "FORBIDDEN"
 	INTERNALERROR ErrorCode = "INTERNAL_ERROR"
 	NOTFOUND      ErrorCode = "NOT_FOUND"
 	UNAUTHORIZED  ErrorCode = "UNAUTHORIZED"
+	UNAVAILABLE   ErrorCode = "UNAVAILABLE"
 )
 
 // Defines values for ErrorMode.
@@ -144,10 +150,12 @@ const (
 	BpmnError               ListBpmnIncidentsParamsErrorType = "BpmnError"
 	CallActivityCanceled    ListBpmnIncidentsParamsErrorType = "CallActivityCanceled"
 	CompensationError       ListBpmnIncidentsParamsErrorType = "CompensationError"
+	DecisionNotFound        ListBpmnIncidentsParamsErrorType = "DecisionNotFound"
 	EscalationError         ListBpmnIncidentsParamsErrorType = "EscalationError"
 	ExternalRowRefreshError ListBpmnIncidentsParamsErrorType = "ExternalRowRefreshError"
 	FeelError               ListBpmnIncidentsParamsErrorType = "FeelError"
 	GatewayNoMatch          ListBpmnIncidentsParamsErrorType = "GatewayNoMatch"
+	JobLockLost             ListBpmnIncidentsParamsErrorType = "JobLockLost"
 	LinkNotFound            ListBpmnIncidentsParamsErrorType = "LinkNotFound"
 	MigrationError          ListBpmnIncidentsParamsErrorType = "MigrationError"
 	NoHandler               ListBpmnIncidentsParamsErrorType = "NoHandler"
@@ -160,10 +168,12 @@ const (
 
 // Defines values for ListBpmnInstancesParamsStatus.
 const (
-	ListBpmnInstancesParamsStatusCANCELED  ListBpmnInstancesParamsStatus = "CANCELED"
-	ListBpmnInstancesParamsStatusCOMPLETED ListBpmnInstancesParamsStatus = "COMPLETED"
-	ListBpmnInstancesParamsStatusFAILED    ListBpmnInstancesParamsStatus = "FAILED"
-	ListBpmnInstancesParamsStatusRUNNING   ListBpmnInstancesParamsStatus = "RUNNING"
+	ListBpmnInstancesParamsStatusCANCELED   ListBpmnInstancesParamsStatus = "CANCELED"
+	ListBpmnInstancesParamsStatusCOMPLETED  ListBpmnInstancesParamsStatus = "COMPLETED"
+	ListBpmnInstancesParamsStatusFAILED     ListBpmnInstancesParamsStatus = "FAILED"
+	ListBpmnInstancesParamsStatusRUNNING    ListBpmnInstancesParamsStatus = "RUNNING"
+	ListBpmnInstancesParamsStatusTERMINATED ListBpmnInstancesParamsStatus = "TERMINATED"
+	ListBpmnInstancesParamsStatusTIMEDOUT   ListBpmnInstancesParamsStatus = "TIMED_OUT"
 )
 
 // Defines values for ListBpmnUserTasksParamsStatus.
@@ -259,6 +269,8 @@ type BpmnIncident struct {
 	//   * `SnapshotSizeExceeded` - A ContinueAsNew snapshot exceeded the configured size cap.
 	//   * `CallActivityCanceled` - A call-activity child terminated as Canceled out-of-band.
 	//   * `ExternalRowRefreshError` - A migration could not rewrite a parked wait's external row (job, user task or subscription) against the target definition. Resolving re-runs the refresh.
+	//   * `JobLockLost` - An external job's worker lock ran out, by missed heartbeats or the maximum hold, with no retries left.
+	//   * `DecisionNotFound` - A business rule task called a decision, or a pinned version of one, that is not deployed.
 	//   * `Unknown` - Internal error not classified above.
 	ErrorType *BpmnIncidentErrorType `json:"errorType,omitempty"`
 
@@ -302,6 +314,8 @@ type BpmnIncident struct {
 //   - `SnapshotSizeExceeded` - A ContinueAsNew snapshot exceeded the configured size cap.
 //   - `CallActivityCanceled` - A call-activity child terminated as Canceled out-of-band.
 //   - `ExternalRowRefreshError` - A migration could not rewrite a parked wait's external row (job, user task or subscription) against the target definition. Resolving re-runs the refresh.
+//   - `JobLockLost` - An external job's worker lock ran out, by missed heartbeats or the maximum hold, with no retries left.
+//   - `DecisionNotFound` - A business rule task called a decision, or a pinned version of one, that is not deployed.
 //   - `Unknown` - Internal error not classified above.
 type BpmnIncidentErrorType string
 
@@ -327,10 +341,7 @@ type BpmnIncidentRecord struct {
 	// ExecutionKey Execution key of the activity that failed.
 	ExecutionKey *string `json:"executionKey,omitempty"`
 
-	// Id Surrogate row identifier; stable across resolves.
-	Id openapi_types.UUID `json:"id"`
-
-	// IncidentID Engine-assigned incident identifier, unique within the workflow.
+	// IncidentID Engine-assigned incident identifier, unique within the workflow. Resolve the incident with it.
 	IncidentID string `json:"incidentID"`
 
 	// MiIndex Zero-based multi-instance body index when the failure happened inside one iteration of a multi-instance activity. Absent otherwise.
@@ -400,6 +411,11 @@ type BpmnInstance struct {
 
 	// HasIncident True when at least one unresolved incident is currently attached to this instance. Computed at query time against the open-incidents index - useful for rendering a "needs attention" indicator in instance lists without paying for a per-row state fetch from the engine.
 	HasIncident *bool `json:"hasIncident,omitempty"`
+
+	// ParentSuspended True when an instance above this running call-activity child in the
+	// call chain is paused, which pauses this one too. It clears when that
+	// instance is resumed.
+	ParentSuspended *bool `json:"parentSuspended,omitempty"`
 
 	// ParentWorkflowID Execution identifier of the parent instance that started this one via a CallActivity. Empty for top-level instances.
 	ParentWorkflowID *string `json:"parentWorkflowID,omitempty"`
@@ -481,8 +497,18 @@ type BpmnInstanceState struct {
 	// while either flag is set.
 	InstanceSuspension *SuspensionEntry `json:"instanceSuspension,omitempty"`
 
+	// ParentSuspension Audit-shaped record of an active suspension at one scope (instance or
+	// definition). Returned inline on `BpmnInstanceState` - `null` when not
+	// suspended at that scope. An instance is "effectively suspended" if either
+	// scope's entry is present; the dispatcher pauses forward token dispatch
+	// while either flag is set.
+	ParentSuspension *SuspensionEntry `json:"parentSuspension,omitempty"`
+
 	// ParentWorkflowID Execution identifier of the parent instance that started this one via a CallActivity. Empty for top-level instances.
 	ParentWorkflowID *string `json:"parentWorkflowID,omitempty"`
+
+	// PendingJoinArrivals Joins still waiting to fire, with the flows that have reached them.
+	PendingJoinArrivals *[]JoinArrivals `json:"pendingJoinArrivals,omitempty"`
 
 	// ProcessId BPMN process definition ID this instance was started from.
 	ProcessId *string `json:"processId,omitempty"`
@@ -756,8 +782,8 @@ type CorrelationKeyBoolean = bool
 // CorrelationKeyMap A multi-key correlation value, used when the subscription's correlation expression resolves to a context.
 type CorrelationKeyMap map[string]interface{}
 
-// CorrelationKeyNumber A scalar numeric correlation value.
-type CorrelationKeyNumber = float32
+// CorrelationKeyNumber A scalar numeric correlation value, kept exact (json.Number) so large ids such as order numbers correlate.
+type CorrelationKeyNumber = json.Number
 
 // CorrelationKeyString A scalar string correlation value.
 type CorrelationKeyString = string
@@ -876,6 +902,8 @@ type Error struct {
 	//   * `UNAUTHORIZED` - request lacks or has an invalid authentication token.
 	//   * `FORBIDDEN` - caller is authenticated but lacks permission, or has hit a quota.
 	//   * `NOT_FOUND` - the addressed resource does not exist.
+	//   * `CONFLICT` - the request collides with the resource's current state, such as reporting on a job this worker no longer holds.
+	//   * `UNAVAILABLE` - the resource cannot answer right now, such as a running instance whose workflow task is being retried. Try again shortly.
 	//   * `INTERNAL_ERROR` - unexpected server-side failure.
 	Code ErrorCode `json:"code"`
 
@@ -891,6 +919,8 @@ type Error struct {
 //   - `UNAUTHORIZED` - request lacks or has an invalid authentication token.
 //   - `FORBIDDEN` - caller is authenticated but lacks permission, or has hit a quota.
 //   - `NOT_FOUND` - the addressed resource does not exist.
+//   - `CONFLICT` - the request collides with the resource's current state, such as reporting on a job this worker no longer holds.
+//   - `UNAVAILABLE` - the resource cannot answer right now, such as a running instance whose workflow task is being retried. Try again shortly.
 //   - `INTERNAL_ERROR` - unexpected server-side failure.
 type ErrorCode string
 
@@ -929,7 +959,9 @@ type EvaluateStoredRequest struct {
 	// Omit it to use the mode the server is configured with.
 	ErrorMode *ErrorMode `json:"errorMode,omitempty"`
 
-	// Version Specific definition version to evaluate. Defaults to the latest version.
+	// Version Specific definition version to evaluate when evaluating by definitions id. Defaults to the
+	// latest version. The `version` query parameter does the same, and a request giving both with
+	// different values is rejected. Evaluating by definition UUID ignores it, as the UUID names one version.
 	Version *int `json:"version,omitempty"`
 }
 
@@ -1033,7 +1065,7 @@ type ExternalJob struct {
 	// ParentWorkflowID Identifier of the parent instance (set when the producing instance was started by a CallActivity).
 	ParentWorkflowID *string `json:"parentWorkflowID,omitempty"`
 
-	// Retries Remaining retry budget. Decremented each time the worker reports a failure that the BPMN model maps to a retry.
+	// Retries Remaining retry budget. A retryable worker error and a lock that runs out each use one.
 	Retries *int `json:"retries,omitempty"`
 
 	// Status Lifecycle status of the job.
@@ -1066,18 +1098,18 @@ type ExternalJobBatchResponse struct {
 
 		// Status Outcome for this item:
 		//   * `completed` - the job was completed successfully.
-		//   * `failed` - the job exhausted its retries and surfaced as an incident.
+		//   * `failed` - the error was raised on the process, because no retries were left or `retryable` was false. An error boundary catches it, or it raises an incident.
 		//   * `requeued` - a retry budget remained, the job is back in PENDING.
-		//   * `error` - the per-item operation itself failed; the job's state is unchanged.
+		//   * `error` - the per-item operation itself failed, and the job's state is unchanged.
 		Status ExternalJobBatchResponseResultsStatus `json:"status"`
 	} `json:"results"`
 }
 
 // ExternalJobBatchResponseResultsStatus Outcome for this item:
 //   - `completed` - the job was completed successfully.
-//   - `failed` - the job exhausted its retries and surfaced as an incident.
+//   - `failed` - the error was raised on the process, because no retries were left or `retryable` was false. An error boundary catches it, or it raises an incident.
 //   - `requeued` - a retry budget remained, the job is back in PENDING.
-//   - `error` - the per-item operation itself failed; the job's state is unchanged.
+//   - `error` - the per-item operation itself failed, and the job's state is unchanged.
 type ExternalJobBatchResponseResultsStatus string
 
 // ExternalJobQueueDepthItem PENDING job count for a single task type.
@@ -1130,6 +1162,13 @@ type HitRule struct {
 
 	// RuleID ID of the matched rule from the DMN XML.
 	RuleID *string `json:"ruleID,omitempty"`
+}
+
+// JoinArrivals The flows that have delivered tokens to a join that has not fired yet.
+type JoinArrivals struct {
+	IncomingFlows []string `json:"incomingFlows"`
+	NodeId        string   `json:"nodeId"`
+	ScopeId       string   `json:"scopeId"`
 }
 
 // MigrateBpmnInstanceRequest Payload for migrating a running instance to a different version of its process.
@@ -1224,7 +1263,7 @@ type PollBpmnJobRequest struct {
 	// ClientID Stable identifier for this worker. Used to attribute job locks and to count active workers.
 	ClientID string `json:"clientID"`
 
-	// LockDuration Exclusive lock duration on each acquired job. Accepts Go duration strings (e.g. `5s`, `2m`). Defaults to `30s`.
+	// LockDuration How long each acquired job stays locked to this worker without a heartbeat. Accepts Go duration strings (e.g. `5s`, `2m`). Defaults to `30s`, clamped by the server to 10s..5m.
 	LockDuration *string `json:"lockDuration,omitempty"`
 
 	// MaxJobs Maximum number of jobs to acquire in one call. Defaults to 1, capped at 100.
@@ -1296,8 +1335,8 @@ type SuspensionEntry struct {
 	// Reason Free-text reason captured at suspend time; surfaces in the operator UI alongside the action.
 	Reason *string `json:"reason,omitempty"`
 
-	// SuspendedAt Unix epoch nanoseconds at which the suspension was applied.
-	SuspendedAt int64 `json:"suspendedAt"`
+	// SuspendedAt When the suspension was applied.
+	SuspendedAt time.Time `json:"suspendedAt"`
 
 	// SuspendedBy Identifier of the operator (or service account) that initiated the suspension.
 	SuspendedBy *string `json:"suspendedBy,omitempty"`
@@ -1316,13 +1355,18 @@ type UpdateDefinitionRequest struct {
 }
 
 // UpdateUserTaskAssignmentRequest Reassign a CREATED user task. All fields are optional but at least one
-// must be present. Fields are REPLACED atomically - pass the full set of
-// candidateUsers / candidateGroups you want stored, not a delta.
+// must be present, an empty body is rejected with 400. A field you leave out
+// keeps its value. A list you send replaces the stored one, so pass the full
+// set of candidateUsers / candidateGroups you want, not a delta.
 type UpdateUserTaskAssignmentRequest struct {
-	// Assignee New assignee. Pass null to clear.
-	Assignee        *string   `json:"assignee"`
+	// Assignee New assignee. An empty string clears it.
+	Assignee *string `json:"assignee,omitempty"`
+
+	// CandidateGroups Replaces the candidate groups. An empty list clears them.
 	CandidateGroups *[]string `json:"candidateGroups,omitempty"`
-	CandidateUsers  *[]string `json:"candidateUsers,omitempty"`
+
+	// CandidateUsers Replaces the candidate users. An empty list clears them.
+	CandidateUsers *[]string `json:"candidateUsers,omitempty"`
 }
 
 // UserTask A human-handled work item produced by a BPMN user task or manual task.
@@ -1448,7 +1492,7 @@ type ListBpmnExternalJobsParams struct {
 	// WorkflowID Filter jobs by workflow ID
 	WorkflowID *string `form:"workflowID,omitempty" json:"workflowID,omitempty"`
 
-	// BusinessId Exact-match filter on the caller-supplied correlation key.
+	// BusinessId Prefix match on the caller-supplied correlation key.
 	BusinessId *string `form:"businessId,omitempty" json:"businessId,omitempty"`
 
 	// CreatedAfter Only return jobs created at or after this timestamp. Strongly
@@ -1466,9 +1510,9 @@ type ListBpmnExternalJobsParamsStatus string
 type CompleteBpmnExternalJobsBatchJSONBody struct {
 	// ClientID Optional worker identity (the same `clientID` used to poll)
 	// applied to every item in the batch - a batch is one worker's
-	// report. When supplied, an item is completed only if this
-	// worker still holds its lock; items re-acquired by a peer drop
-	// out silently. Omit for the legacy unchecked behavior.
+	// report. When supplied, an item this worker no longer holds
+	// comes back with status `error` and its result is discarded.
+	// Omit for the legacy unchecked behavior.
 	ClientID *string `json:"clientID,omitempty"`
 	Items    []struct {
 		ExecutionKey string       `json:"executionKey"`
@@ -1481,10 +1525,9 @@ type CompleteBpmnExternalJobsBatchJSONBody struct {
 type ThrowBpmnExternalJobErrorsBatchJSONBody struct {
 	// ClientID Optional worker identity (the same `clientID` used to poll)
 	// applied to every item in the batch - a batch is one worker's
-	// report. When supplied, an item is requeued/failed only if this
-	// worker still holds its lock; items held by a peer are reported
-	// as an error and left untouched. Omit for the legacy unchecked
-	// behavior.
+	// report. When supplied, an item this worker no longer holds
+	// comes back with status `error` and the job is left untouched.
+	// Omit for the legacy unchecked behavior.
 	ClientID *string `json:"clientID,omitempty"`
 	Items    []struct {
 		ErrorCode    string       `json:"errorCode"`
@@ -1510,10 +1553,10 @@ type GetBpmnExternalJobsQueueDepthParams struct {
 // CompleteBpmnExternalJobJSONBody defines parameters for CompleteBpmnExternalJob.
 type CompleteBpmnExternalJobJSONBody struct {
 	// ClientID Optional worker identity (the same `clientID` used to poll).
-	// When supplied, the completion is applied only if this worker
-	// still holds the job's lock; a stale worker whose lease lapsed
-	// and whose job a peer re-acquired is rejected as a no-op.
-	// Omit for the legacy unchecked behavior.
+	// When supplied, a worker that no longer holds the job's lock
+	// gets 409 and its result is discarded. Completing a job this
+	// worker already completed answers 200 again. Omit for the
+	// legacy unchecked behavior.
 	ClientID  *string      `json:"clientID,omitempty"`
 	Variables *VariableMap `json:"variables,omitempty"`
 
@@ -1524,10 +1567,10 @@ type CompleteBpmnExternalJobJSONBody struct {
 // ThrowBpmnExternalJobErrorJSONBody defines parameters for ThrowBpmnExternalJobError.
 type ThrowBpmnExternalJobErrorJSONBody struct {
 	// ClientID Optional worker identity (the same `clientID` used to poll).
-	// When supplied, the error is applied only if this worker still
-	// holds the job's lock, so a stale report can't requeue or fail
-	// a job a peer is actively holding. Omit for the legacy
-	// unchecked behavior.
+	// When supplied, a worker that no longer holds the job's lock
+	// gets 409 and its report is discarded, so a stale report can't
+	// requeue or fail the job. Omit for the legacy unchecked
+	// behavior.
 	ClientID  *string `json:"clientID,omitempty"`
 	ErrorCode string  `json:"errorCode"`
 
@@ -1606,10 +1649,13 @@ type ListBpmnInstancesParams struct {
 	// that history.
 	CreatedAfter *time.Time `form:"createdAfter,omitempty" json:"createdAfter,omitempty"`
 
-	// BusinessId Exact-match filter on the caller-supplied correlation key set at start time.
+	// BusinessId Prefix match on the caller-supplied correlation key set at start time.
 	BusinessId *string `form:"businessId,omitempty" json:"businessId,omitempty"`
-	Page       *int    `form:"page,omitempty" json:"page,omitempty"`
-	PageSize   *int    `form:"pageSize,omitempty" json:"pageSize,omitempty"`
+
+	// ProcessId Only instances of this process id, in any version. `definitionID` selects one version.
+	ProcessId *string `form:"processId,omitempty" json:"processId,omitempty"`
+	Page      *int    `form:"page,omitempty" json:"page,omitempty"`
+	PageSize  *int    `form:"pageSize,omitempty" json:"pageSize,omitempty"`
 }
 
 // ListBpmnInstancesParamsStatus defines parameters for ListBpmnInstances.
@@ -1668,7 +1714,7 @@ type ListBpmnProcessesParams struct {
 	Page     *int `form:"page,omitempty" json:"page,omitempty"`
 	PageSize *int `form:"pageSize,omitempty" json:"pageSize,omitempty"`
 
-	// Q Optional case-insensitive substring match against process id or process name.
+	// Q Optional case-insensitive prefix match against process id or process name.
 	Q *string `form:"q,omitempty" json:"q,omitempty"`
 
 	// CreatedAfter Bounds the totalCount aggregate to instances created at or after this
@@ -4833,6 +4879,22 @@ func NewListBpmnInstancesRequest(server string, projectID openapi_types.UUID, pa
 		if params.BusinessId != nil {
 
 			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "businessId", runtime.ParamLocationQuery, *params.BusinessId); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ProcessId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "processId", runtime.ParamLocationQuery, *params.ProcessId); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -8478,6 +8540,7 @@ type PollBpmnExternalJobsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *[]ExternalJob
+	JSON400      *Error
 }
 
 // Status returns HTTPResponse.Status
@@ -8521,6 +8584,8 @@ func (r GetBpmnExternalJobsQueueDepthResponse) StatusCode() int {
 type CompleteBpmnExternalJobResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON404      *Error
+	JSON409      *Error
 }
 
 // Status returns HTTPResponse.Status
@@ -8542,6 +8607,8 @@ func (r CompleteBpmnExternalJobResponse) StatusCode() int {
 type ThrowBpmnExternalJobErrorResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON404      *Error
+	JSON409      *Error
 }
 
 // Status returns HTTPResponse.Status
@@ -8563,6 +8630,9 @@ func (r ThrowBpmnExternalJobErrorResponse) StatusCode() int {
 type HeartbeatBpmnExternalJobResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON400      *Error
+	JSON404      *Error
+	JSON409      *Error
 }
 
 // Status returns HTTPResponse.Status
@@ -8634,6 +8704,7 @@ type StartBpmnInstanceResponse struct {
 	}
 	JSON400 *BadRequest
 	JSON401 *Unauthorized
+	JSON404 *NotFound
 	JSON500 *InternalError
 }
 
@@ -8656,6 +8727,8 @@ func (r StartBpmnInstanceResponse) StatusCode() int {
 type CancelBpmnInstanceResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON400      *Error
+	JSON404      *Error
 }
 
 // Status returns HTTPResponse.Status
@@ -8678,6 +8751,7 @@ type GetBpmnInstanceResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *BpmnInstanceState
+	JSON503      *Error
 }
 
 // Status returns HTTPResponse.Status
@@ -8937,6 +9011,7 @@ func (r UpdateBpmnInstanceVariablesResponse) StatusCode() int {
 type PublishBpmnMessageResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON400      *Error
 }
 
 // Status returns HTTPResponse.Status
@@ -9120,6 +9195,7 @@ type GetBpmnResourceResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *BpmnResourceDetail
+	JSON404      *NotFound
 }
 
 // Status returns HTTPResponse.Status
@@ -9165,6 +9241,7 @@ type DeployBpmnResourceResponse struct {
 	HTTPResponse *http.Response
 	JSON400      *BadRequest
 	JSON401      *Unauthorized
+	JSON404      *NotFound
 	JSON500      *InternalError
 }
 
@@ -9193,6 +9270,7 @@ type StartBpmnTestInstanceResponse struct {
 	}
 	JSON400 *BadRequest
 	JSON401 *Unauthorized
+	JSON404 *NotFound
 	JSON500 *InternalError
 }
 
@@ -9215,6 +9293,7 @@ func (r StartBpmnTestInstanceResponse) StatusCode() int {
 type PublishBpmnSignalResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON400      *Error
 }
 
 // Status returns HTTPResponse.Status
@@ -9303,6 +9382,7 @@ type UpdateBpmnUserTaskAssignmentResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *UserTask
+	JSON400      *BadRequest
 }
 
 // Status returns HTTPResponse.Status
@@ -9324,6 +9404,7 @@ func (r UpdateBpmnUserTaskAssignmentResponse) StatusCode() int {
 type CompleteBpmnUserTaskResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON409      *Error
 }
 
 // Status returns HTTPResponse.Status
@@ -9345,6 +9426,7 @@ func (r CompleteBpmnUserTaskResponse) StatusCode() int {
 type ThrowBpmnUserTaskErrorResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON409      *Error
 }
 
 // Status returns HTTPResponse.Status
@@ -10994,6 +11076,13 @@ func ParsePollBpmnExternalJobsResponse(rsp *http.Response) (*PollBpmnExternalJob
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
 	}
 
 	return response, nil
@@ -11038,6 +11127,23 @@ func ParseCompleteBpmnExternalJobResponse(rsp *http.Response) (*CompleteBpmnExte
 		HTTPResponse: rsp,
 	}
 
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
+
+	}
+
 	return response, nil
 }
 
@@ -11054,6 +11160,23 @@ func ParseThrowBpmnExternalJobErrorResponse(rsp *http.Response) (*ThrowBpmnExter
 		HTTPResponse: rsp,
 	}
 
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
+
+	}
+
 	return response, nil
 }
 
@@ -11068,6 +11191,30 @@ func ParseHeartbeatBpmnExternalJobResponse(rsp *http.Response) (*HeartbeatBpmnEx
 	response := &HeartbeatBpmnExternalJobResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
+
 	}
 
 	return response, nil
@@ -11163,6 +11310,13 @@ func ParseStartBpmnInstanceResponse(rsp *http.Response) (*StartBpmnInstanceRespo
 		}
 		response.JSON401 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -11188,6 +11342,23 @@ func ParseCancelBpmnInstanceResponse(rsp *http.Response) (*CancelBpmnInstanceRes
 		HTTPResponse: rsp,
 	}
 
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
 	return response, nil
 }
 
@@ -11211,6 +11382,13 @@ func ParseGetBpmnInstanceResponse(rsp *http.Response) (*GetBpmnInstanceResponse,
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 503:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON503 = &dest
 
 	}
 
@@ -11453,6 +11631,16 @@ func ParsePublishBpmnMessageResponse(rsp *http.Response) (*PublishBpmnMessageRes
 	response := &PublishBpmnMessageResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
 	}
 
 	return response, nil
@@ -11707,6 +11895,13 @@ func ParseGetBpmnResourceResponse(rsp *http.Response) (*GetBpmnResourceResponse,
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
 	}
 
 	return response, nil
@@ -11766,6 +11961,13 @@ func ParseDeployBpmnResourceResponse(rsp *http.Response) (*DeployBpmnResourceRes
 		}
 		response.JSON401 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -11816,6 +12018,13 @@ func ParseStartBpmnTestInstanceResponse(rsp *http.Response) (*StartBpmnTestInsta
 		}
 		response.JSON401 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -11839,6 +12048,16 @@ func ParsePublishBpmnSignalResponse(rsp *http.Response) (*PublishBpmnSignalRespo
 	response := &PublishBpmnSignalResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
 	}
 
 	return response, nil
@@ -11943,6 +12162,13 @@ func ParseUpdateBpmnUserTaskAssignmentResponse(rsp *http.Response) (*UpdateBpmnU
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
 	}
 
 	return response, nil
@@ -11961,6 +12187,16 @@ func ParseCompleteBpmnUserTaskResponse(rsp *http.Response) (*CompleteBpmnUserTas
 		HTTPResponse: rsp,
 	}
 
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
+
+	}
+
 	return response, nil
 }
 
@@ -11975,6 +12211,16 @@ func ParseThrowBpmnUserTaskErrorResponse(rsp *http.Response) (*ThrowBpmnUserTask
 	response := &ThrowBpmnUserTaskErrorResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
+
 	}
 
 	return response, nil

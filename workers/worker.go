@@ -13,6 +13,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"sync"
 	"time"
 	"unicode/utf8"
@@ -32,7 +33,7 @@ const (
 	defaultLockDuration         = 30 * time.Second
 	defaultMaxErrorMessageBytes = 2048
 	defaultShutdownTimeout      = 20 * time.Second
-	heartbeatRatio              = 2 // heartbeat at lockDuration/heartbeatRatio
+	heartbeatRatio              = 2 // heartbeat at grantedLock/heartbeatRatio
 	pollErrorBackoff            = 2 * time.Second
 )
 
@@ -77,7 +78,8 @@ func WithPollTimeout(d time.Duration) HandleOption {
 }
 
 // WithLockDuration sets the exclusive lock duration on each acquired job.
-// The runtime renews the lock automatically while the handler runs.
+// The server clamps it to 10s..5m by default. The runtime heartbeats at
+// half of the lock the server granted while the handler runs.
 func WithLockDuration(d time.Duration) HandleOption {
 	return func(o *handleOpts) { o.lockDuration = d }
 }
@@ -106,8 +108,8 @@ type Worker struct {
 // Config configures a Worker.
 type Config struct {
 	// ClientID is the worker's stable identity. Used to attribute job locks
-	// and counted as one of the active workers per task type. If empty,
-	// derived from the host name.
+	// and counted as one of the active workers per task type. Surrounding
+	// whitespace is trimmed. If empty, derived from the host name.
 	ClientID string
 	// Logger receives lifecycle messages (poll errors, fatal handler errors).
 	// Nil disables logging.
@@ -125,7 +127,7 @@ type Config struct {
 // New constructs a Worker bound to projectID. api should be an authenticated
 // client (typically obtained from auth.NewClient).
 func New(api *generated.ClientWithResponses, projectID openapi_types.UUID, cfg Config) *Worker {
-	clientID := cfg.ClientID
+	clientID := strings.TrimSpace(cfg.ClientID)
 	if clientID == "" {
 		host, _ := os.Hostname()
 		clientID = fmt.Sprintf("worker-%s-%d", host, os.Getpid())
@@ -341,7 +343,7 @@ func (w *Worker) dispatch(parent context.Context, r *registration, job *generate
 	ctx, cancel := context.WithCancel(spanCtx)
 	defer cancel()
 
-	// Heartbeat goroutine - refresh the lock at lockDuration/heartbeatRatio.
+	// Heartbeat goroutine - refresh the lock at half of the granted lock.
 	hbCtx, stopHeartbeat := context.WithCancel(ctx)
 	hbDone := make(chan struct{})
 	go func() {
@@ -423,14 +425,23 @@ func (w *Worker) safeRun(ctx context.Context, h Handler, job *Job) (out variable
 	return h(ctx, job)
 }
 
+// heartbeatInterval returns half of the granted lock, at least 1s. The granted
+// lock is lockExpiresAt minus now, capped at the requested one. A missing or
+// already passed lockExpiresAt (client clock skew) falls back to requested.
+func heartbeatInterval(requested time.Duration, lockExpiresAt *time.Time, now time.Time) time.Duration {
+	base := requested
+	if lockExpiresAt != nil {
+		if granted := lockExpiresAt.Sub(now); granted > 0 {
+			base = min(requested, granted)
+		}
+	}
+	return max(time.Second, base/heartbeatRatio)
+}
+
 // heartbeat refreshes the job lock until ctx is cancelled. When the server
 // answers that this worker no longer holds the job, it calls lockLost and stops.
 func (w *Worker) heartbeat(ctx context.Context, r *registration, job *generated.ExternalJob, lockLost context.CancelFunc) {
-	interval := r.opts.lockDuration / heartbeatRatio
-	if interval < time.Second {
-		interval = time.Second
-	}
-	t := time.NewTicker(interval)
+	t := time.NewTicker(heartbeatInterval(r.opts.lockDuration, job.LockExpiresAt, time.Now()))
 	defer t.Stop()
 	lockStr := r.opts.lockDuration.String()
 
@@ -451,7 +462,7 @@ func (w *Worker) heartbeat(ctx context.Context, r *registration, job *generated.
 			case err != nil:
 				w.logger.Printf("heartbeat %s: %v", job.ExecutionKey, err)
 			case resp.StatusCode() == http.StatusConflict || resp.StatusCode() == http.StatusNotFound:
-				w.logger.Printf("WARN heartbeat %s: lock lost (status %d), handler cancelled and result discarded", job.ExecutionKey, resp.StatusCode())
+				w.logger.Printf("WARN heartbeat %s: %s, handler cancelled and result discarded", job.ExecutionKey, conflictReason(resp.Body))
 				lockLost()
 				return
 			case resp.StatusCode() < 200 || resp.StatusCode() >= 300:
@@ -471,18 +482,31 @@ func (w *Worker) complete(ctx context.Context, job *generated.ExternalJob, vars 
 		w.logger.Printf("complete %s: %v", job.ExecutionKey, err)
 		return
 	}
-	w.logReportStatus("complete", job, resp.StatusCode())
+	w.logReportStatus("complete", job, resp.StatusCode(), resp.Body)
 }
 
 // logReportStatus logs a non-2xx answer to complete or throw-error. A 409
-// means this worker no longer holds the lock and the server dropped the result.
-func (w *Worker) logReportStatus(op string, job *generated.ExternalJob, status int) {
+// means this worker no longer holds the job and a 404 that the job is gone,
+// and either way the server dropped the result.
+func (w *Worker) logReportStatus(op string, job *generated.ExternalJob, status int, body []byte) {
 	switch {
-	case status == http.StatusConflict:
-		w.logger.Printf("WARN %s %s: lock lost, result discarded", op, job.ExecutionKey)
+	case status == http.StatusConflict || status == http.StatusNotFound:
+		w.logger.Printf("WARN %s %s: result discarded: %s", op, job.ExecutionKey, conflictReason(body))
 	case status < 200 || status >= 300:
 		w.logger.Printf("%s %s: status %d", op, job.ExecutionKey, status)
 	}
+}
+
+// conflictReason is the message of the server's error body, which says why this
+// worker no longer holds the job, for example that its instance was cancelled.
+func conflictReason(body []byte) string {
+	var e struct {
+		Message string `json:"message"`
+	}
+	if json.Unmarshal(body, &e) != nil || e.Message == "" {
+		return "this worker no longer holds the job"
+	}
+	return e.Message
 }
 
 func (w *Worker) throwError(ctx context.Context, job *generated.ExternalJob, code string, vars variables.Vars, retryable bool) {
@@ -496,7 +520,7 @@ func (w *Worker) throwError(ctx context.Context, job *generated.ExternalJob, cod
 		w.logger.Printf("throw-error %s: %v", job.ExecutionKey, err)
 		return
 	}
-	w.logReportStatus("throw-error", job, resp.StatusCode())
+	w.logReportStatus("throw-error", job, resp.StatusCode(), resp.Body)
 }
 
 func isBpmnError(err error) bool {

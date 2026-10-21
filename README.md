@@ -8,7 +8,7 @@ Official Go SDK for the [QuantumBPM](https://quantumbpm.com) platform - DMN eval
 go get github.com/QuantumBPM/quantum-go-sdk
 ```
 
-Requires Go 1.23+.
+Requires Go 1.25+.
 
 ## What's in the box
 
@@ -255,11 +255,11 @@ worker.Handle("send-email", handler,
 )
 ```
 
-Concurrency is per task type. Different task types run in independent goroutine pools. The runtime auto-renews the lock at half the lock-duration interval while the handler runs.
+Concurrency is per task type. Different task types run in independent goroutine pools. The server clamps the lock duration to between 10s and 5m by default (`BPMN_WORKER_LEASE_MIN`, `BPMN_WORKER_LEASE_MAX`), so `WithLockDuration(11*time.Minute)` gets a 5m lock. While the handler runs, the runtime heartbeats at half of the lock the server granted.
 
 ### Locks, heartbeats, and shutdown
 
-A polled job is locked to the worker's `ClientID`. Each heartbeat extends the lock by the lock duration, and the server caps one attempt at 30 minutes by default (`BPMN_JOB_MAX_HOLD`). If the lock runs out (missed heartbeats, the cap, or a crashed worker), the server charges the job a retry and offers it again, or raises an incident when no retries are left. So abandoning a running job always costs a retry.
+A polled job is locked to the worker's `ClientID`. Each heartbeat extends the lock by the clamped lock duration, and the server caps one attempt at 30 minutes by default (`BPMN_JOB_MAX_HOLD`). If the lock runs out (missed heartbeats, the cap, or a crashed worker), the server charges the job a retry and offers it again, or raises an incident when no retries are left. So abandoning a running job always costs a retry.
 
 When a heartbeat answers that the worker no longer holds the job, the runtime stops heartbeating it, cancels the handler's `ctx` and drops its result. Handlers doing long work should watch `ctx.Done()`.
 
