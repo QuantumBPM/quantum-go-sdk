@@ -321,7 +321,7 @@ type BpmnIncidentErrorType string
 
 // BpmnIncidentRecord A persisted incident - the cross-instance audit row that backs the
 // "Incidents" view. The same incident is also available in
-// `BpmnInstanceState.incidents` while it is still open in the engine; the
+// `BpmnInstanceState.incidents` while it is open and the instance runs. The
 // persisted row additionally carries `raisedAt` / `resolvedAt` /
 // `resolvedBy` and the parent process metadata so it can be listed and
 // filtered without joining back to the instance.
@@ -481,13 +481,15 @@ type BpmnInstanceState struct {
 	// while either flag is set.
 	DefinitionSuspension *SuspensionEntry `json:"definitionSuspension,omitempty"`
 
-	// Error True when the instance has an unresolved incident.
+	// Error True when the instance failed or has an unresolved incident.
 	Error *bool `json:"error,omitempty"`
 
 	// FailureReason Error message from the workflow when status is FAILED.
 	FailureReason *string `json:"failureReason,omitempty"`
 
-	// Incidents Active incidents that require resolution before the process can continue.
+	// Incidents Active incidents that require resolution before the process can
+	// continue. Empty once the instance has finished: the incident list keeps
+	// each one with `resolvedBy` set to `system:<status>`.
 	Incidents *[]BpmnIncident `json:"incidents,omitempty"`
 
 	// InstanceSuspension Audit-shaped record of an active suspension at one scope (instance or
