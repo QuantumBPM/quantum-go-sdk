@@ -8,7 +8,7 @@ import (
 
 	openapi_types "github.com/oapi-codegen/runtime/types"
 
-	"github.com/QuantumBPM/quantum-go-sdk/generated"
+	"github.com/QuantumBPM/quantum-go-sdk/v2/generated"
 )
 
 // Re-exported response and entity types so callers don't need to depend on
@@ -23,6 +23,8 @@ type (
 	InstanceState           = generated.BpmnInstanceState
 	InstanceListPage        = generated.BpmnInstancePaginatedResponse
 	InstanceChildren        = generated.BpmnInstanceChildrenResponse
+	HistoryPage             = generated.BpmnHistoryPage
+	HistoryEntry            = generated.BpmnActivityState
 	Incident                = generated.BpmnIncident
 	ProcessSummary          = generated.BpmnProcessSummary
 	ProcessSummaryPage      = generated.BpmnProcessSummaryPaginatedResponse

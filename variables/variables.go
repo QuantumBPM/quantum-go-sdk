@@ -9,7 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/QuantumBPM/quantum-go-sdk/generated"
+	"github.com/QuantumBPM/quantum-go-sdk/v2/generated"
 )
 
 // Vars holds a set of named variables. The same type is used for DMN

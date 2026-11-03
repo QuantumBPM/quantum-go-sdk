@@ -3,8 +3,8 @@ package bpmn
 import (
 	"context"
 
-	"github.com/QuantumBPM/quantum-go-sdk/generated"
-	"github.com/QuantumBPM/quantum-go-sdk/variables"
+	"github.com/QuantumBPM/quantum-go-sdk/v2/generated"
+	"github.com/QuantumBPM/quantum-go-sdk/v2/variables"
 )
 
 // MessageOption tunes a published message.

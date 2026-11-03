@@ -3,8 +3,8 @@ package workers
 import (
 	"testing"
 
-	"github.com/QuantumBPM/quantum-go-sdk/generated"
-	"github.com/QuantumBPM/quantum-go-sdk/variables"
+	"github.com/QuantumBPM/quantum-go-sdk/v2/generated"
+	"github.com/QuantumBPM/quantum-go-sdk/v2/variables"
 )
 
 func TestJob_ExposesBusinessId(t *testing.T) {

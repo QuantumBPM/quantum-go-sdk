@@ -3,25 +3,29 @@ package bpmn
 import (
 	"context"
 
-	openapi_types "github.com/oapi-codegen/runtime/types"
-
-	"github.com/QuantumBPM/quantum-go-sdk/generated"
-	"github.com/QuantumBPM/quantum-go-sdk/variables"
+	"github.com/QuantumBPM/quantum-go-sdk/v2/generated"
+	"github.com/QuantumBPM/quantum-go-sdk/v2/variables"
 )
 
 // InstanceListOption tunes a list-instances query.
 type InstanceListOption func(*instanceListOpts)
 
 type instanceListOpts struct {
-	pageOpts
-	definitionID *openapi_types.UUID
-	status       *generated.ListBpmnInstancesParamsStatus
-	businessID   *string
+	cursorOpts
+	processID  *string
+	version    *int
+	status     *generated.ListBpmnInstancesParamsStatus
+	businessID *string
 }
 
-// WithInstanceDefinitionID filters listings to a specific deployed definition.
-func WithInstanceDefinitionID(id openapi_types.UUID) InstanceListOption {
-	return func(o *instanceListOpts) { o.definitionID = &id }
+// WithInstanceProcess filters listings to one process, in every version.
+func WithInstanceProcess(processID string) InstanceListOption {
+	return func(o *instanceListOpts) { o.processID = &processID }
+}
+
+// WithInstanceVersion narrows a WithInstanceProcess listing to one version.
+func WithInstanceVersion(version int) InstanceListOption {
+	return func(o *instanceListOpts) { o.version = &version }
 }
 
 // WithInstanceStatus filters listings to a specific lifecycle status.
@@ -36,14 +40,16 @@ func WithInstanceBusinessID(id string) InstanceListOption {
 	return func(o *instanceListOpts) { o.businessID = &id }
 }
 
-// WithInstancePage sets the 1-indexed page number.
-func WithInstancePage(p int) InstanceListOption {
-	return func(o *instanceListOpts) { o.page = &p }
+// WithInstanceCursor continues a listing from the page before's
+// Pagination.NextCursor.
+func WithInstanceCursor(cursor string) InstanceListOption {
+	return func(o *instanceListOpts) { o.cursor = &cursor }
 }
 
-// WithInstancePageSize sets the page size.
-func WithInstancePageSize(s int) InstanceListOption {
-	return func(o *instanceListOpts) { o.pageSize = &s }
+// WithInstanceLimit sets the most instances a page returns, 20 by default
+// and 100 at most.
+func WithInstanceLimit(limit int) InstanceListOption {
+	return func(o *instanceListOpts) { o.limit = &limit }
 }
 
 // StartInstanceOption tunes a StartInstance / StartTestInstance call.
@@ -51,6 +57,7 @@ type StartInstanceOption func(*startInstanceOpts)
 
 type startInstanceOpts struct {
 	businessID *string
+	version    *int
 }
 
 // WithStartBusinessID stamps the new instance with a caller-supplied
@@ -58,6 +65,12 @@ type startInstanceOpts struct {
 // instance, external job, user task, and DMN execution emitted by it.
 func WithStartBusinessID(id string) StartInstanceOption {
 	return func(o *startInstanceOpts) { o.businessID = &id }
+}
+
+// WithStartVersion starts the given deployed version instead of the latest.
+// StartTestInstance ignores it.
+func WithStartVersion(version int) StartInstanceOption {
+	return func(o *startInstanceOpts) { o.version = &version }
 }
 
 func applyStartInstanceOpts(opts ...StartInstanceOption) startInstanceOpts {
@@ -68,27 +81,29 @@ func applyStartInstanceOpts(opts ...StartInstanceOption) startInstanceOpts {
 	return o
 }
 
-// StartInstance launches a new BPMN process instance from a deployed
-// definition, returning the workflow ID assigned to it.
-func (c *Client) StartInstance(ctx context.Context, processDefinitionID openapi_types.UUID, vars variables.Vars, opts ...StartInstanceOption) (string, error) {
+// StartInstance launches a new instance of a deployed BPMN process, its
+// latest version unless WithStartVersion names one, and returns the ID
+// assigned to it.
+func (c *Client) StartInstance(ctx context.Context, processID string, vars variables.Vars, opts ...StartInstanceOption) (string, error) {
 	o := applyStartInstanceOpts(opts...)
 	resp, err := c.api.StartBpmnInstanceWithResponse(ctx, c.projectID, generated.StartBpmnInstanceJSONRequestBody{
-		ProcessDefinitionID: processDefinitionID,
-		Variables:           vars.ToWireMap(),
-		BusinessId:          o.businessID,
+		ProcessID:  processID,
+		Version:    o.version,
+		Variables:  vars.ToWireMap(),
+		BusinessId: o.businessID,
 	})
 	if err != nil {
 		return "", err
 	}
-	if resp.JSON201 != nil && resp.JSON201.WorkflowID != nil {
-		return *resp.JSON201.WorkflowID, nil
+	if resp.JSON201 != nil && resp.JSON201.InstanceID != nil {
+		return *resp.JSON201.InstanceID, nil
 	}
 	return "", errorFromResponses("start-instance", resp.StatusCode())
 }
 
 // GetInstance returns the full runtime state of an instance.
-func (c *Client) GetInstance(ctx context.Context, workflowID string) (*InstanceState, error) {
-	resp, err := c.api.GetBpmnInstanceWithResponse(ctx, c.projectID, workflowID)
+func (c *Client) GetInstance(ctx context.Context, instanceID string) (*InstanceState, error) {
+	resp, err := c.api.GetBpmnInstanceWithResponse(ctx, c.projectID, instanceID)
 	if err != nil {
 		return nil, err
 	}
@@ -99,8 +114,8 @@ func (c *Client) GetInstance(ctx context.Context, workflowID string) (*InstanceS
 }
 
 // CancelInstance terminates a running instance.
-func (c *Client) CancelInstance(ctx context.Context, workflowID string) error {
-	resp, err := c.api.CancelBpmnInstanceWithResponse(ctx, c.projectID, workflowID)
+func (c *Client) CancelInstance(ctx context.Context, instanceID string) error {
+	resp, err := c.api.CancelBpmnInstanceWithResponse(ctx, c.projectID, instanceID)
 	if err != nil {
 		return err
 	}
@@ -110,18 +125,21 @@ func (c *Client) CancelInstance(ctx context.Context, workflowID string) error {
 	return errorFromResponses("cancel-instance", resp.StatusCode())
 }
 
-// ListInstances returns a page of process instances in the project.
+// ListInstances returns a page of process instances in the project, newest
+// first. Pass the page's Pagination.NextCursor to WithInstanceCursor for the
+// next one. It is nil on the last page.
 func (c *Client) ListInstances(ctx context.Context, opts ...InstanceListOption) (*InstanceListPage, error) {
 	o := &instanceListOpts{}
 	for _, opt := range opts {
 		opt(o)
 	}
 	resp, err := c.api.ListBpmnInstancesWithResponse(ctx, c.projectID, &generated.ListBpmnInstancesParams{
-		DefinitionID: o.definitionID,
-		Status:       o.status,
-		BusinessId:   o.businessID,
-		Page:         o.page,
-		PageSize:     o.pageSize,
+		ProcessId:  o.processID,
+		Version:    o.version,
+		Status:     o.status,
+		BusinessId: o.businessID,
+		Cursor:     o.cursor,
+		Limit:      o.limit,
 	})
 	if err != nil {
 		return nil, err
@@ -133,8 +151,8 @@ func (c *Client) ListInstances(ctx context.Context, opts ...InstanceListOption) 
 }
 
 // GetInstanceChildren returns child instances spawned via CallActivity.
-func (c *Client) GetInstanceChildren(ctx context.Context, workflowID string) (*InstanceChildren, error) {
-	resp, err := c.api.GetBpmnInstanceChildrenWithResponse(ctx, c.projectID, workflowID)
+func (c *Client) GetInstanceChildren(ctx context.Context, instanceID string) (*InstanceChildren, error) {
+	resp, err := c.api.GetBpmnInstanceChildrenWithResponse(ctx, c.projectID, instanceID)
 	if err != nil {
 		return nil, err
 	}
@@ -144,9 +162,70 @@ func (c *Client) GetInstanceChildren(ctx context.Context, workflowID string) (*I
 	return nil, errorFromResponses("get-instance-children", resp.StatusCode())
 }
 
+// HistoryOption tunes a GetInstanceHistory read.
+type HistoryOption func(*historyOpts)
+
+type historyOpts struct {
+	fromSeq   *int64
+	beforeSeq *int64
+	limit     *int
+}
+
+// WithHistoryFromSeq reads the entries from seq on, to follow a running
+// instance. It takes precedence over WithHistoryBeforeSeq.
+func WithHistoryFromSeq(seq int64) HistoryOption {
+	return func(o *historyOpts) { o.fromSeq = &seq }
+}
+
+// WithHistoryBeforeSeq reads the newest entries before seq, to walk back.
+func WithHistoryBeforeSeq(seq int64) HistoryOption {
+	return func(o *historyOpts) { o.beforeSeq = &seq }
+}
+
+// WithHistoryLimit sets the most entries a page returns.
+func WithHistoryLimit(limit int) HistoryOption {
+	return func(o *historyOpts) { o.limit = &limit }
+}
+
+// GetInstanceHistory returns a page of an instance's history, oldest first,
+// for a running or an ended instance. Without options the page holds the
+// newest entries. Page entries leave out their inputs and outputs, which
+// GetInstanceHistoryEntry reads.
+func (c *Client) GetInstanceHistory(ctx context.Context, instanceID string, opts ...HistoryOption) (*HistoryPage, error) {
+	o := &historyOpts{}
+	for _, opt := range opts {
+		opt(o)
+	}
+	resp, err := c.api.GetBpmnInstanceHistoryWithResponse(ctx, c.projectID, instanceID, &generated.GetBpmnInstanceHistoryParams{
+		FromSeq:   o.fromSeq,
+		BeforeSeq: o.beforeSeq,
+		Limit:     o.limit,
+	})
+	if err != nil {
+		return nil, err
+	}
+	if resp.JSON200 != nil {
+		return resp.JSON200, nil
+	}
+	return nil, errorFromResponses("get-instance-history", resp.StatusCode(), resp.JSON404)
+}
+
+// GetInstanceHistoryEntry returns the history entry seq with its inputs and
+// outputs.
+func (c *Client) GetInstanceHistoryEntry(ctx context.Context, instanceID string, seq int64) (*HistoryEntry, error) {
+	resp, err := c.api.GetBpmnInstanceHistoryEntryWithResponse(ctx, c.projectID, instanceID, seq)
+	if err != nil {
+		return nil, err
+	}
+	if resp.JSON200 != nil {
+		return resp.JSON200, nil
+	}
+	return nil, errorFromResponses("get-instance-history-entry", resp.StatusCode(), resp.JSON404)
+}
+
 // GetInstanceVariables returns the current variables of a running instance.
-func (c *Client) GetInstanceVariables(ctx context.Context, workflowID string) (variables.Vars, error) {
-	resp, err := c.api.GetBpmnInstanceVariablesWithResponse(ctx, c.projectID, workflowID)
+func (c *Client) GetInstanceVariables(ctx context.Context, instanceID string) (variables.Vars, error) {
+	resp, err := c.api.GetBpmnInstanceVariablesWithResponse(ctx, c.projectID, instanceID)
 	if err != nil {
 		return nil, err
 	}
@@ -157,8 +236,8 @@ func (c *Client) GetInstanceVariables(ctx context.Context, workflowID string) (v
 }
 
 // UpdateInstanceVariables merges the supplied variables into the instance scope.
-func (c *Client) UpdateInstanceVariables(ctx context.Context, workflowID string, vars variables.Vars) error {
-	resp, err := c.api.UpdateBpmnInstanceVariablesWithResponse(ctx, c.projectID, workflowID, generated.UpdateBpmnInstanceVariablesJSONRequestBody{
+func (c *Client) UpdateInstanceVariables(ctx context.Context, instanceID string, vars variables.Vars) error {
+	resp, err := c.api.UpdateBpmnInstanceVariablesWithResponse(ctx, c.projectID, instanceID, generated.UpdateBpmnInstanceVariablesJSONRequestBody{
 		Variables: map[string]interface{}(vars),
 	})
 	if err != nil {
@@ -172,8 +251,8 @@ func (c *Client) UpdateInstanceVariables(ctx context.Context, workflowID string,
 
 // ResolveIncident clears the named incident on the instance, optionally
 // merging in supplementary variables.
-func (c *Client) ResolveIncident(ctx context.Context, workflowID, incidentID string, vars variables.Vars) error {
-	resp, err := c.api.ResolveBpmnIncidentWithResponse(ctx, c.projectID, workflowID, incidentID, generated.ResolveBpmnIncidentJSONRequestBody{
+func (c *Client) ResolveIncident(ctx context.Context, instanceID, incidentID string, vars variables.Vars) error {
+	resp, err := c.api.ResolveBpmnIncidentWithResponse(ctx, c.projectID, instanceID, incidentID, generated.ResolveBpmnIncidentJSONRequestBody{
 		Variables: vars.ToWireMap(),
 	})
 	if err != nil {

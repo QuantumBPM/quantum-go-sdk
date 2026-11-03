@@ -9,7 +9,7 @@ import (
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	"go.opentelemetry.io/otel/sdk/trace/tracetest"
 
-	"github.com/QuantumBPM/quantum-go-sdk/generated"
+	"github.com/QuantumBPM/quantum-go-sdk/v2/generated"
 )
 
 const sampledTraceparent = "00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01"
@@ -23,7 +23,7 @@ func TestStartJobSpan_ContinuesInstanceTrace(t *testing.T) {
 	job := &generated.ExternalJob{
 		TaskType:     "charge-card",
 		NodeID:       "Task_Charge",
-		WorkflowID:   "wf-1",
+		InstanceID:   "wf-1",
 		ExecutionKey: "wf-1:Task_Charge:root:1",
 		BusinessId:   &biz,
 		TraceContext: &map[string]string{"traceparent": sampledTraceparent},
@@ -65,7 +65,7 @@ func TestStartJobSpan_NoTraceContext_IsRoot(t *testing.T) {
 	otel.SetTracerProvider(sdktrace.NewTracerProvider(sdktrace.WithSpanProcessor(sr)))
 	otel.SetTextMapPropagator(propagation.TraceContext{})
 
-	job := &generated.ExternalJob{TaskType: "t", NodeID: "n", WorkflowID: "wf"}
+	job := &generated.ExternalJob{TaskType: "t", NodeID: "n", InstanceID: "wf"}
 	_, span := startJobSpan(context.Background(), job)
 	span.End()
 

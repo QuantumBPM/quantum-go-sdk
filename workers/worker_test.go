@@ -19,8 +19,8 @@ import (
 
 	openapi_types "github.com/oapi-codegen/runtime/types"
 
-	"github.com/QuantumBPM/quantum-go-sdk/generated"
-	"github.com/QuantumBPM/quantum-go-sdk/variables"
+	"github.com/QuantumBPM/quantum-go-sdk/v2/generated"
+	"github.com/QuantumBPM/quantum-go-sdk/v2/variables"
 )
 
 func newTestWorker(limit int) (*Worker, *bytes.Buffer) {
@@ -238,7 +238,7 @@ func (f *fakeAPI) completedKeys() []string {
 }
 
 func testJob(key string) generated.ExternalJob {
-	return generated.ExternalJob{ExecutionKey: key, WorkflowID: "wf-" + key, TaskType: "t", NodeID: "n"}
+	return generated.ExternalJob{ExecutionKey: key, InstanceID: "wf-" + key, TaskType: "t", NodeID: "n"}
 }
 
 func startRun(t *testing.T, w *Worker) (context.CancelFunc, <-chan error) {

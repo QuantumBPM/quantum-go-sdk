@@ -3,7 +3,7 @@ package variables_test
 import (
 	"testing"
 
-	"github.com/QuantumBPM/quantum-go-sdk/variables"
+	"github.com/QuantumBPM/quantum-go-sdk/v2/variables"
 )
 
 func TestSetAndLookup(t *testing.T) {
@@ -18,9 +18,9 @@ func TestSetAndLookup(t *testing.T) {
 
 func TestGetTyped(t *testing.T) {
 	v := variables.From(map[string]any{
-		"amount":  1000.0,
-		"flag":    true,
-		"nested":  map[string]any{"x": 1},
+		"amount": 1000.0,
+		"flag":   true,
+		"nested": map[string]any{"x": 1},
 	})
 
 	amt, err := variables.Get[float64](v, "amount")

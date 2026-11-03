@@ -9,8 +9,8 @@ import (
 
 	openapi_types "github.com/oapi-codegen/runtime/types"
 
-	"github.com/QuantumBPM/quantum-go-sdk/generated"
-	"github.com/QuantumBPM/quantum-go-sdk/variables"
+	"github.com/QuantumBPM/quantum-go-sdk/v2/generated"
+	"github.com/QuantumBPM/quantum-go-sdk/v2/variables"
 )
 
 // Result maps decision IDs to the result of evaluating that decision.
@@ -89,39 +89,6 @@ func (c *Client) Evaluate(ctx context.Context, definitionsID string, vars variab
 	params := &generated.EvaluateByDefinitionsIDParams{Version: o.version}
 
 	resp, err := c.api.EvaluateByDefinitionsIDWithResponse(ctx, c.projectID, definitionsID, params, body)
-	if err != nil {
-		return nil, fmt.Errorf("dmn: evaluate request: %w", err)
-	}
-	if resp.JSON200 != nil {
-		return *resp.JSON200, nil
-	}
-	return nil, errorFromResponses("evaluate", resp.StatusCode(),
-		resp.JSON400, resp.JSON404, resp.JSON500)
-}
-
-// EvaluateByID runs a stored DMN definition addressed by its platform UUID.
-// Prefer Evaluate (by definitions ID) for normal use; this overload is for
-// callers that already hold a database-version pointer.
-func (c *Client) EvaluateByID(ctx context.Context, definitionID openapi_types.UUID, vars variables.Vars, opts ...EvaluateOption) (Result, error) {
-	o := &evaluateOpts{}
-	for _, opt := range opts {
-		opt(o)
-	}
-
-	fctx, err := vars.ToFeelContext()
-	if err != nil {
-		return nil, fmt.Errorf("dmn: build context: %w", err)
-	}
-
-	body := generated.EvaluateStoredJSONRequestBody{
-		Context:          fctx,
-		Version:          o.version,
-		Decisions:        o.decisions,
-		DecisionServices: o.decisionServices,
-		BusinessId:       o.businessID,
-	}
-
-	resp, err := c.api.EvaluateStoredWithResponse(ctx, c.projectID, definitionID, body)
 	if err != nil {
 		return nil, fmt.Errorf("dmn: evaluate request: %w", err)
 	}

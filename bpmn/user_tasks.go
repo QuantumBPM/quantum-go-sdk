@@ -2,27 +2,31 @@ package bpmn
 
 import (
 	"context"
+	"time"
 
-	"github.com/QuantumBPM/quantum-go-sdk/generated"
-	"github.com/QuantumBPM/quantum-go-sdk/variables"
+	"github.com/QuantumBPM/quantum-go-sdk/v2/generated"
+	"github.com/QuantumBPM/quantum-go-sdk/v2/variables"
 )
 
 // UserTaskListOption tunes a list-user-tasks query.
 type UserTaskListOption func(*userTaskListOpts)
 
 type userTaskListOpts struct {
-	pageOpts
-	workflowID     *string
+	cursorOpts
+	instanceID     *string
 	status         *generated.ListBpmnUserTasksParamsStatus
 	assignee       *string
 	candidateUser  *string
 	candidateGroup *string
 	businessID     *string
+	dueAfter       *time.Time
+	dueBefore      *time.Time
+	sort           *string
 }
 
-// WithUserTaskWorkflowID filters tasks by originating instance.
-func WithUserTaskWorkflowID(id string) UserTaskListOption {
-	return func(o *userTaskListOpts) { o.workflowID = &id }
+// WithUserTaskInstanceID filters tasks by originating instance.
+func WithUserTaskInstanceID(id string) UserTaskListOption {
+	return func(o *userTaskListOpts) { o.instanceID = &id }
 }
 
 // WithUserTaskStatus filters tasks by lifecycle status.
@@ -52,31 +56,56 @@ func WithUserTaskBusinessID(id string) UserTaskListOption {
 	return func(o *userTaskListOpts) { o.businessID = &id }
 }
 
-// WithUserTaskPage sets the 1-indexed page number.
-func WithUserTaskPage(p int) UserTaskListOption {
-	return func(o *userTaskListOpts) { o.page = &p }
+// WithUserTaskDueAfter keeps the tasks due at or after t.
+func WithUserTaskDueAfter(t time.Time) UserTaskListOption {
+	return func(o *userTaskListOpts) { o.dueAfter = &t }
 }
 
-// WithUserTaskPageSize sets the page size.
-func WithUserTaskPageSize(s int) UserTaskListOption {
-	return func(o *userTaskListOpts) { o.pageSize = &s }
+// WithUserTaskDueBefore keeps the tasks due before t. With status CREATED
+// and the current time, the overdue tasks.
+func WithUserTaskDueBefore(t time.Time) UserTaskListOption {
+	return func(o *userTaskListOpts) { o.dueBefore = &t }
 }
 
-// ListUserTasks returns a page of user tasks in the project.
+// WithUserTaskSort orders the list: "created" newest first (the default),
+// "dueDate" soonest due first, "priority" highest first. A cursor continues
+// only a list of the same sort.
+func WithUserTaskSort(sort string) UserTaskListOption {
+	return func(o *userTaskListOpts) { o.sort = &sort }
+}
+
+// WithUserTaskCursor continues a listing from the page before's
+// Pagination.NextCursor.
+func WithUserTaskCursor(cursor string) UserTaskListOption {
+	return func(o *userTaskListOpts) { o.cursor = &cursor }
+}
+
+// WithUserTaskLimit sets the most tasks a page returns, 20 by default and
+// 100 at most.
+func WithUserTaskLimit(limit int) UserTaskListOption {
+	return func(o *userTaskListOpts) { o.limit = &limit }
+}
+
+// ListUserTasks returns a page of user tasks in the project. Pass the page's
+// Pagination.NextCursor to WithUserTaskCursor for the next one. It is nil on
+// the last page.
 func (c *Client) ListUserTasks(ctx context.Context, opts ...UserTaskListOption) (*UserTaskListPage, error) {
 	o := &userTaskListOpts{}
 	for _, opt := range opts {
 		opt(o)
 	}
 	resp, err := c.api.ListBpmnUserTasksWithResponse(ctx, c.projectID, &generated.ListBpmnUserTasksParams{
-		WorkflowID:     o.workflowID,
+		InstanceID:     o.instanceID,
 		Status:         o.status,
 		Assignee:       o.assignee,
 		CandidateUser:  o.candidateUser,
 		CandidateGroup: o.candidateGroup,
 		BusinessId:     o.businessID,
-		Page:           o.page,
-		PageSize:       o.pageSize,
+		DueAfter:       o.dueAfter,
+		DueBefore:      o.dueBefore,
+		Sort:           (*generated.ListBpmnUserTasksParamsSort)(o.sort),
+		Cursor:         o.cursor,
+		Limit:          o.limit,
 	})
 	if err != nil {
 		return nil, err
@@ -87,12 +116,20 @@ func (c *Client) ListUserTasks(ctx context.Context, opts ...UserTaskListOption) 
 	return nil, errorFromResponses("list-user-tasks", resp.StatusCode())
 }
 
-// ListUserTasksForCaller returns the caller's user tasks (those they may
-// claim or have already claimed).
-func (c *Client) ListUserTasksForCaller(ctx context.Context, opts ...PageOption) (*UserTaskListPage, error) {
-	po := applyPageOpts(opts...)
+// ListUserTasksForCaller returns a page of the caller's user tasks (those
+// they may claim or have already claimed). It takes the due date, sort,
+// cursor and limit options. The other filters do not apply to it.
+func (c *Client) ListUserTasksForCaller(ctx context.Context, opts ...UserTaskListOption) (*UserTaskListPage, error) {
+	o := &userTaskListOpts{}
+	for _, opt := range opts {
+		opt(o)
+	}
 	resp, err := c.api.ListBpmnUserTasksForCallerWithResponse(ctx, c.projectID, &generated.ListBpmnUserTasksForCallerParams{
-		Page: po.page, PageSize: po.pageSize,
+		DueAfter:  o.dueAfter,
+		DueBefore: o.dueBefore,
+		Sort:      (*generated.ListBpmnUserTasksForCallerParamsSort)(o.sort),
+		Cursor:    o.cursor,
+		Limit:     o.limit,
 	})
 	if err != nil {
 		return nil, err

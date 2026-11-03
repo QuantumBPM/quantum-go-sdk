@@ -18,23 +18,38 @@ import (
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
+// Defines values for BpmnActivityStateStatus.
+const (
+	BpmnActivityStateStatusCanceled  BpmnActivityStateStatus = "Canceled"
+	BpmnActivityStateStatusCompleted BpmnActivityStateStatus = "Completed"
+	BpmnActivityStateStatusFailed    BpmnActivityStateStatus = "Failed"
+	BpmnActivityStateStatusResolved  BpmnActivityStateStatus = "Resolved"
+	BpmnActivityStateStatusStarted   BpmnActivityStateStatus = "Started"
+)
+
+// Defines values for BpmnElementStatisticsLastStatus.
+const (
+	BpmnElementStatisticsLastStatusCanceled  BpmnElementStatisticsLastStatus = "Canceled"
+	BpmnElementStatisticsLastStatusCompleted BpmnElementStatisticsLastStatus = "Completed"
+	BpmnElementStatisticsLastStatusFailed    BpmnElementStatisticsLastStatus = "Failed"
+	BpmnElementStatisticsLastStatusResolved  BpmnElementStatisticsLastStatus = "Resolved"
+)
+
 // Defines values for BpmnIncidentErrorType.
 const (
 	BpmnIncidentErrorTypeBpmnError               BpmnIncidentErrorType = "BpmnError"
 	BpmnIncidentErrorTypeCallActivityCanceled    BpmnIncidentErrorType = "CallActivityCanceled"
 	BpmnIncidentErrorTypeCompensationError       BpmnIncidentErrorType = "CompensationError"
+	BpmnIncidentErrorTypeDecisionEvaluationError BpmnIncidentErrorType = "DecisionEvaluationError"
 	BpmnIncidentErrorTypeDecisionNotFound        BpmnIncidentErrorType = "DecisionNotFound"
-	BpmnIncidentErrorTypeEscalationError         BpmnIncidentErrorType = "EscalationError"
 	BpmnIncidentErrorTypeExternalRowRefreshError BpmnIncidentErrorType = "ExternalRowRefreshError"
 	BpmnIncidentErrorTypeFeelError               BpmnIncidentErrorType = "FeelError"
 	BpmnIncidentErrorTypeGatewayNoMatch          BpmnIncidentErrorType = "GatewayNoMatch"
 	BpmnIncidentErrorTypeJobLockLost             BpmnIncidentErrorType = "JobLockLost"
 	BpmnIncidentErrorTypeLinkNotFound            BpmnIncidentErrorType = "LinkNotFound"
 	BpmnIncidentErrorTypeMigrationError          BpmnIncidentErrorType = "MigrationError"
-	BpmnIncidentErrorTypeNoHandler               BpmnIncidentErrorType = "NoHandler"
-	BpmnIncidentErrorTypeRotationLimitError      BpmnIncidentErrorType = "RotationLimitError"
-	BpmnIncidentErrorTypeSnapshotSizeExceeded    BpmnIncidentErrorType = "SnapshotSizeExceeded"
-	BpmnIncidentErrorTypeSubscriptionError       BpmnIncidentErrorType = "SubscriptionError"
+	BpmnIncidentErrorTypeProcessNotFound         BpmnIncidentErrorType = "ProcessNotFound"
+	BpmnIncidentErrorTypeProcessSuspended        BpmnIncidentErrorType = "ProcessSuspended"
 	BpmnIncidentErrorTypeTimerResolution         BpmnIncidentErrorType = "TimerResolution"
 	BpmnIncidentErrorTypeUnknown                 BpmnIncidentErrorType = "Unknown"
 )
@@ -44,18 +59,16 @@ const (
 	BpmnIncidentRecordErrorTypeBpmnError               BpmnIncidentRecordErrorType = "BpmnError"
 	BpmnIncidentRecordErrorTypeCallActivityCanceled    BpmnIncidentRecordErrorType = "CallActivityCanceled"
 	BpmnIncidentRecordErrorTypeCompensationError       BpmnIncidentRecordErrorType = "CompensationError"
+	BpmnIncidentRecordErrorTypeDecisionEvaluationError BpmnIncidentRecordErrorType = "DecisionEvaluationError"
 	BpmnIncidentRecordErrorTypeDecisionNotFound        BpmnIncidentRecordErrorType = "DecisionNotFound"
-	BpmnIncidentRecordErrorTypeEscalationError         BpmnIncidentRecordErrorType = "EscalationError"
 	BpmnIncidentRecordErrorTypeExternalRowRefreshError BpmnIncidentRecordErrorType = "ExternalRowRefreshError"
 	BpmnIncidentRecordErrorTypeFeelError               BpmnIncidentRecordErrorType = "FeelError"
 	BpmnIncidentRecordErrorTypeGatewayNoMatch          BpmnIncidentRecordErrorType = "GatewayNoMatch"
 	BpmnIncidentRecordErrorTypeJobLockLost             BpmnIncidentRecordErrorType = "JobLockLost"
 	BpmnIncidentRecordErrorTypeLinkNotFound            BpmnIncidentRecordErrorType = "LinkNotFound"
 	BpmnIncidentRecordErrorTypeMigrationError          BpmnIncidentRecordErrorType = "MigrationError"
-	BpmnIncidentRecordErrorTypeNoHandler               BpmnIncidentRecordErrorType = "NoHandler"
-	BpmnIncidentRecordErrorTypeRotationLimitError      BpmnIncidentRecordErrorType = "RotationLimitError"
-	BpmnIncidentRecordErrorTypeSnapshotSizeExceeded    BpmnIncidentRecordErrorType = "SnapshotSizeExceeded"
-	BpmnIncidentRecordErrorTypeSubscriptionError       BpmnIncidentRecordErrorType = "SubscriptionError"
+	BpmnIncidentRecordErrorTypeProcessNotFound         BpmnIncidentRecordErrorType = "ProcessNotFound"
+	BpmnIncidentRecordErrorTypeProcessSuspended        BpmnIncidentRecordErrorType = "ProcessSuspended"
 	BpmnIncidentRecordErrorTypeTimerResolution         BpmnIncidentRecordErrorType = "TimerResolution"
 	BpmnIncidentRecordErrorTypeUnknown                 BpmnIncidentRecordErrorType = "Unknown"
 )
@@ -67,7 +80,6 @@ const (
 	BpmnInstanceStatusFAILED     BpmnInstanceStatus = "FAILED"
 	BpmnInstanceStatusRUNNING    BpmnInstanceStatus = "RUNNING"
 	BpmnInstanceStatusTERMINATED BpmnInstanceStatus = "TERMINATED"
-	BpmnInstanceStatusTIMEDOUT   BpmnInstanceStatus = "TIMED_OUT"
 )
 
 // Defines values for BpmnValidationIssueSeverity.
@@ -150,18 +162,16 @@ const (
 	BpmnError               ListBpmnIncidentsParamsErrorType = "BpmnError"
 	CallActivityCanceled    ListBpmnIncidentsParamsErrorType = "CallActivityCanceled"
 	CompensationError       ListBpmnIncidentsParamsErrorType = "CompensationError"
+	DecisionEvaluationError ListBpmnIncidentsParamsErrorType = "DecisionEvaluationError"
 	DecisionNotFound        ListBpmnIncidentsParamsErrorType = "DecisionNotFound"
-	EscalationError         ListBpmnIncidentsParamsErrorType = "EscalationError"
 	ExternalRowRefreshError ListBpmnIncidentsParamsErrorType = "ExternalRowRefreshError"
 	FeelError               ListBpmnIncidentsParamsErrorType = "FeelError"
 	GatewayNoMatch          ListBpmnIncidentsParamsErrorType = "GatewayNoMatch"
 	JobLockLost             ListBpmnIncidentsParamsErrorType = "JobLockLost"
 	LinkNotFound            ListBpmnIncidentsParamsErrorType = "LinkNotFound"
 	MigrationError          ListBpmnIncidentsParamsErrorType = "MigrationError"
-	NoHandler               ListBpmnIncidentsParamsErrorType = "NoHandler"
-	RotationLimitError      ListBpmnIncidentsParamsErrorType = "RotationLimitError"
-	SnapshotSizeExceeded    ListBpmnIncidentsParamsErrorType = "SnapshotSizeExceeded"
-	SubscriptionError       ListBpmnIncidentsParamsErrorType = "SubscriptionError"
+	ProcessNotFound         ListBpmnIncidentsParamsErrorType = "ProcessNotFound"
+	ProcessSuspended        ListBpmnIncidentsParamsErrorType = "ProcessSuspended"
 	TimerResolution         ListBpmnIncidentsParamsErrorType = "TimerResolution"
 	Unknown                 ListBpmnIncidentsParamsErrorType = "Unknown"
 )
@@ -173,7 +183,6 @@ const (
 	ListBpmnInstancesParamsStatusFAILED     ListBpmnInstancesParamsStatus = "FAILED"
 	ListBpmnInstancesParamsStatusRUNNING    ListBpmnInstancesParamsStatus = "RUNNING"
 	ListBpmnInstancesParamsStatusTERMINATED ListBpmnInstancesParamsStatus = "TERMINATED"
-	ListBpmnInstancesParamsStatusTIMEDOUT   ListBpmnInstancesParamsStatus = "TIMED_OUT"
 )
 
 // Defines values for ListBpmnUserTasksParamsStatus.
@@ -182,6 +191,20 @@ const (
 	ListBpmnUserTasksParamsStatusCOMPLETED ListBpmnUserTasksParamsStatus = "COMPLETED"
 	ListBpmnUserTasksParamsStatusCREATED   ListBpmnUserTasksParamsStatus = "CREATED"
 	ListBpmnUserTasksParamsStatusFAILED    ListBpmnUserTasksParamsStatus = "FAILED"
+)
+
+// Defines values for ListBpmnUserTasksParamsSort.
+const (
+	ListBpmnUserTasksParamsSortCreated  ListBpmnUserTasksParamsSort = "created"
+	ListBpmnUserTasksParamsSortDueDate  ListBpmnUserTasksParamsSort = "dueDate"
+	ListBpmnUserTasksParamsSortPriority ListBpmnUserTasksParamsSort = "priority"
+)
+
+// Defines values for ListBpmnUserTasksForCallerParamsSort.
+const (
+	ListBpmnUserTasksForCallerParamsSortCreated  ListBpmnUserTasksForCallerParamsSort = "created"
+	ListBpmnUserTasksForCallerParamsSortDueDate  ListBpmnUserTasksForCallerParamsSort = "dueDate"
+	ListBpmnUserTasksForCallerParamsSortPriority ListBpmnUserTasksForCallerParamsSort = "priority"
 )
 
 // ActiveScope A scope (sub-process, multi-instance body, or root process) that currently holds at least one live execution token.
@@ -238,12 +261,104 @@ type BatchEvaluationResponse struct {
 	} `json:"results,omitempty"`
 }
 
+// BpmnActivityState Execution record for a single BPMN activity (service task, user task, gateway, etc.).
+type BpmnActivityState struct {
+	// Actor User or service account whose call produced this entry: the completion of a job or user task, the publish of a message or signal a catch took, a start, a resolve, a suspension or a cancel. Empty for an entry the engine produced on its own.
+	Actor *string `json:"actor,omitempty"`
+
+	// ChildInstanceID For CallActivity nodes, the identifier of the child instance spawned by this execution. Empty for non-CallActivity nodes.
+	ChildInstanceID *string `json:"childInstanceID,omitempty"`
+
+	// EndTime When the element ended. Absent on a Started entry.
+	EndTime *time.Time `json:"endTime,omitempty"`
+
+	// ErrorCode BPMN `errorCode` of the throw error that caused the failure. Set on Failed/Resolved entries originating from a BPMN error; empty for non-BPMN failures. Error variables (if any) ride on `outputs` since a Failed entry doesn't otherwise produce outputs.
+	ErrorCode *string `json:"errorCode,omitempty"`
+
+	// ErrorMessage Failure reason on Failed / Canceled / Resolved entries. Empty on success paths.
+	ErrorMessage *string `json:"errorMessage,omitempty"`
+
+	// ExecutionKey Key of the element's execution, the same on its Started and its ending entry. Absent for an element that runs no execution, such as a start or end event.
+	ExecutionKey *string `json:"executionKey,omitempty"`
+
+	// IncomingFlows IDs of the sequence flows that brought the token to this element, on its first entry (Started, or Completed for an element without duration). A join firing lists every flow it consumed, a join cancelled before it fired lists the flows that had reached it. A flow is taken when some entry lists it, together with `pendingJoinArrivals` on the instance state.
+	IncomingFlows *[]string `json:"incomingFlows,omitempty"`
+
+	// Inputs Input variables evaluated at activity entry. Absent on history page entries.
+	Inputs *VariableMap `json:"inputs,omitempty"`
+
+	// NodeID ID of the BPMN flow node.
+	NodeID *string `json:"nodeID,omitempty"`
+
+	// NodeType Type of the BPMN node (e.g. ServiceTask, UserTask, ExclusiveGateway).
+	NodeType *string `json:"nodeType,omitempty"`
+
+	// Outputs Output variables produced by the activity. Absent on history page entries.
+	Outputs *VariableMap `json:"outputs,omitempty"`
+
+	// Retries Retries the external job had left when a worker or a lock expiry reported its outcome. Absent on a job the engine canceled.
+	Retries *int `json:"retries,omitempty"`
+
+	// Seq Position of the entry in the instance's history, from 1.
+	Seq *int64 `json:"seq,omitempty"`
+
+	// StartTime When the element started. Each entry records one event, so a Started entry carries it and a Completed, Failed, Canceled or Resolved entry leaves it out. An entry for an operation, such as a suspension or a migration, carries both times. Entries are ordered by `seq`, not by time.
+	StartTime *time.Time `json:"startTime,omitempty"`
+
+	// Status Execution outcome - Started, Completed, Failed, Canceled, or Resolved. `Resolved` replaces `Failed` once the originating incident is removed (retry, modification-cancel, boundary catch); the entry's `errorMessage` is preserved so the failed attempt remains auditable.
+	Status *BpmnActivityStateStatus `json:"status,omitempty"`
+
+	// TaskType Task type of the external job this entry ended, on the Completed, Failed or Canceled entry of a job's element. Empty otherwise.
+	TaskType *string `json:"taskType,omitempty"`
+
+	// Worker `clientID` of the worker that reported the external job's outcome, or whose lock ran out. Empty when no worker was named.
+	Worker *string `json:"worker,omitempty"`
+}
+
+// BpmnActivityStateStatus Execution outcome - Started, Completed, Failed, Canceled, or Resolved. `Resolved` replaces `Failed` once the originating incident is removed (retry, modification-cancel, boundary catch); the entry's `errorMessage` is preserved so the failed attempt remains auditable.
+type BpmnActivityStateStatus string
+
+// BpmnElementStatistics What an instance's history recorded for one element.
+type BpmnElementStatistics struct {
+	// Canceled Times the element was canceled.
+	Canceled *int `json:"canceled,omitempty"`
+
+	// ChildInstanceID For a call activity, the child its latest execution started.
+	ChildInstanceID *string `json:"childInstanceID,omitempty"`
+
+	// Completed Times the element completed.
+	Completed *int `json:"completed,omitempty"`
+
+	// Failed Times the element failed.
+	Failed *int `json:"failed,omitempty"`
+
+	// LastStatus The element's latest Completed, Failed, Canceled or Resolved entry.
+	LastStatus *BpmnElementStatisticsLastStatus `json:"lastStatus,omitempty"`
+}
+
+// BpmnElementStatisticsLastStatus The element's latest Completed, Failed, Canceled or Resolved entry.
+type BpmnElementStatisticsLastStatus string
+
 // BpmnExternalJobPaginatedResponse Page of external jobs.
 type BpmnExternalJobPaginatedResponse struct {
 	Data []ExternalJob `json:"data"`
 
-	// Pagination Pagination metadata accompanying paginated list responses.
-	Pagination PaginationMetadata `json:"pagination"`
+	// Pagination Where a list paged by cursor stands. Pass `nextCursor` back as `cursor`
+	// for the next page. It is absent on the last page. `total` counts the
+	// matches on the first page only, the one read without a cursor, and stops
+	// at 10,000, which `totalCapped` reports.
+	Pagination CursorPage `json:"pagination"`
+}
+
+// BpmnHistoryPage A window of an instance's BPMN history, oldest first. Its entries carry
+// no `inputs` or `outputs`. `total` is the entry count at the time of the
+// call, which is also the newest entry's `seq`. It grows while the
+// instance runs. New entries never reorder earlier ones.
+type BpmnHistoryPage struct {
+	Items []BpmnActivityState `json:"items"`
+
+	// Total Number of history entries at the time of the call.
+	Total int64 `json:"total"`
 }
 
 // BpmnIncident An error that halted execution of a BPMN node and requires manual resolution.
@@ -256,21 +371,19 @@ type BpmnIncident struct {
 
 	// ErrorType Category of the error. Values:
 	//   * `BpmnError` - A `bpmn:error` thrown by the process or an external job worker.
-	//   * `EscalationError` - A `bpmn:escalation` raised by the process.
 	//   * `CompensationError` - Failure during compensation handler execution.
 	//   * `FeelError` - A FEEL expression failed to evaluate.
-	//   * `NoHandler` - A thrown error/escalation has no matching catch event.
 	//   * `GatewayNoMatch` - An exclusive gateway evaluated all conditions to false with no default flow.
 	//   * `TimerResolution` - A timer expression could not be parsed or resolved.
 	//   * `LinkNotFound` - A link throw event has no matching link catch.
 	//   * `MigrationError` - A process instance migration could not be applied.
-	//   * `SubscriptionError` - A message/signal listener's registry row could not be written; the listener is dead until resolved.
-	//   * `RotationLimitError` - The instance reached its ContinueAsNew rotation cap.
-	//   * `SnapshotSizeExceeded` - A ContinueAsNew snapshot exceeded the configured size cap.
 	//   * `CallActivityCanceled` - A call-activity child terminated as Canceled out-of-band.
 	//   * `ExternalRowRefreshError` - A migration could not rewrite a parked wait's external row (job, user task or subscription) against the target definition. Resolving re-runs the refresh.
 	//   * `JobLockLost` - An external job's worker lock ran out, by missed heartbeats or the maximum hold, with no retries left.
 	//   * `DecisionNotFound` - A business rule task called a decision, or a pinned version of one, that is not deployed.
+	//   * `DecisionEvaluationError` - The decision a business rule task called failed while it was evaluated, such as a FEEL error or a violated hit policy. The failed evaluation is recorded.
+	//   * `ProcessNotFound` - A call activity called a process, or a pinned version of one, that is not deployed.
+	//   * `ProcessSuspended` - A call activity called a suspended process version.
 	//   * `Unknown` - Internal error not classified above.
 	ErrorType *BpmnIncidentErrorType `json:"errorType,omitempty"`
 
@@ -289,11 +402,11 @@ type BpmnIncident struct {
 	// ParentScopeID ID of the scope containing `scopeID`, empty for the root scope. Scope IDs are opaque, so this is how a client walks a failure back up the process tree.
 	ParentScopeID *string `json:"parentScopeID,omitempty"`
 
+	// RaisedAt When the incident was raised.
+	RaisedAt *time.Time `json:"raisedAt,omitempty"`
+
 	// ScopeID ID of the scope in which the error occurred.
 	ScopeID *string `json:"scopeID,omitempty"`
-
-	// Timestamp Unix epoch milliseconds when the incident was recorded.
-	Timestamp *int64 `json:"timestamp,omitempty"`
 
 	// Variables Variables in scope at the time of the error.
 	Variables *VariableMap `json:"variables,omitempty"`
@@ -301,21 +414,19 @@ type BpmnIncident struct {
 
 // BpmnIncidentErrorType Category of the error. Values:
 //   - `BpmnError` - A `bpmn:error` thrown by the process or an external job worker.
-//   - `EscalationError` - A `bpmn:escalation` raised by the process.
 //   - `CompensationError` - Failure during compensation handler execution.
 //   - `FeelError` - A FEEL expression failed to evaluate.
-//   - `NoHandler` - A thrown error/escalation has no matching catch event.
 //   - `GatewayNoMatch` - An exclusive gateway evaluated all conditions to false with no default flow.
 //   - `TimerResolution` - A timer expression could not be parsed or resolved.
 //   - `LinkNotFound` - A link throw event has no matching link catch.
 //   - `MigrationError` - A process instance migration could not be applied.
-//   - `SubscriptionError` - A message/signal listener's registry row could not be written; the listener is dead until resolved.
-//   - `RotationLimitError` - The instance reached its ContinueAsNew rotation cap.
-//   - `SnapshotSizeExceeded` - A ContinueAsNew snapshot exceeded the configured size cap.
 //   - `CallActivityCanceled` - A call-activity child terminated as Canceled out-of-band.
 //   - `ExternalRowRefreshError` - A migration could not rewrite a parked wait's external row (job, user task or subscription) against the target definition. Resolving re-runs the refresh.
 //   - `JobLockLost` - An external job's worker lock ran out, by missed heartbeats or the maximum hold, with no retries left.
 //   - `DecisionNotFound` - A business rule task called a decision, or a pinned version of one, that is not deployed.
+//   - `DecisionEvaluationError` - The decision a business rule task called failed while it was evaluated, such as a FEEL error or a violated hit policy. The failed evaluation is recorded.
+//   - `ProcessNotFound` - A call activity called a process, or a pinned version of one, that is not deployed.
+//   - `ProcessSuspended` - A call activity called a suspended process version.
 //   - `Unknown` - Internal error not classified above.
 type BpmnIncidentErrorType string
 
@@ -326,9 +437,6 @@ type BpmnIncidentErrorType string
 // `resolvedBy` and the parent process metadata so it can be listed and
 // filtered without joining back to the instance.
 type BpmnIncidentRecord struct {
-	// DefinitionID ID of the process definition the instance is running. May be absent when the source definition was deleted.
-	DefinitionID *openapi_types.UUID `json:"definitionID,omitempty"`
-
 	// ErrorCode BPMN error code from the process definition; empty for non-BPMN errors.
 	ErrorCode *string `json:"errorCode,omitempty"`
 
@@ -341,8 +449,11 @@ type BpmnIncidentRecord struct {
 	// ExecutionKey Execution key of the activity that failed.
 	ExecutionKey *string `json:"executionKey,omitempty"`
 
-	// IncidentID Engine-assigned incident identifier, unique within the workflow. Resolve the incident with it.
+	// IncidentID Engine-assigned incident identifier, unique within the instance. Resolve the incident with it.
 	IncidentID string `json:"incidentID"`
+
+	// InstanceID Identifier of the instance that produced the incident.
+	InstanceID string `json:"instanceID"`
 
 	// MiIndex Zero-based multi-instance body index when the failure happened inside one iteration of a multi-instance activity. Absent otherwise.
 	MiIndex *int `json:"miIndex,omitempty"`
@@ -353,7 +464,7 @@ type BpmnIncidentRecord struct {
 	// ParentScopeID ID of the scope containing `scopeID`, empty for the root scope. Scope IDs are opaque, so this is how a client walks a failure back up the process tree.
 	ParentScopeID *string `json:"parentScopeID,omitempty"`
 
-	// ProcessID BPMN process ID of the parent definition. Convenience field; absent when definitionID is unresolved.
+	// ProcessID BPMN process ID of the definition the instance is running.
 	ProcessID *string `json:"processID,omitempty"`
 
 	// ProcessName Human-readable name of the parent process definition.
@@ -368,14 +479,11 @@ type BpmnIncidentRecord struct {
 	// ResolvedAt Timestamp when the incident was resolved. Empty while open.
 	ResolvedAt *time.Time `json:"resolvedAt,omitempty"`
 
-	// ResolvedBy Identifier of the user who resolved the incident, or "system:reconcile" when corrected by drift reconciliation. Empty for engine-internal resolves (boundary catches, modification cancel) and for open incidents.
+	// ResolvedBy User or service account that resolved the incident. Empty for engine-internal resolves (boundary catches, modification cancel) and for open incidents.
 	ResolvedBy *string `json:"resolvedBy,omitempty"`
 
 	// ScopeID ID of the scope in which the error occurred.
 	ScopeID *string `json:"scopeID,omitempty"`
-
-	// WorkflowID Identifier of the instance that produced the incident.
-	WorkflowID string `json:"workflowID"`
 }
 
 // BpmnIncidentRecordErrorType Category of the error - same enum as `BpmnIncident.errorType`.
@@ -385,8 +493,11 @@ type BpmnIncidentRecordErrorType string
 type BpmnIncidentRecordPaginatedResponse struct {
 	Data []BpmnIncidentRecord `json:"data"`
 
-	// Pagination Pagination metadata accompanying paginated list responses.
-	Pagination PaginationMetadata `json:"pagination"`
+	// Pagination Where a list paged by cursor stands. Pass `nextCursor` back as `cursor`
+	// for the next page. It is absent on the last page. `total` counts the
+	// matches on the first page only, the one read without a cursor, and stops
+	// at 10,000, which `totalCapped` reports.
+	Pagination CursorPage `json:"pagination"`
 }
 
 // BpmnInstance A running or completed execution of a BPMN process.
@@ -400,34 +511,37 @@ type BpmnInstance struct {
 	// CreatedAt Timestamp when the instance was started.
 	CreatedAt time.Time `json:"createdAt"`
 
-	// DefinitionID ID of the deployed BPMN process definition this instance is running.
-	DefinitionID openapi_types.UUID `json:"definitionID"`
-
 	// DefinitionSuspended True when the process definition this instance runs is paused. Token
 	// dispatch stops while either scope is set, so an instance is
 	// effectively paused if this is true or `suspendedAt` is present. The
 	// two stay separate because resume acts on one scope at a time.
 	DefinitionSuspended *bool `json:"definitionSuspended,omitempty"`
 
+	// Draft True for a test run, see `StartBpmnTestInstance`.
+	Draft *bool `json:"draft,omitempty"`
+
 	// HasIncident True when at least one unresolved incident is currently attached to this instance. Computed at query time against the open-incidents index - useful for rendering a "needs attention" indicator in instance lists without paying for a per-row state fetch from the engine.
 	HasIncident *bool `json:"hasIncident,omitempty"`
+
+	// InstanceID Identifier of this instance. Use it to address the instance in all API calls - fetch state, send signals/messages, complete user tasks, list children, cancel, etc.
+	InstanceID string `json:"instanceID"`
+
+	// ParentInstanceID Identifier of the parent instance that started this one via a CallActivity. Empty for top-level instances.
+	ParentInstanceID *string `json:"parentInstanceID,omitempty"`
 
 	// ParentSuspended True when an instance above this running call-activity child in the
 	// call chain is paused, which pauses this one too. It clears when that
 	// instance is resumed.
 	ParentSuspended *bool `json:"parentSuspended,omitempty"`
 
-	// ParentWorkflowID Execution identifier of the parent instance that started this one via a CallActivity. Empty for top-level instances.
-	ParentWorkflowID *string `json:"parentWorkflowID,omitempty"`
-
-	// ProcessId BPMN process ID of the definition this instance was started from. Together with `processVersion` it addresses the version, which `definitionID` alone does not.
-	ProcessId *string `json:"processId,omitempty"`
+	// ProcessId BPMN process ID of the definition this instance was started from. Together with `processVersion` it addresses the version.
+	ProcessId string `json:"processId"`
 
 	// ProcessName Human-readable name of that process definition.
 	ProcessName *string `json:"processName,omitempty"`
 
-	// ProcessVersion Version of the process definition this instance was started from.
-	ProcessVersion *int `json:"processVersion,omitempty"`
+	// ProcessVersion Version of the process definition this instance was started from. 0 on a test run, which runs no deployed version.
+	ProcessVersion int `json:"processVersion"`
 
 	// StartedBy User or service account that initiated the instance.
 	StartedBy *string `json:"startedBy,omitempty"`
@@ -445,13 +559,7 @@ type BpmnInstance struct {
 
 	// SuspendedBy Operator who suspended this instance (instance scope). Empty when not instance-suspended.
 	SuspendedBy *string `json:"suspendedBy,omitempty"`
-
-	// WorkflowID Stable execution identifier for this instance. Use this to address the instance in all API calls - fetch state, send signals/messages, complete user tasks, list children, cancel, etc.
-	WorkflowID string `json:"workflowID"`
 }
-
-// BpmnInstanceStatus Current lifecycle status of the instance.
-type BpmnInstanceStatus string
 
 // BpmnInstanceChildrenResponse Child instances spawned by a parent instance via CallActivity elements.
 type BpmnInstanceChildrenResponse struct {
@@ -462,8 +570,11 @@ type BpmnInstanceChildrenResponse struct {
 type BpmnInstancePaginatedResponse struct {
 	Data []BpmnInstance `json:"data"`
 
-	// Pagination Pagination metadata accompanying paginated list responses.
-	Pagination PaginationMetadata `json:"pagination"`
+	// Pagination Where a list paged by cursor stands. Pass `nextCursor` back as `cursor`
+	// for the next page. It is absent on the last page. `total` counts the
+	// matches on the first page only, the one read without a cursor, and stops
+	// at 10,000, which `totalCapped` reports.
+	Pagination CursorPage `json:"pagination"`
 }
 
 // BpmnInstanceState Full runtime state of a BPMN process instance.
@@ -481,16 +592,26 @@ type BpmnInstanceState struct {
 	// while either flag is set.
 	DefinitionSuspension *SuspensionEntry `json:"definitionSuspension,omitempty"`
 
+	// Draft True for a test run, see `StartBpmnTestInstance`. Messages and signals
+	// reach it under their names with the `draft:` prefix.
+	Draft *bool `json:"draft,omitempty"`
+
+	// ElementStatistics The whole history summarised per element ID, so a diagram can show what each element did without reading the history.
+	ElementStatistics *map[string]BpmnElementStatistics `json:"elementStatistics,omitempty"`
+
 	// Error True when the instance failed or has an unresolved incident.
 	Error *bool `json:"error,omitempty"`
 
-	// FailureReason Error message from the workflow when status is FAILED.
+	// FailureReason Error message of the instance when status is FAILED.
 	FailureReason *string `json:"failureReason,omitempty"`
 
 	// Incidents Active incidents that require resolution before the process can
 	// continue. Empty once the instance has finished: the incident list keeps
 	// each one with `resolvedBy` set to `system:<status>`.
 	Incidents *[]BpmnIncident `json:"incidents,omitempty"`
+
+	// InstanceID Identifier of this instance.
+	InstanceID string `json:"instanceID"`
 
 	// InstanceSuspension Audit-shaped record of an active suspension at one scope (instance or
 	// definition). Returned inline on `BpmnInstanceState` - `null` when not
@@ -499,15 +620,15 @@ type BpmnInstanceState struct {
 	// while either flag is set.
 	InstanceSuspension *SuspensionEntry `json:"instanceSuspension,omitempty"`
 
+	// ParentInstanceID Identifier of the parent instance that started this one via a CallActivity. Empty for top-level instances.
+	ParentInstanceID *string `json:"parentInstanceID,omitempty"`
+
 	// ParentSuspension Audit-shaped record of an active suspension at one scope (instance or
 	// definition). Returned inline on `BpmnInstanceState` - `null` when not
 	// suspended at that scope. An instance is "effectively suspended" if either
 	// scope's entry is present; the dispatcher pauses forward token dispatch
 	// while either flag is set.
 	ParentSuspension *SuspensionEntry `json:"parentSuspension,omitempty"`
-
-	// ParentWorkflowID Execution identifier of the parent instance that started this one via a CallActivity. Empty for top-level instances.
-	ParentWorkflowID *string `json:"parentWorkflowID,omitempty"`
 
 	// PendingJoinArrivals Joins still waiting to fire, with the flows that have reached them.
 	PendingJoinArrivals *[]JoinArrivals `json:"pendingJoinArrivals,omitempty"`
@@ -518,26 +639,32 @@ type BpmnInstanceState struct {
 	// ProcessVersion Version of the BPMN process definition this instance is currently running. Updated by migration operations.
 	ProcessVersion *int `json:"processVersion,omitempty"`
 
-	// ResourceID ID of the BPMN resource (definition file) that produced this instance.
-	ResourceID openapi_types.UUID `json:"resourceID"`
+	// ResourceID ID of the BPMN resource the instance's process version was deployed from. Empty for a version deployed from no resource.
+	ResourceID *openapi_types.UUID `json:"resourceID,omitempty"`
 
-	// Status Current lifecycle status of the instance (e.g. RUNNING, COMPLETED, FAILED, TERMINATED).
-	Status *string `json:"status,omitempty"`
+	// StartedBy User or service account that started the instance. For an instance a message or signal started, its publisher. Empty for a timer start or a call-activity child.
+	StartedBy *string `json:"startedBy,omitempty"`
+
+	// Status Current lifecycle status of the instance.
+	Status *BpmnInstanceStatus `json:"status,omitempty"`
+
+	// TakenFlows Sequence flows a token has taken, by flow ID.
+	TakenFlows *[]string `json:"takenFlows,omitempty"`
 
 	// Variables All variables currently in scope for the root process.
 	Variables *VariableMap `json:"variables,omitempty"`
-
-	// WorkflowID Execution identifier for this instance.
-	WorkflowID *string `json:"workflowID,omitempty"`
 }
 
-// BpmnProcessDefinition A single deployable process parsed out of a BPMN resource.
+// BpmnInstanceStatus Current lifecycle status of the instance.
+type BpmnInstanceStatus string
+
+// BpmnProcessDefinition A deployed process version from a BPMN resource. `processID` and `version` address it.
 type BpmnProcessDefinition struct {
 	// CreatedAt Timestamp when this version became available.
 	CreatedAt time.Time `json:"createdAt"`
 
-	// Id Platform identifier of this process definition. Used as `processDefinitionID` when starting instances.
-	Id openapi_types.UUID `json:"id"`
+	// DeployedBy User or service account that deployed this version.
+	DeployedBy *string `json:"deployedBy,omitempty"`
 
 	// ProcessID BPMN `id` attribute on the `<process>` element.
 	ProcessID string `json:"processID"`
@@ -590,13 +717,13 @@ type BpmnProcessSummaryPaginatedResponse struct {
 	Pagination PaginationMetadata `json:"pagination"`
 }
 
-// BpmnProcessVersion One deployed version of a process, with instance counts.
+// BpmnProcessVersion One deployed version of a process, with instance counts. `processID` and `version` address it.
 type BpmnProcessVersion struct {
 	// CreatedAt Timestamp when this version was deployed.
 	CreatedAt time.Time `json:"createdAt"`
 
-	// Id Platform identifier of this process definition version. Use it to filter instances or as the source/target of a migration.
-	Id openapi_types.UUID `json:"id"`
+	// DeployedBy User or service account that deployed this version.
+	DeployedBy *string `json:"deployedBy,omitempty"`
 
 	// ProcessID BPMN process id.
 	ProcessID string `json:"processID"`
@@ -604,11 +731,11 @@ type BpmnProcessVersion struct {
 	// ProcessName Human-readable process name.
 	ProcessName string `json:"processName"`
 
-	// ResourceID Owning BPMN resource version.
-	ResourceID openapi_types.UUID `json:"resourceID"`
+	// ResourceID BPMN resource version it was deployed from. Empty for a version deployed from no resource.
+	ResourceID *openapi_types.UUID `json:"resourceID,omitempty"`
 
-	// ResourceName Display name of the owning resource.
-	ResourceName string `json:"resourceName"`
+	// ResourceName Display name of that resource.
+	ResourceName *string `json:"resourceName,omitempty"`
 
 	// RunningCount Instances of this version with status RUNNING.
 	RunningCount int `json:"runningCount"`
@@ -753,8 +880,11 @@ type BpmnResourceSummaryPaginatedResponse struct {
 type BpmnUserTaskPaginatedResponse struct {
 	Data []UserTask `json:"data"`
 
-	// Pagination Pagination metadata accompanying paginated list responses.
-	Pagination PaginationMetadata `json:"pagination"`
+	// Pagination Where a list paged by cursor stands. Pass `nextCursor` back as `cursor`
+	// for the next page. It is absent on the last page. `total` counts the
+	// matches on the first page only, the one read without a cursor, and stops
+	// at 10,000, which `totalCapped` reports.
+	Pagination CursorPage `json:"pagination"`
 }
 
 // BpmnValidateResponse Result of validating BPMN XML, separated into blocking errors and informational warnings.
@@ -793,13 +923,14 @@ type CorrelationKeyString = string
 // CorrelationKeys Selects which subscription(s) receive a published message.
 //
 // The provided value - primitive (string, number, boolean) or object -
-// is matched against the subscription's resolved correlation value.
-// Matching is type-sensitive (the number `123` does not match the
-// string `"123"`); for objects, the publisher's keys must be a
-// recursive subset of the subscription's stored keys.
+// must equal the subscription's resolved correlation value. Matching is
+// type-sensitive: the number `123` does not match the string `"123"`.
+// Numbers compare by value, so `1` matches `1.0`. Objects match when
+// they hold the same keys with equal values, in any key order. Lists
+// match element by element, in order.
 //
-// Empty / omitted broadcasts to subscriptions with no correlation
-// requirement.
+// Omitted, the publish only triggers message start events, since every
+// waiting catch declares a correlation value.
 type CorrelationKeys struct {
 	union json.RawMessage
 }
@@ -813,22 +944,23 @@ type CreateBpmnResourceRequest struct {
 	Xml string `json:"xml"`
 }
 
-// CreateDefinitionRequest Payload for creating a new DMN definition version.
+// CreateDefinitionRequest Payload for saving a new draft DMN definition.
 type CreateDefinitionRequest struct {
 	// Name Display name.
 	Name string `json:"name"`
-
-	// Version Optional explicit version number. If omitted, the server assigns one.
-	Version *int `json:"version,omitempty"`
 
 	// Xml DMN XML body.
 	Xml string `json:"xml"`
 }
 
-// CreateProjectRequest Payload for creating a new project. The owning account is inferred from the caller's authentication context.
-type CreateProjectRequest struct {
-	// Name Human-readable project name.
-	Name string `json:"name"`
+// CursorPage Where a list paged by cursor stands. Pass `nextCursor` back as `cursor`
+// for the next page. It is absent on the last page. `total` counts the
+// matches on the first page only, the one read without a cursor, and stops
+// at 10,000, which `totalCapped` reports.
+type CursorPage struct {
+	NextCursor  *string `json:"nextCursor,omitempty"`
+	Total       *int    `json:"total,omitempty"`
+	TotalCapped *bool   `json:"totalCapped,omitempty"`
 }
 
 // DecisionInputField defines model for DecisionInputField.
@@ -848,7 +980,7 @@ type DecisionSummary struct {
 	// DecisionName Human-readable name of the decision.
 	DecisionName string `json:"decisionName"`
 
-	// DefinitionName Human-readable name of the parent DMN definition.
+	// DefinitionName Human-readable name of the DMN definition the latest version came from.
 	DefinitionName string `json:"definitionName"`
 
 	// DefinitionsID Stable identifier from the DMN XML's outer `<definitions id="…">` attribute.
@@ -857,31 +989,60 @@ type DecisionSummary struct {
 	// InputFields Declared input variables of the decision (from DMN `InformationRequirement` → `InputData`). Useful for prepopulating BPMN BusinessRuleTask input mappings. Empty when the decision declares no typed inputs.
 	InputFields []DecisionInputField `json:"inputFields"`
 
-	// LatestVersion Highest deployed version that contains this decision.
+	// LatestVersion The decision's latest deployed version, counted per decision id. A business rule task that binds a version names this number.
 	LatestVersion int `json:"latestVersion"`
 }
 
-// Definition A stored DMN definition. Each call to CreateDefinition produces a new version of a `definitionsID`.
-type Definition struct {
-	// CreatedAt Timestamp when this version was uploaded.
-	CreatedAt time.Time `json:"createdAt"`
+// DecisionVersion A deployed version of a decision.
+type DecisionVersion struct {
+	// DecisionName Human-readable name of the decision in this version.
+	DecisionName *string `json:"decisionName,omitempty"`
 
-	// CreatedBy User who uploaded this version.
-	CreatedBy *string `json:"createdBy,omitempty"`
+	// DefinitionVersion The deployed version of that DMN definition.
+	DefinitionVersion int `json:"definitionVersion"`
 
-	// DefinitionsID Stable identifier from the DMN XML's outer `<definitions id="…">` attribute. Shared across versions.
+	// DefinitionsID Stable identifier of the DMN definition this version came from.
 	DefinitionsID string `json:"definitionsID"`
 
-	// Id Platform identifier for this specific definition version.
+	// DeployedAt When that DMN definition version was deployed.
+	DeployedAt time.Time `json:"deployedAt"`
+
+	// Version The decision's version, counted per decision id.
+	Version int `json:"version"`
+}
+
+// DecisionVersionList A decision's deployed versions, the latest first.
+type DecisionVersionList struct {
+	Data []DecisionVersion `json:"data"`
+}
+
+// Definition A saved DMN definition, a draft until it is deployed.
+type Definition struct {
+	// CreatedAt Timestamp of the last save.
+	CreatedAt time.Time `json:"createdAt"`
+
+	// CreatedBy User who saved this definition.
+	CreatedBy *string `json:"createdBy,omitempty"`
+
+	// DefinitionsID Stable identifier from the DMN XML's outer `<definitions id="…">` attribute. Shared across the definitions saved for one model.
+	DefinitionsID string `json:"definitionsID"`
+
+	// DeployedAt Timestamp of the deploy. Absent on a draft.
+	DeployedAt *time.Time `json:"deployedAt,omitempty"`
+
+	// Id Platform identifier of this saved definition.
 	Id openapi_types.UUID `json:"id"`
+
+	// IsDeployed True once the definition is deployed, which makes it read-only and its decisions evaluable.
+	IsDeployed bool `json:"isDeployed"`
 
 	// Name Human-readable name displayed in the UI.
 	Name string `json:"name"`
 
-	// Version Auto-incremented version number, starting at 1 for the first upload of a `definitionsID`.
-	Version int `json:"version"`
+	// Version The version its deploy gave it, counted per `definitionsID`. Absent on a draft.
+	Version *int `json:"version,omitempty"`
 
-	// VersionCount Total number of stored versions under this `definitionsID`. Populated by the latest-listing endpoint; absent on single-version reads.
+	// VersionCount How many definitions are saved under this `definitionsID`. Populated by the latest-listing endpoint and absent on single reads.
 	VersionCount *int `json:"versionCount,omitempty"`
 
 	// Xml The DMN XML body.
@@ -902,10 +1063,10 @@ type Error struct {
 	// Code Machine-readable error category. Values:
 	//   * `BAD_REQUEST` - request is malformed or fails validation.
 	//   * `UNAUTHORIZED` - request lacks or has an invalid authentication token.
-	//   * `FORBIDDEN` - caller is authenticated but lacks permission, or has hit a quota.
+	//   * `FORBIDDEN` - caller is authenticated but lacks permission.
 	//   * `NOT_FOUND` - the addressed resource does not exist.
 	//   * `CONFLICT` - the request collides with the resource's current state, such as reporting on a job this worker no longer holds.
-	//   * `UNAVAILABLE` - the resource cannot answer right now, such as a running instance whose workflow task is being retried. Try again shortly.
+	//   * `UNAVAILABLE` - the resource cannot answer right now, such as while the engine's database is unreachable. Try again shortly.
 	//   * `INTERNAL_ERROR` - unexpected server-side failure.
 	Code ErrorCode `json:"code"`
 
@@ -919,10 +1080,10 @@ type Error struct {
 // ErrorCode Machine-readable error category. Values:
 //   - `BAD_REQUEST` - request is malformed or fails validation.
 //   - `UNAUTHORIZED` - request lacks or has an invalid authentication token.
-//   - `FORBIDDEN` - caller is authenticated but lacks permission, or has hit a quota.
+//   - `FORBIDDEN` - caller is authenticated but lacks permission.
 //   - `NOT_FOUND` - the addressed resource does not exist.
 //   - `CONFLICT` - the request collides with the resource's current state, such as reporting on a job this worker no longer holds.
-//   - `UNAVAILABLE` - the resource cannot answer right now, such as a running instance whose workflow task is being retried. Try again shortly.
+//   - `UNAVAILABLE` - the resource cannot answer right now, such as while the engine's database is unreachable. Try again shortly.
 //   - `INTERNAL_ERROR` - unexpected server-side failure.
 type ErrorCode string
 
@@ -937,15 +1098,15 @@ type ErrorCode string
 // Omit it to use the mode the server is configured with.
 type ErrorMode string
 
-// EvaluateStoredRequest Payload for evaluating a stored DMN definition.
+// EvaluateStoredRequest Payload for evaluating a deployed DMN definition.
 type EvaluateStoredRequest struct {
-	// BusinessId Optional caller-supplied correlation key persisted with the resulting execution row for cross-system tracing.
+	// BusinessId Optional caller-supplied correlation key recorded with the evaluation for cross-system tracing.
 	BusinessId *string `json:"businessId,omitempty"`
 
 	// Context FEEL context (a name → value map). The DMN equivalent of an object.
 	Context FeelContext `json:"context"`
 
-	// DecisionServices Names of decision services to evaluate. If empty, no decision services are evaluated.
+	// DecisionServices Names of decision services to evaluate. When given, `decisions` is ignored.
 	DecisionServices *[]string `json:"decisionServices,omitempty"`
 
 	// Decisions Names of decisions or decision services to evaluate. If empty, all decisions are evaluated.
@@ -961,9 +1122,8 @@ type EvaluateStoredRequest struct {
 	// Omit it to use the mode the server is configured with.
 	ErrorMode *ErrorMode `json:"errorMode,omitempty"`
 
-	// Version Specific definition version to evaluate when evaluating by definitions id. Defaults to the
-	// latest version. The `version` query parameter does the same, and a request giving both with
-	// different values is rejected. Evaluating by definition UUID ignores it, as the UUID names one version.
+	// Version Deployed version to evaluate, the latest when omitted. The `version` query parameter does
+	// the same, and a request giving both with different values is rejected.
 	Version *int `json:"version,omitempty"`
 }
 
@@ -971,6 +1131,10 @@ type EvaluateStoredRequest struct {
 type EvaluationResult struct {
 	// DecisionID ID of the decision element from the DMN XML.
 	DecisionID *string `json:"decisionID,omitempty"`
+
+	// DecisionVersion The decision's version, counted per decision id. Present on a decision of a deployed
+	// definition, absent on a draft evaluation.
+	DecisionVersion *int `json:"decisionVersion,omitempty"`
 
 	// Dependencies Results of upstream decisions this decision required. Useful for tracing evaluation paths.
 	Dependencies *[]EvaluationResult `json:"dependencies,omitempty"`
@@ -1005,43 +1169,59 @@ type EvaluationResult struct {
 //   - `INPUT_DATA` - an input variable, included for context, not evaluated.
 type EvaluationResultType string
 
-// Execution A single recorded DMN evaluation against a stored definition.
+// Execution A recorded evaluation of a deployed DMN definition, by `EvaluateByDefinitionsID` or by a
+// business rule task. A business rule task's names its instance, task and decision.
 type Execution struct {
 	// BusinessId Caller-supplied correlation key passed at evaluation time (REST) or inherited from the parent BPMN process (business rule task).
 	BusinessId *string `json:"businessId,omitempty"`
 
-	// DefinitionID Platform identifier of the definition version that was evaluated.
-	DefinitionID openapi_types.UUID `json:"definitionID"`
+	// DecisionID The decision a business rule task called. Absent on an evaluation through the API.
+	DecisionID *string `json:"decisionID,omitempty"`
 
-	// DefinitionsID The DMN XML's `<definitions id="…">` value, useful for grouping executions across versions.
-	DefinitionsID *string `json:"definitionsID,omitempty"`
+	// DecisionVersion The version of `decisionID` the business rule task called. Absent on an evaluation through the API.
+	DecisionVersion *int `json:"decisionVersion,omitempty"`
+
+	// DefinitionsID The DMN XML's `<definitions id="…">` value.
+	DefinitionsID string `json:"definitionsID"`
 
 	// ExecutedAt Timestamp when the evaluation ran.
 	ExecutedAt time.Time `json:"executedAt"`
 
-	// ExecutedBy User or service account that issued the evaluation.
+	// ExecutedBy User or service account that issued the evaluation. Absent on a business rule task's.
 	ExecutedBy *string `json:"executedBy,omitempty"`
 
-	// Id Unique identifier of this execution.
+	// Id Unique identifier of this evaluation.
 	Id openapi_types.UUID `json:"id"`
 
 	// Inputs FEEL context (a name → value map). The DMN equivalent of an object.
 	Inputs FeelContext `json:"inputs"`
 
-	// Outputs A FEEL-typed value as it appears in DMN inputs and outputs. May be a number, string, boolean, list, or nested context.
-	Outputs *FeelValue `json:"outputs"`
+	// InstanceID The process instance of the business rule task. Absent on an evaluation through the API.
+	InstanceID *string `json:"instanceID,omitempty"`
+
+	// NodeID The business rule task's element id. Absent on an evaluation through the API.
+	NodeID *string `json:"nodeID,omitempty"`
+
+	// Outputs Each evaluated decision's result, by decision name.
+	Outputs map[string]EvaluationResult `json:"outputs"`
+
+	// Version The deployed version of `definitionsID` that was evaluated.
+	Version int `json:"version"`
 }
 
-// ExternalJob A unit of work emitted by a BPMN service task that an external worker is expected to handle.
+// ExternalJob A unit of work emitted by a BPMN service task that an external worker is expected to handle. A job is kept until its instance ends, and from then on its instance's history holds it.
 type ExternalJob struct {
 	// BusinessId Caller-supplied correlation key inherited from the parent BPMN process. Workers can use it for log correlation or downstream tracing.
 	BusinessId *string `json:"businessId,omitempty"`
 
-	// CancelReason Best-effort label describing why a CANCELED job was interrupted (e.g. instance cancelled, instance terminated).
+	// CancelReason Best-effort label describing why a CANCELED job was interrupted (e.g. an interrupting boundary event, a migration).
 	CancelReason *string `json:"cancelReason,omitempty"`
 
 	// CompletedAt Timestamp when the job reached a terminal status.
 	CompletedAt *time.Time `json:"completedAt,omitempty"`
+
+	// CompletedBy User or service account that reported the job's outcome. Empty while pending, and for a job the engine ended itself.
+	CompletedBy *string `json:"completedBy,omitempty"`
 
 	// CreatedAt Timestamp when the job was created.
 	CreatedAt time.Time `json:"createdAt"`
@@ -1052,8 +1232,8 @@ type ExternalJob struct {
 	// Headers Static metadata attached at design time on the service task. Available to workers but not merged back into the instance.
 	Headers *map[string]string `json:"headers,omitempty"`
 
-	// Id Unique identifier of this job record.
-	Id openapi_types.UUID `json:"id"`
+	// InstanceID Identifier of the instance that produced the job. Required when calling Complete / ThrowError.
+	InstanceID string `json:"instanceID"`
 
 	// LockExpiresAt Time at which the lock will be released if not extended via Heartbeat.
 	LockExpiresAt *time.Time `json:"lockExpiresAt,omitempty"`
@@ -1064,8 +1244,8 @@ type ExternalJob struct {
 	// NodeID ID of the BPMN service-task node.
 	NodeID string `json:"nodeID"`
 
-	// ParentWorkflowID Identifier of the parent instance (set when the producing instance was started by a CallActivity).
-	ParentWorkflowID *string `json:"parentWorkflowID,omitempty"`
+	// ParentInstanceID Identifier of the parent instance (set when the producing instance was started by a CallActivity).
+	ParentInstanceID *string `json:"parentInstanceID,omitempty"`
 
 	// Retries Remaining retry budget. A retryable worker error and a lock that runs out each use one.
 	Retries *int `json:"retries,omitempty"`
@@ -1081,9 +1261,6 @@ type ExternalJob struct {
 
 	// Variables Input variables resolved by the service task at activity entry.
 	Variables *VariableMap `json:"variables,omitempty"`
-
-	// WorkflowID Identifier of the instance that produced the job. Required when calling Complete / ThrowError.
-	WorkflowID string `json:"workflowID"`
 }
 
 // ExternalJobStatus Lifecycle status of the job.
@@ -1298,11 +1475,14 @@ type StartBpmnInstanceRequest struct {
 	// BusinessId Optional caller-supplied correlation key (order number, ticket ID, etc.) indexed for filtering and stamped on every child instance, external job, user task, and DMN execution emitted by this process.
 	BusinessId *string `json:"businessId,omitempty"`
 
-	// ProcessDefinitionID ID of a deployed `BpmnProcessDefinition` to start.
-	ProcessDefinitionID openapi_types.UUID `json:"processDefinitionID"`
+	// ProcessID BPMN process ID of a deployed process to start.
+	ProcessID string `json:"processID"`
 
 	// Variables Initial process variables. Available to FEEL expressions and service tasks from the first activity onward.
 	Variables *VariableMap `json:"variables,omitempty"`
+
+	// Version Deployed version to start. Omit for the latest version.
+	Version *int `json:"version,omitempty"`
 }
 
 // StartBpmnTestInstanceRequest Payload for starting a non-deployed BPMN process instance against a draft resource for testing.
@@ -1324,7 +1504,7 @@ type SuspendBpmnDefinitionRequest struct {
 
 // SuspendBpmnInstanceRequest Optional metadata captured with an instance-scope suspension.
 type SuspendBpmnInstanceRequest struct {
-	// Reason Free-text rationale. Surfaces in the operator UI and the workflow's history audit.
+	// Reason Free-text rationale. Surfaces in the operator UI and the instance's history.
 	Reason *string `json:"reason,omitempty"`
 }
 
@@ -1344,13 +1524,10 @@ type SuspensionEntry struct {
 	SuspendedBy *string `json:"suspendedBy,omitempty"`
 }
 
-// UpdateDefinitionRequest Payload for updating an existing definition version.
+// UpdateDefinitionRequest Payload for changing a draft DMN definition.
 type UpdateDefinitionRequest struct {
 	// Name New display name.
 	Name *string `json:"name,omitempty"`
-
-	// Version Omit to overwrite the version in place. 0 stores the change as the next version instead.
-	Version *int `json:"version,omitempty"`
 
 	// Xml Replacement XML. The `definitionsID` is read from its `<definitions id>`, falling back to the original.
 	Xml *string `json:"xml,omitempty"`
@@ -1371,7 +1548,7 @@ type UpdateUserTaskAssignmentRequest struct {
 	CandidateUsers *[]string `json:"candidateUsers,omitempty"`
 }
 
-// UserTask A human-handled work item produced by a BPMN user task or manual task.
+// UserTask A human-handled work item produced by a BPMN user task.
 type UserTask struct {
 	// Assignee User the task is currently assigned to. Empty when the task is in a candidate pool but not yet claimed.
 	Assignee *string `json:"assignee,omitempty"`
@@ -1391,11 +1568,17 @@ type UserTask struct {
 	// CompletedAt Timestamp when the task reached a terminal status.
 	CompletedAt *time.Time `json:"completedAt,omitempty"`
 
+	// CompletedBy User or service account that completed or failed the task. Empty while open, and for a task the engine ended itself.
+	CompletedBy *string `json:"completedBy,omitempty"`
+
 	// CompletionVariables Variables submitted alongside the completion or error call. Set for COMPLETED and FAILED tasks.
 	CompletionVariables *VariableMap `json:"completionVariables,omitempty"`
 
 	// CreatedAt Timestamp when the task was created.
 	CreatedAt time.Time `json:"createdAt"`
+
+	// DueDate When the task is due, from the model's `taskSchedule`. Absent when the task has none.
+	DueDate *time.Time `json:"dueDate,omitempty"`
 
 	// ErrorCode BPMN error code captured when the task was failed via ThrowError. Set only for FAILED tasks.
 	ErrorCode *string `json:"errorCode,omitempty"`
@@ -1412,26 +1595,23 @@ type UserTask struct {
 	// Headers Static metadata attached at design time on the user task.
 	Headers *map[string]string `json:"headers,omitempty"`
 
-	// Id Unique identifier of this user task record.
-	Id openapi_types.UUID `json:"id"`
+	// InstanceID Identifier of the instance that produced the task.
+	InstanceID string `json:"instanceID"`
 
 	// NodeID ID of the BPMN node that emitted the task.
 	NodeID string `json:"nodeID"`
 
-	// ParentWorkflowID Identifier of the parent instance (set when the producing instance was started by a CallActivity).
-	ParentWorkflowID *string `json:"parentWorkflowID,omitempty"`
+	// ParentInstanceID Identifier of the parent instance (set when the producing instance was started by a CallActivity).
+	ParentInstanceID *string `json:"parentInstanceID,omitempty"`
+
+	// Priority The task's priority from the model's `priorityDefinition`, 50 when the model sets none.
+	Priority int `json:"priority"`
 
 	// Status Lifecycle status of the task.
 	Status UserTaskStatus `json:"status"`
 
-	// TaskType BPMN element type - typically `UserTask` or `ManualTask`.
-	TaskType *string `json:"taskType,omitempty"`
-
 	// Variables Input variables resolved at activity entry. Available for rendering form defaults.
 	Variables *VariableMap `json:"variables,omitempty"`
-
-	// WorkflowID Identifier of the instance that produced the task.
-	WorkflowID string `json:"workflowID"`
 }
 
 // UserTaskStatus Lifecycle status of the task.
@@ -1445,6 +1625,9 @@ type ValidateBpmnResourceRequest struct {
 
 // BadRequest A standard error response. The HTTP status code carries the broad category; `code` is the machine-readable identifier within that category.
 type BadRequest = Error
+
+// Conflict A standard error response. The HTTP status code carries the broad category; `code` is the machine-readable identifier within that category.
+type Conflict = Error
 
 // InternalError A standard error response. The HTTP status code carries the broad category; `code` is the machine-readable identifier within that category.
 type InternalError = Error
@@ -1491,18 +1674,20 @@ type ListBpmnExternalJobsParams struct {
 	// Status Filter jobs by status
 	Status *ListBpmnExternalJobsParamsStatus `form:"status,omitempty" json:"status,omitempty"`
 
-	// WorkflowID Filter jobs by workflow ID
-	WorkflowID *string `form:"workflowID,omitempty" json:"workflowID,omitempty"`
+	// InstanceID Only this instance's jobs. A test run's jobs list only by its instance.
+	InstanceID *string `form:"instanceID,omitempty" json:"instanceID,omitempty"`
 
 	// BusinessId Prefix match on the caller-supplied correlation key.
 	BusinessId *string `form:"businessId,omitempty" json:"businessId,omitempty"`
 
-	// CreatedAfter Only return jobs created at or after this timestamp. Strongly
-	// recommended for monitoring views - completed-job records accumulate
-	// indefinitely, and unfiltered queries grow linearly with that history.
+	// CreatedAfter Only return jobs created at or after this timestamp.
 	CreatedAfter *time.Time `form:"createdAfter,omitempty" json:"createdAfter,omitempty"`
-	Page         *int       `form:"page,omitempty" json:"page,omitempty"`
-	PageSize     *int       `form:"pageSize,omitempty" json:"pageSize,omitempty"`
+
+	// Cursor The `nextCursor` of the page before, absent for the first page.
+	Cursor *string `form:"cursor,omitempty" json:"cursor,omitempty"`
+
+	// Limit Most jobs per page, 20 by default and 100 at most.
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
 }
 
 // ListBpmnExternalJobsParamsStatus defines parameters for ListBpmnExternalJobs.
@@ -1513,13 +1698,15 @@ type CompleteBpmnExternalJobsBatchJSONBody struct {
 	// ClientID Optional worker identity (the same `clientID` used to poll)
 	// applied to every item in the batch - a batch is one worker's
 	// report. When supplied, an item this worker no longer holds
-	// comes back with status `error` and its result is discarded.
-	// Omit for the legacy unchecked behavior.
+	// comes back with status `error` and its result is discarded,
+	// and repeating this worker's last report on an item changes
+	// nothing. Without it, an item a worker holds a live lock on, or
+	// one that already ended, comes back with status `error`.
 	ClientID *string `json:"clientID,omitempty"`
 	Items    []struct {
 		ExecutionKey string       `json:"executionKey"`
+		InstanceID   string       `json:"instanceID"`
 		Variables    *VariableMap `json:"variables,omitempty"`
-		WorkflowID   string       `json:"workflowID"`
 	} `json:"items"`
 }
 
@@ -1528,14 +1715,16 @@ type ThrowBpmnExternalJobErrorsBatchJSONBody struct {
 	// ClientID Optional worker identity (the same `clientID` used to poll)
 	// applied to every item in the batch - a batch is one worker's
 	// report. When supplied, an item this worker no longer holds
-	// comes back with status `error` and the job is left untouched.
-	// Omit for the legacy unchecked behavior.
+	// comes back with status `error` and the job is left untouched,
+	// and repeating this worker's last report on an item changes
+	// nothing. Without it, an item a worker holds a live lock on, or
+	// one that already ended, comes back with status `error`.
 	ClientID *string `json:"clientID,omitempty"`
 	Items    []struct {
 		ErrorCode    string       `json:"errorCode"`
 		ExecutionKey string       `json:"executionKey"`
+		InstanceID   string       `json:"instanceID"`
 		Variables    *VariableMap `json:"variables,omitempty"`
-		WorkflowID   string       `json:"workflowID"`
 	} `json:"items"`
 
 	// Retryable Applies to every item in the batch. `true` (default) consumes
@@ -1556,14 +1745,16 @@ type GetBpmnExternalJobsQueueDepthParams struct {
 type CompleteBpmnExternalJobJSONBody struct {
 	// ClientID Optional worker identity (the same `clientID` used to poll).
 	// When supplied, a worker that no longer holds the job's lock
-	// gets 409 and its result is discarded. Completing a job this
-	// worker already completed answers 200 again. Omit for the
-	// legacy unchecked behavior.
-	ClientID  *string      `json:"clientID,omitempty"`
-	Variables *VariableMap `json:"variables,omitempty"`
+	// gets 409 and its result is discarded. Repeating the report
+	// this worker last made on the job answers 200 again and changes
+	// nothing. Without it, the completion applies to an open job no
+	// worker holds a live lock on, as a completion from the console
+	// does.
+	ClientID *string `json:"clientID,omitempty"`
 
-	// WorkflowID Workflow ID returned by the poll response.
-	WorkflowID string `json:"workflowID"`
+	// InstanceID Instance ID returned by the poll response.
+	InstanceID string       `json:"instanceID"`
+	Variables  *VariableMap `json:"variables,omitempty"`
 }
 
 // ThrowBpmnExternalJobErrorJSONBody defines parameters for ThrowBpmnExternalJobError.
@@ -1571,10 +1762,15 @@ type ThrowBpmnExternalJobErrorJSONBody struct {
 	// ClientID Optional worker identity (the same `clientID` used to poll).
 	// When supplied, a worker that no longer holds the job's lock
 	// gets 409 and its report is discarded, so a stale report can't
-	// requeue or fail the job. Omit for the legacy unchecked
-	// behavior.
+	// requeue or fail the job. Repeating the report this worker last
+	// made on the job answers 200 again and changes nothing. Without
+	// it, the report applies to an open job no worker holds a live
+	// lock on.
 	ClientID  *string `json:"clientID,omitempty"`
 	ErrorCode string  `json:"errorCode"`
+
+	// InstanceID Instance ID returned by the poll response.
+	InstanceID string `json:"instanceID"`
 
 	// Retryable Whether this failure should consume the retry budget before
 	// reaching the process. `true` (default) treats it as a
@@ -1598,11 +1794,14 @@ type HeartbeatBpmnExternalJobJSONBody struct {
 
 // ListBpmnIncidentsParams defines parameters for ListBpmnIncidents.
 type ListBpmnIncidentsParams struct {
-	// DefinitionID Restrict to incidents on instances of a single process definition.
-	DefinitionID *openapi_types.UUID `form:"definitionID,omitempty" json:"definitionID,omitempty"`
+	// ProcessID Restrict to incidents on instances of one process, in any version unless `version` names one.
+	ProcessID *string `form:"processID,omitempty" json:"processID,omitempty"`
 
-	// WorkflowID Restrict to incidents on a single instance - useful for an instance-detail "all incidents ever raised here" view that includes resolved rows.
-	WorkflowID *string `form:"workflowID,omitempty" json:"workflowID,omitempty"`
+	// Version Restrict to one version of `processID`. Ignored without `processID`.
+	Version *int `form:"version,omitempty" json:"version,omitempty"`
+
+	// InstanceID Restrict to incidents on a single instance - useful for an instance-detail "all incidents ever raised here" view that includes resolved rows. A test run's incidents list only by its instance.
+	InstanceID *string `form:"instanceID,omitempty" json:"instanceID,omitempty"`
 
 	// Status Filter by lifecycle status. `open` returns unresolved incidents;
 	// `resolved` returns only resolved ones. Omit to return both.
@@ -1615,9 +1814,13 @@ type ListBpmnIncidentsParams struct {
 	Since *time.Time `form:"since,omitempty" json:"since,omitempty"`
 
 	// Until Latest `raisedAt` to include (exclusive).
-	Until    *time.Time `form:"until,omitempty" json:"until,omitempty"`
-	Page     *int       `form:"page,omitempty" json:"page,omitempty"`
-	PageSize *int       `form:"pageSize,omitempty" json:"pageSize,omitempty"`
+	Until *time.Time `form:"until,omitempty" json:"until,omitempty"`
+
+	// Cursor The `nextCursor` of the page before, absent for the first page.
+	Cursor *string `form:"cursor,omitempty" json:"cursor,omitempty"`
+
+	// Limit Most incidents per page, 20 by default and 100 at most.
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
 }
 
 // ListBpmnIncidentsParamsStatus defines parameters for ListBpmnIncidents.
@@ -1628,8 +1831,7 @@ type ListBpmnIncidentsParamsErrorType string
 
 // ListBpmnInstancesParams defines parameters for ListBpmnInstances.
 type ListBpmnInstancesParams struct {
-	DefinitionID *openapi_types.UUID            `form:"definitionID,omitempty" json:"definitionID,omitempty"`
-	Status       *ListBpmnInstancesParamsStatus `form:"status,omitempty" json:"status,omitempty"`
+	Status *ListBpmnInstancesParamsStatus `form:"status,omitempty" json:"status,omitempty"`
 
 	// HasIncident Filter by whether the instance has at least one unresolved incident.
 	// Omit to return all instances regardless of incident status; pass
@@ -1646,18 +1848,29 @@ type ListBpmnInstancesParams struct {
 	Suspended *bool `form:"suspended,omitempty" json:"suspended,omitempty"`
 
 	// CreatedAfter Only return instances created at or after this timestamp. Strongly
-	// recommended for monitoring views - terminal-state instance rows
-	// accumulate indefinitely, and unfiltered queries grow linearly with
+	// recommended for monitoring views - ended instances stay until
+	// retention deletes them, and unfiltered queries grow linearly with
 	// that history.
 	CreatedAfter *time.Time `form:"createdAfter,omitempty" json:"createdAfter,omitempty"`
 
 	// BusinessId Prefix match on the caller-supplied correlation key set at start time.
 	BusinessId *string `form:"businessId,omitempty" json:"businessId,omitempty"`
 
-	// ProcessId Only instances of this process id, in any version. `definitionID` selects one version.
+	// ProcessId Only instances of this process id, in any version unless `version` names one.
 	ProcessId *string `form:"processId,omitempty" json:"processId,omitempty"`
-	Page      *int    `form:"page,omitempty" json:"page,omitempty"`
-	PageSize  *int    `form:"pageSize,omitempty" json:"pageSize,omitempty"`
+
+	// Version Only instances of this version of `processId`. Ignored without `processId`.
+	Version *int `form:"version,omitempty" json:"version,omitempty"`
+
+	// Draft `true` keeps only test runs (see `StartBpmnTestInstance`), `false`
+	// leaves them out. Omit for both.
+	Draft *bool `form:"draft,omitempty" json:"draft,omitempty"`
+
+	// Cursor The `nextCursor` of the page before, absent for the first page.
+	Cursor *string `form:"cursor,omitempty" json:"cursor,omitempty"`
+
+	// Limit Most instances per page, 20 by default and 100 at most.
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
 }
 
 // ListBpmnInstancesParamsStatus defines parameters for ListBpmnInstances.
@@ -1671,6 +1884,18 @@ type TriggerBpmnAdHocNodeJSONBody struct {
 // SetBpmnAdHocVariablesJSONBody defines parameters for SetBpmnAdHocVariables.
 type SetBpmnAdHocVariablesJSONBody struct {
 	Variables *VariableMap `json:"variables,omitempty"`
+}
+
+// GetBpmnInstanceHistoryParams defines parameters for GetBpmnInstanceHistory.
+type GetBpmnInstanceHistoryParams struct {
+	// FromSeq Read the entries from this seq on. Takes precedence over `beforeSeq`.
+	FromSeq *int64 `form:"fromSeq,omitempty" json:"fromSeq,omitempty"`
+
+	// BeforeSeq Read the newest entries before this seq.
+	BeforeSeq *int64 `form:"beforeSeq,omitempty" json:"beforeSeq,omitempty"`
+
+	// Limit Max entries per page. Clamped server-side to the engine's max page size.
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
 }
 
 // ResolveBpmnIncidentJSONBody defines parameters for ResolveBpmnIncident.
@@ -1688,13 +1913,14 @@ type PublishBpmnMessageJSONBody struct {
 	// CorrelationKeys Selects which subscription(s) receive a published message.
 	//
 	// The provided value - primitive (string, number, boolean) or object -
-	// is matched against the subscription's resolved correlation value.
-	// Matching is type-sensitive (the number `123` does not match the
-	// string `"123"`); for objects, the publisher's keys must be a
-	// recursive subset of the subscription's stored keys.
+	// must equal the subscription's resolved correlation value. Matching is
+	// type-sensitive: the number `123` does not match the string `"123"`.
+	// Numbers compare by value, so `1` matches `1.0`. Objects match when
+	// they hold the same keys with equal values, in any key order. Lists
+	// match element by element, in order.
 	//
-	// Empty / omitted broadcasts to subscriptions with no correlation
-	// requirement.
+	// Omitted, the publish only triggers message start events, since every
+	// waiting catch declares a correlation value.
 	CorrelationKeys *CorrelationKeys `json:"correlationKeys,omitempty"`
 
 	// MessageName Name of the message, matched against catch-event subscriptions.
@@ -1716,13 +1942,13 @@ type ListBpmnProcessesParams struct {
 	Page     *int `form:"page,omitempty" json:"page,omitempty"`
 	PageSize *int `form:"pageSize,omitempty" json:"pageSize,omitempty"`
 
-	// Q Optional case-insensitive prefix match against process id or process name.
+	// Q Optional case-insensitive substring match against process id or process name.
 	Q *string `form:"q,omitempty" json:"q,omitempty"`
 
 	// CreatedAfter Bounds the totalCount aggregate to instances created at or after this
-	// timestamp. Strongly recommended for monitoring views - instance
-	// history accumulates indefinitely and unfiltered totals scan the full
-	// table per definition. runningCount ignores this filter (it is always
+	// timestamp. Strongly recommended for monitoring views - ended
+	// instances stay until retention deletes them, and unfiltered totals
+	// scan every kept instance per definition. runningCount ignores this filter (it is always
 	// point-in-time).
 	CreatedAfter *time.Time `form:"createdAfter,omitempty" json:"createdAfter,omitempty"`
 
@@ -1746,6 +1972,14 @@ type ListBpmnProcessVersionsParams struct {
 	// Suspended Filter by definition-scope suspension. `true` → only paused versions;
 	// `false` → only active ones. Omit for no filter.
 	Suspended *bool `form:"suspended,omitempty" json:"suspended,omitempty"`
+}
+
+// GetBpmnProcessVersionParams defines parameters for GetBpmnProcessVersion.
+type GetBpmnProcessVersionParams struct {
+	// CreatedAfter Bounds the totalCount aggregate to instances created at or after this
+	// timestamp. See ListBpmnProcesses for rationale. runningCount ignores
+	// this filter.
+	CreatedAfter *time.Time `form:"createdAfter,omitempty" json:"createdAfter,omitempty"`
 }
 
 // ListBpmnResourcesParams defines parameters for ListBpmnResources.
@@ -1784,7 +2018,8 @@ type PublishBpmnSignalJSONBody struct {
 
 // ListBpmnUserTasksParams defines parameters for ListBpmnUserTasks.
 type ListBpmnUserTasksParams struct {
-	WorkflowID     *string                        `form:"workflowID,omitempty" json:"workflowID,omitempty"`
+	// InstanceID Only this instance's tasks. A test run's tasks list only by its instance.
+	InstanceID     *string                        `form:"instanceID,omitempty" json:"instanceID,omitempty"`
 	Status         *ListBpmnUserTasksParamsStatus `form:"status,omitempty" json:"status,omitempty"`
 	Assignee       *string                        `form:"assignee,omitempty" json:"assignee,omitempty"`
 	CandidateUser  *string                        `form:"candidateUser,omitempty" json:"candidateUser,omitempty"`
@@ -1792,18 +2027,55 @@ type ListBpmnUserTasksParams struct {
 
 	// BusinessId Exact-match filter on the caller-supplied correlation key.
 	BusinessId *string `form:"businessId,omitempty" json:"businessId,omitempty"`
-	Page       *int    `form:"page,omitempty" json:"page,omitempty"`
-	PageSize   *int    `form:"pageSize,omitempty" json:"pageSize,omitempty"`
+
+	// DueAfter Only tasks due at or after this time.
+	DueAfter *time.Time `form:"dueAfter,omitempty" json:"dueAfter,omitempty"`
+
+	// DueBefore Only tasks due before this time. With `status=CREATED` and the current time, the overdue tasks.
+	DueBefore *time.Time `form:"dueBefore,omitempty" json:"dueBefore,omitempty"`
+
+	// Sort `created` lists the newest first, and is the default. `dueDate` lists
+	// the soonest due first and tasks without a due date last. `priority`
+	// lists the highest priority first. Both list the oldest first among
+	// equals. A cursor continues only a list of the same sort.
+	Sort *ListBpmnUserTasksParamsSort `form:"sort,omitempty" json:"sort,omitempty"`
+
+	// Cursor The `nextCursor` of the page before, absent for the first page.
+	Cursor *string `form:"cursor,omitempty" json:"cursor,omitempty"`
+
+	// Limit Most tasks per page, 20 by default and 100 at most.
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
 }
 
 // ListBpmnUserTasksParamsStatus defines parameters for ListBpmnUserTasks.
 type ListBpmnUserTasksParamsStatus string
 
+// ListBpmnUserTasksParamsSort defines parameters for ListBpmnUserTasks.
+type ListBpmnUserTasksParamsSort string
+
 // ListBpmnUserTasksForCallerParams defines parameters for ListBpmnUserTasksForCaller.
 type ListBpmnUserTasksForCallerParams struct {
-	Page     *int `form:"page,omitempty" json:"page,omitempty"`
-	PageSize *int `form:"pageSize,omitempty" json:"pageSize,omitempty"`
+	// DueAfter Only tasks due at or after this time.
+	DueAfter *time.Time `form:"dueAfter,omitempty" json:"dueAfter,omitempty"`
+
+	// DueBefore Only tasks due before this time. With the current time, the caller's overdue tasks.
+	DueBefore *time.Time `form:"dueBefore,omitempty" json:"dueBefore,omitempty"`
+
+	// Sort `created` lists the newest first, and is the default. `dueDate` lists
+	// the soonest due first and tasks without a due date last. `priority`
+	// lists the highest priority first. Both list the oldest first among
+	// equals. A cursor continues only a list of the same sort.
+	Sort *ListBpmnUserTasksForCallerParamsSort `form:"sort,omitempty" json:"sort,omitempty"`
+
+	// Cursor The `nextCursor` of the page before, absent for the first page.
+	Cursor *string `form:"cursor,omitempty" json:"cursor,omitempty"`
+
+	// Limit Most tasks per page, 20 by default and 100 at most.
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
 }
+
+// ListBpmnUserTasksForCallerParamsSort defines parameters for ListBpmnUserTasksForCaller.
+type ListBpmnUserTasksForCallerParamsSort string
 
 // CompleteBpmnUserTaskJSONBody defines parameters for CompleteBpmnUserTask.
 type CompleteBpmnUserTaskJSONBody struct {
@@ -1839,13 +2111,13 @@ type ListDefinitionsParams struct {
 
 // GetDefinitionByDefinitionsIDParams defines parameters for GetDefinitionByDefinitionsID.
 type GetDefinitionByDefinitionsIDParams struct {
-	// Version Specific version number (defaults to latest version)
+	// Version Deployed version, the latest when omitted.
 	Version *int `form:"version,omitempty" json:"version,omitempty"`
 }
 
 // EvaluateByDefinitionsIDParams defines parameters for EvaluateByDefinitionsID.
 type EvaluateByDefinitionsIDParams struct {
-	// Version Specific version number (defaults to latest version)
+	// Version Deployed version, the latest when omitted.
 	Version *int `form:"version,omitempty" json:"version,omitempty"`
 }
 
@@ -1867,28 +2139,13 @@ type ListLatestDefinitionsParams struct {
 	PageSize *int `form:"pageSize,omitempty" json:"pageSize,omitempty"`
 }
 
-// ListExecutionsParams defines parameters for ListExecutions.
-type ListExecutionsParams struct {
-	// DefinitionsID Filter by DMN `<definitions id>` (XML id).
-	DefinitionsID *string `form:"definitionsID,omitempty" json:"definitionsID,omitempty"`
-
-	// StartDate Filter executions after this date (ISO 8601)
-	StartDate *time.Time `form:"startDate,omitempty" json:"startDate,omitempty"`
-
-	// BusinessId Exact-match filter on the caller-supplied correlation key.
-	BusinessId *string `form:"businessId,omitempty" json:"businessId,omitempty"`
-
-	// Page Page number (1-indexed)
-	Page *int `form:"page,omitempty" json:"page,omitempty"`
-
-	// PageSize Number of items per page (max 100)
-	PageSize *int `form:"pageSize,omitempty" json:"pageSize,omitempty"`
-}
-
 // ListProjectExecutionsParams defines parameters for ListProjectExecutions.
 type ListProjectExecutionsParams struct {
 	// DefinitionsID Filter by DMN `<definitions id>` (XML id).
 	DefinitionsID *string `form:"definitionsID,omitempty" json:"definitionsID,omitempty"`
+
+	// Version Only evaluations of this deployed version of `definitionsID`. Ignored without `definitionsID`.
+	Version *int `form:"version,omitempty" json:"version,omitempty"`
 
 	// BusinessId Exact-match filter on the caller-supplied correlation key.
 	BusinessId *string `form:"businessId,omitempty" json:"businessId,omitempty"`
@@ -1908,12 +2165,6 @@ type EvaluateDesignJSONRequestBody EvaluateDesignJSONBody
 
 // EvaluateDesignBatchJSONRequestBody defines body for EvaluateDesignBatch for application/json ContentType.
 type EvaluateDesignBatchJSONRequestBody = BatchEvaluateDesignRequest
-
-// CreateProjectJSONRequestBody defines body for CreateProject for application/json ContentType.
-type CreateProjectJSONRequestBody = CreateProjectRequest
-
-// SuspendBpmnDefinitionJSONRequestBody defines body for SuspendBpmnDefinition for application/json ContentType.
-type SuspendBpmnDefinitionJSONRequestBody = SuspendBpmnDefinitionRequest
 
 // CompleteBpmnExternalJobsBatchJSONRequestBody defines body for CompleteBpmnExternalJobsBatch for application/json ContentType.
 type CompleteBpmnExternalJobsBatchJSONRequestBody CompleteBpmnExternalJobsBatchJSONBody
@@ -1963,6 +2214,9 @@ type UpdateBpmnInstanceVariablesJSONRequestBody UpdateBpmnInstanceVariablesJSONB
 // PublishBpmnMessageJSONRequestBody defines body for PublishBpmnMessage for application/json ContentType.
 type PublishBpmnMessageJSONRequestBody PublishBpmnMessageJSONBody
 
+// SuspendBpmnDefinitionJSONRequestBody defines body for SuspendBpmnDefinition for application/json ContentType.
+type SuspendBpmnDefinitionJSONRequestBody = SuspendBpmnDefinitionRequest
+
 // CreateBpmnResourceJSONRequestBody defines body for CreateBpmnResource for application/json ContentType.
 type CreateBpmnResourceJSONRequestBody = CreateBpmnResourceRequest
 
@@ -1995,9 +2249,6 @@ type EvaluateByDefinitionsIDJSONRequestBody = EvaluateStoredRequest
 
 // UpdateDefinitionJSONRequestBody defines body for UpdateDefinition for application/json ContentType.
 type UpdateDefinitionJSONRequestBody = UpdateDefinitionRequest
-
-// EvaluateStoredJSONRequestBody defines body for EvaluateStored for application/json ContentType.
-type EvaluateStoredJSONRequestBody = EvaluateStoredRequest
 
 // AsCorrelationKeyString returns the union data inside the CorrelationKeys as a CorrelationKeyString
 func (t CorrelationKeys) AsCorrelationKeyString() (CorrelationKeyString, error) {
@@ -2339,24 +2590,8 @@ type ClientInterface interface {
 	// ListProjects request
 	ListProjects(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// CreateProjectWithBody request with any body
-	CreateProjectWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	CreateProject(ctx context.Context, body CreateProjectJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// DeleteProject request
-	DeleteProject(ctx context.Context, projectID openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error)
-
 	// GetProject request
 	GetProject(ctx context.Context, projectID openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// ResumeBpmnDefinition request
-	ResumeBpmnDefinition(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// SuspendBpmnDefinitionWithBody request with any body
-	SuspendBpmnDefinitionWithBody(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	SuspendBpmnDefinition(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, body SuspendBpmnDefinitionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListBpmnExternalJobs request
 	ListBpmnExternalJobs(ctx context.Context, projectID openapi_types.UUID, params *ListBpmnExternalJobsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -2406,59 +2641,65 @@ type ClientInterface interface {
 	StartBpmnInstance(ctx context.Context, projectID openapi_types.UUID, body StartBpmnInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// CancelBpmnInstance request
-	CancelBpmnInstance(ctx context.Context, projectID openapi_types.UUID, workflowID string, reqEditors ...RequestEditorFn) (*http.Response, error)
+	CancelBpmnInstance(ctx context.Context, projectID openapi_types.UUID, instanceID string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetBpmnInstance request
-	GetBpmnInstance(ctx context.Context, projectID openapi_types.UUID, workflowID string, reqEditors ...RequestEditorFn) (*http.Response, error)
+	GetBpmnInstance(ctx context.Context, projectID openapi_types.UUID, instanceID string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// TriggerBpmnAdHocNodeWithBody request with any body
-	TriggerBpmnAdHocNodeWithBody(ctx context.Context, projectID openapi_types.UUID, workflowID string, adHocNodeID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	TriggerBpmnAdHocNodeWithBody(ctx context.Context, projectID openapi_types.UUID, instanceID string, adHocNodeID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	TriggerBpmnAdHocNode(ctx context.Context, projectID openapi_types.UUID, workflowID string, adHocNodeID string, body TriggerBpmnAdHocNodeJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	TriggerBpmnAdHocNode(ctx context.Context, projectID openapi_types.UUID, instanceID string, adHocNodeID string, body TriggerBpmnAdHocNodeJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// SetBpmnAdHocVariablesWithBody request with any body
-	SetBpmnAdHocVariablesWithBody(ctx context.Context, projectID openapi_types.UUID, workflowID string, adHocNodeID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	SetBpmnAdHocVariablesWithBody(ctx context.Context, projectID openapi_types.UUID, instanceID string, adHocNodeID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	SetBpmnAdHocVariables(ctx context.Context, projectID openapi_types.UUID, workflowID string, adHocNodeID string, body SetBpmnAdHocVariablesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	SetBpmnAdHocVariables(ctx context.Context, projectID openapi_types.UUID, instanceID string, adHocNodeID string, body SetBpmnAdHocVariablesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetBpmnInstanceChildren request
-	GetBpmnInstanceChildren(ctx context.Context, projectID openapi_types.UUID, workflowID string, reqEditors ...RequestEditorFn) (*http.Response, error)
+	GetBpmnInstanceChildren(ctx context.Context, projectID openapi_types.UUID, instanceID string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetBpmnInstanceHistory request
+	GetBpmnInstanceHistory(ctx context.Context, projectID openapi_types.UUID, instanceID string, params *GetBpmnInstanceHistoryParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetBpmnInstanceHistoryEntry request
+	GetBpmnInstanceHistoryEntry(ctx context.Context, projectID openapi_types.UUID, instanceID string, seq int64, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ResolveBpmnIncidentWithBody request with any body
-	ResolveBpmnIncidentWithBody(ctx context.Context, projectID openapi_types.UUID, workflowID string, incidentID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	ResolveBpmnIncidentWithBody(ctx context.Context, projectID openapi_types.UUID, instanceID string, incidentID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	ResolveBpmnIncident(ctx context.Context, projectID openapi_types.UUID, workflowID string, incidentID string, body ResolveBpmnIncidentJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	ResolveBpmnIncident(ctx context.Context, projectID openapi_types.UUID, instanceID string, incidentID string, body ResolveBpmnIncidentJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// MigrateBpmnInstanceWithBody request with any body
-	MigrateBpmnInstanceWithBody(ctx context.Context, projectID openapi_types.UUID, workflowID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	MigrateBpmnInstanceWithBody(ctx context.Context, projectID openapi_types.UUID, instanceID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	MigrateBpmnInstance(ctx context.Context, projectID openapi_types.UUID, workflowID string, body MigrateBpmnInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	MigrateBpmnInstance(ctx context.Context, projectID openapi_types.UUID, instanceID string, body MigrateBpmnInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ValidateBpmnInstanceMigrationWithBody request with any body
-	ValidateBpmnInstanceMigrationWithBody(ctx context.Context, projectID openapi_types.UUID, workflowID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	ValidateBpmnInstanceMigrationWithBody(ctx context.Context, projectID openapi_types.UUID, instanceID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	ValidateBpmnInstanceMigration(ctx context.Context, projectID openapi_types.UUID, workflowID string, body ValidateBpmnInstanceMigrationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	ValidateBpmnInstanceMigration(ctx context.Context, projectID openapi_types.UUID, instanceID string, body ValidateBpmnInstanceMigrationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ModifyBpmnInstanceWithBody request with any body
-	ModifyBpmnInstanceWithBody(ctx context.Context, projectID openapi_types.UUID, workflowID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	ModifyBpmnInstanceWithBody(ctx context.Context, projectID openapi_types.UUID, instanceID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	ModifyBpmnInstance(ctx context.Context, projectID openapi_types.UUID, workflowID string, body ModifyBpmnInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	ModifyBpmnInstance(ctx context.Context, projectID openapi_types.UUID, instanceID string, body ModifyBpmnInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ResumeBpmnInstance request
-	ResumeBpmnInstance(ctx context.Context, projectID openapi_types.UUID, workflowID string, reqEditors ...RequestEditorFn) (*http.Response, error)
+	ResumeBpmnInstance(ctx context.Context, projectID openapi_types.UUID, instanceID string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// SuspendBpmnInstanceWithBody request with any body
-	SuspendBpmnInstanceWithBody(ctx context.Context, projectID openapi_types.UUID, workflowID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	SuspendBpmnInstanceWithBody(ctx context.Context, projectID openapi_types.UUID, instanceID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	SuspendBpmnInstance(ctx context.Context, projectID openapi_types.UUID, workflowID string, body SuspendBpmnInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	SuspendBpmnInstance(ctx context.Context, projectID openapi_types.UUID, instanceID string, body SuspendBpmnInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetBpmnInstanceVariables request
-	GetBpmnInstanceVariables(ctx context.Context, projectID openapi_types.UUID, workflowID string, reqEditors ...RequestEditorFn) (*http.Response, error)
+	GetBpmnInstanceVariables(ctx context.Context, projectID openapi_types.UUID, instanceID string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// UpdateBpmnInstanceVariablesWithBody request with any body
-	UpdateBpmnInstanceVariablesWithBody(ctx context.Context, projectID openapi_types.UUID, workflowID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	UpdateBpmnInstanceVariablesWithBody(ctx context.Context, projectID openapi_types.UUID, instanceID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	UpdateBpmnInstanceVariables(ctx context.Context, projectID openapi_types.UUID, workflowID string, body UpdateBpmnInstanceVariablesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	UpdateBpmnInstanceVariables(ctx context.Context, projectID openapi_types.UUID, instanceID string, body UpdateBpmnInstanceVariablesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// PublishBpmnMessageWithBody request with any body
 	PublishBpmnMessageWithBody(ctx context.Context, projectID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -2470,6 +2711,17 @@ type ClientInterface interface {
 
 	// ListBpmnProcessVersions request
 	ListBpmnProcessVersions(ctx context.Context, projectID openapi_types.UUID, processID string, params *ListBpmnProcessVersionsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetBpmnProcessVersion request
+	GetBpmnProcessVersion(ctx context.Context, projectID openapi_types.UUID, processID string, version int, params *GetBpmnProcessVersionParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ResumeBpmnDefinition request
+	ResumeBpmnDefinition(ctx context.Context, projectID openapi_types.UUID, processID string, version int, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SuspendBpmnDefinitionWithBody request with any body
+	SuspendBpmnDefinitionWithBody(ctx context.Context, projectID openapi_types.UUID, processID string, version int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	SuspendBpmnDefinition(ctx context.Context, projectID openapi_types.UUID, processID string, version int, body SuspendBpmnDefinitionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListBpmnResources request
 	ListBpmnResources(ctx context.Context, projectID openapi_types.UUID, params *ListBpmnResourcesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -2541,6 +2793,9 @@ type ClientInterface interface {
 	// ListDecisions request
 	ListDecisions(ctx context.Context, projectID openapi_types.UUID, params *ListDecisionsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListDecisionVersions request
+	ListDecisionVersions(ctx context.Context, projectID openapi_types.UUID, decisionID string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListDefinitions request
 	ListDefinitions(ctx context.Context, projectID openapi_types.UUID, params *ListDefinitionsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -2574,13 +2829,8 @@ type ClientInterface interface {
 
 	UpdateDefinition(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, body UpdateDefinitionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// EvaluateStoredWithBody request with any body
-	EvaluateStoredWithBody(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	EvaluateStored(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, body EvaluateStoredJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// ListExecutions request
-	ListExecutions(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, params *ListExecutionsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// DeployDefinition request
+	DeployDefinition(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListProjectExecutions request
 	ListProjectExecutions(ctx context.Context, projectID openapi_types.UUID, params *ListProjectExecutionsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -2652,80 +2902,8 @@ func (c *Client) ListProjects(ctx context.Context, reqEditors ...RequestEditorFn
 	return c.Client.Do(req)
 }
 
-func (c *Client) CreateProjectWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreateProjectRequestWithBody(c.Server, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) CreateProject(ctx context.Context, body CreateProjectJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreateProjectRequest(c.Server, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) DeleteProject(ctx context.Context, projectID openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewDeleteProjectRequest(c.Server, projectID)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
 func (c *Client) GetProject(ctx context.Context, projectID openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetProjectRequest(c.Server, projectID)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) ResumeBpmnDefinition(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewResumeBpmnDefinitionRequest(c.Server, projectID, definitionID)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) SuspendBpmnDefinitionWithBody(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewSuspendBpmnDefinitionRequestWithBody(c.Server, projectID, definitionID, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) SuspendBpmnDefinition(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, body SuspendBpmnDefinitionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewSuspendBpmnDefinitionRequest(c.Server, projectID, definitionID, body)
 	if err != nil {
 		return nil, err
 	}
@@ -2952,8 +3130,8 @@ func (c *Client) StartBpmnInstance(ctx context.Context, projectID openapi_types.
 	return c.Client.Do(req)
 }
 
-func (c *Client) CancelBpmnInstance(ctx context.Context, projectID openapi_types.UUID, workflowID string, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCancelBpmnInstanceRequest(c.Server, projectID, workflowID)
+func (c *Client) CancelBpmnInstance(ctx context.Context, projectID openapi_types.UUID, instanceID string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCancelBpmnInstanceRequest(c.Server, projectID, instanceID)
 	if err != nil {
 		return nil, err
 	}
@@ -2964,8 +3142,8 @@ func (c *Client) CancelBpmnInstance(ctx context.Context, projectID openapi_types
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetBpmnInstance(ctx context.Context, projectID openapi_types.UUID, workflowID string, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetBpmnInstanceRequest(c.Server, projectID, workflowID)
+func (c *Client) GetBpmnInstance(ctx context.Context, projectID openapi_types.UUID, instanceID string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetBpmnInstanceRequest(c.Server, projectID, instanceID)
 	if err != nil {
 		return nil, err
 	}
@@ -2976,8 +3154,8 @@ func (c *Client) GetBpmnInstance(ctx context.Context, projectID openapi_types.UU
 	return c.Client.Do(req)
 }
 
-func (c *Client) TriggerBpmnAdHocNodeWithBody(ctx context.Context, projectID openapi_types.UUID, workflowID string, adHocNodeID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewTriggerBpmnAdHocNodeRequestWithBody(c.Server, projectID, workflowID, adHocNodeID, contentType, body)
+func (c *Client) TriggerBpmnAdHocNodeWithBody(ctx context.Context, projectID openapi_types.UUID, instanceID string, adHocNodeID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewTriggerBpmnAdHocNodeRequestWithBody(c.Server, projectID, instanceID, adHocNodeID, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -2988,8 +3166,8 @@ func (c *Client) TriggerBpmnAdHocNodeWithBody(ctx context.Context, projectID ope
 	return c.Client.Do(req)
 }
 
-func (c *Client) TriggerBpmnAdHocNode(ctx context.Context, projectID openapi_types.UUID, workflowID string, adHocNodeID string, body TriggerBpmnAdHocNodeJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewTriggerBpmnAdHocNodeRequest(c.Server, projectID, workflowID, adHocNodeID, body)
+func (c *Client) TriggerBpmnAdHocNode(ctx context.Context, projectID openapi_types.UUID, instanceID string, adHocNodeID string, body TriggerBpmnAdHocNodeJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewTriggerBpmnAdHocNodeRequest(c.Server, projectID, instanceID, adHocNodeID, body)
 	if err != nil {
 		return nil, err
 	}
@@ -3000,8 +3178,8 @@ func (c *Client) TriggerBpmnAdHocNode(ctx context.Context, projectID openapi_typ
 	return c.Client.Do(req)
 }
 
-func (c *Client) SetBpmnAdHocVariablesWithBody(ctx context.Context, projectID openapi_types.UUID, workflowID string, adHocNodeID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewSetBpmnAdHocVariablesRequestWithBody(c.Server, projectID, workflowID, adHocNodeID, contentType, body)
+func (c *Client) SetBpmnAdHocVariablesWithBody(ctx context.Context, projectID openapi_types.UUID, instanceID string, adHocNodeID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetBpmnAdHocVariablesRequestWithBody(c.Server, projectID, instanceID, adHocNodeID, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -3012,8 +3190,8 @@ func (c *Client) SetBpmnAdHocVariablesWithBody(ctx context.Context, projectID op
 	return c.Client.Do(req)
 }
 
-func (c *Client) SetBpmnAdHocVariables(ctx context.Context, projectID openapi_types.UUID, workflowID string, adHocNodeID string, body SetBpmnAdHocVariablesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewSetBpmnAdHocVariablesRequest(c.Server, projectID, workflowID, adHocNodeID, body)
+func (c *Client) SetBpmnAdHocVariables(ctx context.Context, projectID openapi_types.UUID, instanceID string, adHocNodeID string, body SetBpmnAdHocVariablesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetBpmnAdHocVariablesRequest(c.Server, projectID, instanceID, adHocNodeID, body)
 	if err != nil {
 		return nil, err
 	}
@@ -3024,8 +3202,8 @@ func (c *Client) SetBpmnAdHocVariables(ctx context.Context, projectID openapi_ty
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetBpmnInstanceChildren(ctx context.Context, projectID openapi_types.UUID, workflowID string, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetBpmnInstanceChildrenRequest(c.Server, projectID, workflowID)
+func (c *Client) GetBpmnInstanceChildren(ctx context.Context, projectID openapi_types.UUID, instanceID string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetBpmnInstanceChildrenRequest(c.Server, projectID, instanceID)
 	if err != nil {
 		return nil, err
 	}
@@ -3036,8 +3214,8 @@ func (c *Client) GetBpmnInstanceChildren(ctx context.Context, projectID openapi_
 	return c.Client.Do(req)
 }
 
-func (c *Client) ResolveBpmnIncidentWithBody(ctx context.Context, projectID openapi_types.UUID, workflowID string, incidentID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewResolveBpmnIncidentRequestWithBody(c.Server, projectID, workflowID, incidentID, contentType, body)
+func (c *Client) GetBpmnInstanceHistory(ctx context.Context, projectID openapi_types.UUID, instanceID string, params *GetBpmnInstanceHistoryParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetBpmnInstanceHistoryRequest(c.Server, projectID, instanceID, params)
 	if err != nil {
 		return nil, err
 	}
@@ -3048,8 +3226,8 @@ func (c *Client) ResolveBpmnIncidentWithBody(ctx context.Context, projectID open
 	return c.Client.Do(req)
 }
 
-func (c *Client) ResolveBpmnIncident(ctx context.Context, projectID openapi_types.UUID, workflowID string, incidentID string, body ResolveBpmnIncidentJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewResolveBpmnIncidentRequest(c.Server, projectID, workflowID, incidentID, body)
+func (c *Client) GetBpmnInstanceHistoryEntry(ctx context.Context, projectID openapi_types.UUID, instanceID string, seq int64, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetBpmnInstanceHistoryEntryRequest(c.Server, projectID, instanceID, seq)
 	if err != nil {
 		return nil, err
 	}
@@ -3060,8 +3238,8 @@ func (c *Client) ResolveBpmnIncident(ctx context.Context, projectID openapi_type
 	return c.Client.Do(req)
 }
 
-func (c *Client) MigrateBpmnInstanceWithBody(ctx context.Context, projectID openapi_types.UUID, workflowID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewMigrateBpmnInstanceRequestWithBody(c.Server, projectID, workflowID, contentType, body)
+func (c *Client) ResolveBpmnIncidentWithBody(ctx context.Context, projectID openapi_types.UUID, instanceID string, incidentID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewResolveBpmnIncidentRequestWithBody(c.Server, projectID, instanceID, incidentID, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -3072,8 +3250,8 @@ func (c *Client) MigrateBpmnInstanceWithBody(ctx context.Context, projectID open
 	return c.Client.Do(req)
 }
 
-func (c *Client) MigrateBpmnInstance(ctx context.Context, projectID openapi_types.UUID, workflowID string, body MigrateBpmnInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewMigrateBpmnInstanceRequest(c.Server, projectID, workflowID, body)
+func (c *Client) ResolveBpmnIncident(ctx context.Context, projectID openapi_types.UUID, instanceID string, incidentID string, body ResolveBpmnIncidentJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewResolveBpmnIncidentRequest(c.Server, projectID, instanceID, incidentID, body)
 	if err != nil {
 		return nil, err
 	}
@@ -3084,8 +3262,8 @@ func (c *Client) MigrateBpmnInstance(ctx context.Context, projectID openapi_type
 	return c.Client.Do(req)
 }
 
-func (c *Client) ValidateBpmnInstanceMigrationWithBody(ctx context.Context, projectID openapi_types.UUID, workflowID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewValidateBpmnInstanceMigrationRequestWithBody(c.Server, projectID, workflowID, contentType, body)
+func (c *Client) MigrateBpmnInstanceWithBody(ctx context.Context, projectID openapi_types.UUID, instanceID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewMigrateBpmnInstanceRequestWithBody(c.Server, projectID, instanceID, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -3096,8 +3274,8 @@ func (c *Client) ValidateBpmnInstanceMigrationWithBody(ctx context.Context, proj
 	return c.Client.Do(req)
 }
 
-func (c *Client) ValidateBpmnInstanceMigration(ctx context.Context, projectID openapi_types.UUID, workflowID string, body ValidateBpmnInstanceMigrationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewValidateBpmnInstanceMigrationRequest(c.Server, projectID, workflowID, body)
+func (c *Client) MigrateBpmnInstance(ctx context.Context, projectID openapi_types.UUID, instanceID string, body MigrateBpmnInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewMigrateBpmnInstanceRequest(c.Server, projectID, instanceID, body)
 	if err != nil {
 		return nil, err
 	}
@@ -3108,8 +3286,8 @@ func (c *Client) ValidateBpmnInstanceMigration(ctx context.Context, projectID op
 	return c.Client.Do(req)
 }
 
-func (c *Client) ModifyBpmnInstanceWithBody(ctx context.Context, projectID openapi_types.UUID, workflowID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewModifyBpmnInstanceRequestWithBody(c.Server, projectID, workflowID, contentType, body)
+func (c *Client) ValidateBpmnInstanceMigrationWithBody(ctx context.Context, projectID openapi_types.UUID, instanceID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewValidateBpmnInstanceMigrationRequestWithBody(c.Server, projectID, instanceID, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -3120,8 +3298,8 @@ func (c *Client) ModifyBpmnInstanceWithBody(ctx context.Context, projectID opena
 	return c.Client.Do(req)
 }
 
-func (c *Client) ModifyBpmnInstance(ctx context.Context, projectID openapi_types.UUID, workflowID string, body ModifyBpmnInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewModifyBpmnInstanceRequest(c.Server, projectID, workflowID, body)
+func (c *Client) ValidateBpmnInstanceMigration(ctx context.Context, projectID openapi_types.UUID, instanceID string, body ValidateBpmnInstanceMigrationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewValidateBpmnInstanceMigrationRequest(c.Server, projectID, instanceID, body)
 	if err != nil {
 		return nil, err
 	}
@@ -3132,8 +3310,8 @@ func (c *Client) ModifyBpmnInstance(ctx context.Context, projectID openapi_types
 	return c.Client.Do(req)
 }
 
-func (c *Client) ResumeBpmnInstance(ctx context.Context, projectID openapi_types.UUID, workflowID string, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewResumeBpmnInstanceRequest(c.Server, projectID, workflowID)
+func (c *Client) ModifyBpmnInstanceWithBody(ctx context.Context, projectID openapi_types.UUID, instanceID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewModifyBpmnInstanceRequestWithBody(c.Server, projectID, instanceID, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -3144,8 +3322,8 @@ func (c *Client) ResumeBpmnInstance(ctx context.Context, projectID openapi_types
 	return c.Client.Do(req)
 }
 
-func (c *Client) SuspendBpmnInstanceWithBody(ctx context.Context, projectID openapi_types.UUID, workflowID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewSuspendBpmnInstanceRequestWithBody(c.Server, projectID, workflowID, contentType, body)
+func (c *Client) ModifyBpmnInstance(ctx context.Context, projectID openapi_types.UUID, instanceID string, body ModifyBpmnInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewModifyBpmnInstanceRequest(c.Server, projectID, instanceID, body)
 	if err != nil {
 		return nil, err
 	}
@@ -3156,8 +3334,8 @@ func (c *Client) SuspendBpmnInstanceWithBody(ctx context.Context, projectID open
 	return c.Client.Do(req)
 }
 
-func (c *Client) SuspendBpmnInstance(ctx context.Context, projectID openapi_types.UUID, workflowID string, body SuspendBpmnInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewSuspendBpmnInstanceRequest(c.Server, projectID, workflowID, body)
+func (c *Client) ResumeBpmnInstance(ctx context.Context, projectID openapi_types.UUID, instanceID string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewResumeBpmnInstanceRequest(c.Server, projectID, instanceID)
 	if err != nil {
 		return nil, err
 	}
@@ -3168,8 +3346,8 @@ func (c *Client) SuspendBpmnInstance(ctx context.Context, projectID openapi_type
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetBpmnInstanceVariables(ctx context.Context, projectID openapi_types.UUID, workflowID string, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetBpmnInstanceVariablesRequest(c.Server, projectID, workflowID)
+func (c *Client) SuspendBpmnInstanceWithBody(ctx context.Context, projectID openapi_types.UUID, instanceID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSuspendBpmnInstanceRequestWithBody(c.Server, projectID, instanceID, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -3180,8 +3358,8 @@ func (c *Client) GetBpmnInstanceVariables(ctx context.Context, projectID openapi
 	return c.Client.Do(req)
 }
 
-func (c *Client) UpdateBpmnInstanceVariablesWithBody(ctx context.Context, projectID openapi_types.UUID, workflowID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateBpmnInstanceVariablesRequestWithBody(c.Server, projectID, workflowID, contentType, body)
+func (c *Client) SuspendBpmnInstance(ctx context.Context, projectID openapi_types.UUID, instanceID string, body SuspendBpmnInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSuspendBpmnInstanceRequest(c.Server, projectID, instanceID, body)
 	if err != nil {
 		return nil, err
 	}
@@ -3192,8 +3370,32 @@ func (c *Client) UpdateBpmnInstanceVariablesWithBody(ctx context.Context, projec
 	return c.Client.Do(req)
 }
 
-func (c *Client) UpdateBpmnInstanceVariables(ctx context.Context, projectID openapi_types.UUID, workflowID string, body UpdateBpmnInstanceVariablesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateBpmnInstanceVariablesRequest(c.Server, projectID, workflowID, body)
+func (c *Client) GetBpmnInstanceVariables(ctx context.Context, projectID openapi_types.UUID, instanceID string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetBpmnInstanceVariablesRequest(c.Server, projectID, instanceID)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateBpmnInstanceVariablesWithBody(ctx context.Context, projectID openapi_types.UUID, instanceID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateBpmnInstanceVariablesRequestWithBody(c.Server, projectID, instanceID, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateBpmnInstanceVariables(ctx context.Context, projectID openapi_types.UUID, instanceID string, body UpdateBpmnInstanceVariablesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateBpmnInstanceVariablesRequest(c.Server, projectID, instanceID, body)
 	if err != nil {
 		return nil, err
 	}
@@ -3242,6 +3444,54 @@ func (c *Client) ListBpmnProcesses(ctx context.Context, projectID openapi_types.
 
 func (c *Client) ListBpmnProcessVersions(ctx context.Context, projectID openapi_types.UUID, processID string, params *ListBpmnProcessVersionsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListBpmnProcessVersionsRequest(c.Server, projectID, processID, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetBpmnProcessVersion(ctx context.Context, projectID openapi_types.UUID, processID string, version int, params *GetBpmnProcessVersionParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetBpmnProcessVersionRequest(c.Server, projectID, processID, version, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ResumeBpmnDefinition(ctx context.Context, projectID openapi_types.UUID, processID string, version int, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewResumeBpmnDefinitionRequest(c.Server, projectID, processID, version)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SuspendBpmnDefinitionWithBody(ctx context.Context, projectID openapi_types.UUID, processID string, version int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSuspendBpmnDefinitionRequestWithBody(c.Server, projectID, processID, version, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SuspendBpmnDefinition(ctx context.Context, projectID openapi_types.UUID, processID string, version int, body SuspendBpmnDefinitionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSuspendBpmnDefinitionRequest(c.Server, projectID, processID, version, body)
 	if err != nil {
 		return nil, err
 	}
@@ -3564,6 +3814,18 @@ func (c *Client) ListDecisions(ctx context.Context, projectID openapi_types.UUID
 	return c.Client.Do(req)
 }
 
+func (c *Client) ListDecisionVersions(ctx context.Context, projectID openapi_types.UUID, decisionID string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListDecisionVersionsRequest(c.Server, projectID, decisionID)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) ListDefinitions(ctx context.Context, projectID openapi_types.UUID, params *ListDefinitionsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListDefinitionsRequest(c.Server, projectID, params)
 	if err != nil {
@@ -3708,32 +3970,8 @@ func (c *Client) UpdateDefinition(ctx context.Context, projectID openapi_types.U
 	return c.Client.Do(req)
 }
 
-func (c *Client) EvaluateStoredWithBody(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewEvaluateStoredRequestWithBody(c.Server, projectID, definitionID, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) EvaluateStored(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, body EvaluateStoredJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewEvaluateStoredRequest(c.Server, projectID, definitionID, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) ListExecutions(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, params *ListExecutionsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewListExecutionsRequest(c.Server, projectID, definitionID, params)
+func (c *Client) DeployDefinition(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeployDefinitionRequest(c.Server, projectID, definitionID)
 	if err != nil {
 		return nil, err
 	}
@@ -3887,80 +4125,6 @@ func NewListProjectsRequest(server string) (*http.Request, error) {
 	return req, nil
 }
 
-// NewCreateProjectRequest calls the generic CreateProject builder with application/json body
-func NewCreateProjectRequest(server string, body CreateProjectJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewCreateProjectRequestWithBody(server, "application/json", bodyReader)
-}
-
-// NewCreateProjectRequestWithBody generates requests for CreateProject with any type of body
-func NewCreateProjectRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/projects")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewDeleteProjectRequest generates requests for DeleteProject
-func NewDeleteProjectRequest(server string, projectID openapi_types.UUID) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "projectID", runtime.ParamLocationPath, projectID)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/projects/%s", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
 // NewGetProjectRequest generates requests for GetProject
 func NewGetProjectRequest(server string, projectID openapi_types.UUID) (*http.Request, error) {
 	var err error
@@ -3991,101 +4155,6 @@ func NewGetProjectRequest(server string, projectID openapi_types.UUID) (*http.Re
 	if err != nil {
 		return nil, err
 	}
-
-	return req, nil
-}
-
-// NewResumeBpmnDefinitionRequest generates requests for ResumeBpmnDefinition
-func NewResumeBpmnDefinitionRequest(server string, projectID openapi_types.UUID, definitionID openapi_types.UUID) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "projectID", runtime.ParamLocationPath, projectID)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam1 string
-
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "definitionID", runtime.ParamLocationPath, definitionID)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/projects/%s/bpmn/definitions/%s/resume", pathParam0, pathParam1)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
-// NewSuspendBpmnDefinitionRequest calls the generic SuspendBpmnDefinition builder with application/json body
-func NewSuspendBpmnDefinitionRequest(server string, projectID openapi_types.UUID, definitionID openapi_types.UUID, body SuspendBpmnDefinitionJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewSuspendBpmnDefinitionRequestWithBody(server, projectID, definitionID, "application/json", bodyReader)
-}
-
-// NewSuspendBpmnDefinitionRequestWithBody generates requests for SuspendBpmnDefinition with any type of body
-func NewSuspendBpmnDefinitionRequestWithBody(server string, projectID openapi_types.UUID, definitionID openapi_types.UUID, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "projectID", runtime.ParamLocationPath, projectID)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam1 string
-
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "definitionID", runtime.ParamLocationPath, definitionID)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/projects/%s/bpmn/definitions/%s/suspend", pathParam0, pathParam1)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -4151,9 +4220,9 @@ func NewListBpmnExternalJobsRequest(server string, projectID openapi_types.UUID,
 
 		}
 
-		if params.WorkflowID != nil {
+		if params.InstanceID != nil {
 
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "workflowID", runtime.ParamLocationQuery, *params.WorkflowID); err != nil {
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "instanceID", runtime.ParamLocationQuery, *params.InstanceID); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -4199,9 +4268,9 @@ func NewListBpmnExternalJobsRequest(server string, projectID openapi_types.UUID,
 
 		}
 
-		if params.Page != nil {
+		if params.Cursor != nil {
 
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "page", runtime.ParamLocationQuery, *params.Page); err != nil {
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "cursor", runtime.ParamLocationQuery, *params.Cursor); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -4215,9 +4284,9 @@ func NewListBpmnExternalJobsRequest(server string, projectID openapi_types.UUID,
 
 		}
 
-		if params.PageSize != nil {
+		if params.Limit != nil {
 
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "pageSize", runtime.ParamLocationQuery, *params.PageSize); err != nil {
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -4630,9 +4699,9 @@ func NewListBpmnIncidentsRequest(server string, projectID openapi_types.UUID, pa
 	if params != nil {
 		queryValues := queryURL.Query()
 
-		if params.DefinitionID != nil {
+		if params.ProcessID != nil {
 
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "definitionID", runtime.ParamLocationQuery, *params.DefinitionID); err != nil {
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "processID", runtime.ParamLocationQuery, *params.ProcessID); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -4646,9 +4715,25 @@ func NewListBpmnIncidentsRequest(server string, projectID openapi_types.UUID, pa
 
 		}
 
-		if params.WorkflowID != nil {
+		if params.Version != nil {
 
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "workflowID", runtime.ParamLocationQuery, *params.WorkflowID); err != nil {
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "version", runtime.ParamLocationQuery, *params.Version); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.InstanceID != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "instanceID", runtime.ParamLocationQuery, *params.InstanceID); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -4726,9 +4811,9 @@ func NewListBpmnIncidentsRequest(server string, projectID openapi_types.UUID, pa
 
 		}
 
-		if params.Page != nil {
+		if params.Cursor != nil {
 
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "page", runtime.ParamLocationQuery, *params.Page); err != nil {
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "cursor", runtime.ParamLocationQuery, *params.Cursor); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -4742,9 +4827,9 @@ func NewListBpmnIncidentsRequest(server string, projectID openapi_types.UUID, pa
 
 		}
 
-		if params.PageSize != nil {
+		if params.Limit != nil {
 
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "pageSize", runtime.ParamLocationQuery, *params.PageSize); err != nil {
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -4797,22 +4882,6 @@ func NewListBpmnInstancesRequest(server string, projectID openapi_types.UUID, pa
 
 	if params != nil {
 		queryValues := queryURL.Query()
-
-		if params.DefinitionID != nil {
-
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "definitionID", runtime.ParamLocationQuery, *params.DefinitionID); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
 
 		if params.Status != nil {
 
@@ -4910,9 +4979,9 @@ func NewListBpmnInstancesRequest(server string, projectID openapi_types.UUID, pa
 
 		}
 
-		if params.Page != nil {
+		if params.Version != nil {
 
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "page", runtime.ParamLocationQuery, *params.Page); err != nil {
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "version", runtime.ParamLocationQuery, *params.Version); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -4926,9 +4995,41 @@ func NewListBpmnInstancesRequest(server string, projectID openapi_types.UUID, pa
 
 		}
 
-		if params.PageSize != nil {
+		if params.Draft != nil {
 
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "pageSize", runtime.ParamLocationQuery, *params.PageSize); err != nil {
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "draft", runtime.ParamLocationQuery, *params.Draft); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Cursor != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "cursor", runtime.ParamLocationQuery, *params.Cursor); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -5001,7 +5102,7 @@ func NewStartBpmnInstanceRequestWithBody(server string, projectID openapi_types.
 }
 
 // NewCancelBpmnInstanceRequest generates requests for CancelBpmnInstance
-func NewCancelBpmnInstanceRequest(server string, projectID openapi_types.UUID, workflowID string) (*http.Request, error) {
+func NewCancelBpmnInstanceRequest(server string, projectID openapi_types.UUID, instanceID string) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -5013,7 +5114,7 @@ func NewCancelBpmnInstanceRequest(server string, projectID openapi_types.UUID, w
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "workflowID", runtime.ParamLocationPath, workflowID)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "instanceID", runtime.ParamLocationPath, instanceID)
 	if err != nil {
 		return nil, err
 	}
@@ -5042,7 +5143,7 @@ func NewCancelBpmnInstanceRequest(server string, projectID openapi_types.UUID, w
 }
 
 // NewGetBpmnInstanceRequest generates requests for GetBpmnInstance
-func NewGetBpmnInstanceRequest(server string, projectID openapi_types.UUID, workflowID string) (*http.Request, error) {
+func NewGetBpmnInstanceRequest(server string, projectID openapi_types.UUID, instanceID string) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -5054,7 +5155,7 @@ func NewGetBpmnInstanceRequest(server string, projectID openapi_types.UUID, work
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "workflowID", runtime.ParamLocationPath, workflowID)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "instanceID", runtime.ParamLocationPath, instanceID)
 	if err != nil {
 		return nil, err
 	}
@@ -5083,18 +5184,18 @@ func NewGetBpmnInstanceRequest(server string, projectID openapi_types.UUID, work
 }
 
 // NewTriggerBpmnAdHocNodeRequest calls the generic TriggerBpmnAdHocNode builder with application/json body
-func NewTriggerBpmnAdHocNodeRequest(server string, projectID openapi_types.UUID, workflowID string, adHocNodeID string, body TriggerBpmnAdHocNodeJSONRequestBody) (*http.Request, error) {
+func NewTriggerBpmnAdHocNodeRequest(server string, projectID openapi_types.UUID, instanceID string, adHocNodeID string, body TriggerBpmnAdHocNodeJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewTriggerBpmnAdHocNodeRequestWithBody(server, projectID, workflowID, adHocNodeID, "application/json", bodyReader)
+	return NewTriggerBpmnAdHocNodeRequestWithBody(server, projectID, instanceID, adHocNodeID, "application/json", bodyReader)
 }
 
 // NewTriggerBpmnAdHocNodeRequestWithBody generates requests for TriggerBpmnAdHocNode with any type of body
-func NewTriggerBpmnAdHocNodeRequestWithBody(server string, projectID openapi_types.UUID, workflowID string, adHocNodeID string, contentType string, body io.Reader) (*http.Request, error) {
+func NewTriggerBpmnAdHocNodeRequestWithBody(server string, projectID openapi_types.UUID, instanceID string, adHocNodeID string, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -5106,7 +5207,7 @@ func NewTriggerBpmnAdHocNodeRequestWithBody(server string, projectID openapi_typ
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "workflowID", runtime.ParamLocationPath, workflowID)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "instanceID", runtime.ParamLocationPath, instanceID)
 	if err != nil {
 		return nil, err
 	}
@@ -5144,18 +5245,18 @@ func NewTriggerBpmnAdHocNodeRequestWithBody(server string, projectID openapi_typ
 }
 
 // NewSetBpmnAdHocVariablesRequest calls the generic SetBpmnAdHocVariables builder with application/json body
-func NewSetBpmnAdHocVariablesRequest(server string, projectID openapi_types.UUID, workflowID string, adHocNodeID string, body SetBpmnAdHocVariablesJSONRequestBody) (*http.Request, error) {
+func NewSetBpmnAdHocVariablesRequest(server string, projectID openapi_types.UUID, instanceID string, adHocNodeID string, body SetBpmnAdHocVariablesJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewSetBpmnAdHocVariablesRequestWithBody(server, projectID, workflowID, adHocNodeID, "application/json", bodyReader)
+	return NewSetBpmnAdHocVariablesRequestWithBody(server, projectID, instanceID, adHocNodeID, "application/json", bodyReader)
 }
 
 // NewSetBpmnAdHocVariablesRequestWithBody generates requests for SetBpmnAdHocVariables with any type of body
-func NewSetBpmnAdHocVariablesRequestWithBody(server string, projectID openapi_types.UUID, workflowID string, adHocNodeID string, contentType string, body io.Reader) (*http.Request, error) {
+func NewSetBpmnAdHocVariablesRequestWithBody(server string, projectID openapi_types.UUID, instanceID string, adHocNodeID string, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -5167,7 +5268,7 @@ func NewSetBpmnAdHocVariablesRequestWithBody(server string, projectID openapi_ty
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "workflowID", runtime.ParamLocationPath, workflowID)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "instanceID", runtime.ParamLocationPath, instanceID)
 	if err != nil {
 		return nil, err
 	}
@@ -5205,7 +5306,7 @@ func NewSetBpmnAdHocVariablesRequestWithBody(server string, projectID openapi_ty
 }
 
 // NewGetBpmnInstanceChildrenRequest generates requests for GetBpmnInstanceChildren
-func NewGetBpmnInstanceChildrenRequest(server string, projectID openapi_types.UUID, workflowID string) (*http.Request, error) {
+func NewGetBpmnInstanceChildrenRequest(server string, projectID openapi_types.UUID, instanceID string) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -5217,7 +5318,7 @@ func NewGetBpmnInstanceChildrenRequest(server string, projectID openapi_types.UU
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "workflowID", runtime.ParamLocationPath, workflowID)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "instanceID", runtime.ParamLocationPath, instanceID)
 	if err != nil {
 		return nil, err
 	}
@@ -5245,19 +5346,8 @@ func NewGetBpmnInstanceChildrenRequest(server string, projectID openapi_types.UU
 	return req, nil
 }
 
-// NewResolveBpmnIncidentRequest calls the generic ResolveBpmnIncident builder with application/json body
-func NewResolveBpmnIncidentRequest(server string, projectID openapi_types.UUID, workflowID string, incidentID string, body ResolveBpmnIncidentJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewResolveBpmnIncidentRequestWithBody(server, projectID, workflowID, incidentID, "application/json", bodyReader)
-}
-
-// NewResolveBpmnIncidentRequestWithBody generates requests for ResolveBpmnIncident with any type of body
-func NewResolveBpmnIncidentRequestWithBody(server string, projectID openapi_types.UUID, workflowID string, incidentID string, contentType string, body io.Reader) (*http.Request, error) {
+// NewGetBpmnInstanceHistoryRequest generates requests for GetBpmnInstanceHistory
+func NewGetBpmnInstanceHistoryRequest(server string, projectID openapi_types.UUID, instanceID string, params *GetBpmnInstanceHistoryParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -5269,7 +5359,161 @@ func NewResolveBpmnIncidentRequestWithBody(server string, projectID openapi_type
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "workflowID", runtime.ParamLocationPath, workflowID)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "instanceID", runtime.ParamLocationPath, instanceID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/projects/%s/bpmn/instances/%s/history", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.FromSeq != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "fromSeq", runtime.ParamLocationQuery, *params.FromSeq); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.BeforeSeq != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "beforeSeq", runtime.ParamLocationQuery, *params.BeforeSeq); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetBpmnInstanceHistoryEntryRequest generates requests for GetBpmnInstanceHistoryEntry
+func NewGetBpmnInstanceHistoryEntryRequest(server string, projectID openapi_types.UUID, instanceID string, seq int64) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "projectID", runtime.ParamLocationPath, projectID)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "instanceID", runtime.ParamLocationPath, instanceID)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "seq", runtime.ParamLocationPath, seq)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/projects/%s/bpmn/instances/%s/history/%s", pathParam0, pathParam1, pathParam2)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewResolveBpmnIncidentRequest calls the generic ResolveBpmnIncident builder with application/json body
+func NewResolveBpmnIncidentRequest(server string, projectID openapi_types.UUID, instanceID string, incidentID string, body ResolveBpmnIncidentJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewResolveBpmnIncidentRequestWithBody(server, projectID, instanceID, incidentID, "application/json", bodyReader)
+}
+
+// NewResolveBpmnIncidentRequestWithBody generates requests for ResolveBpmnIncident with any type of body
+func NewResolveBpmnIncidentRequestWithBody(server string, projectID openapi_types.UUID, instanceID string, incidentID string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "projectID", runtime.ParamLocationPath, projectID)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "instanceID", runtime.ParamLocationPath, instanceID)
 	if err != nil {
 		return nil, err
 	}
@@ -5307,18 +5551,18 @@ func NewResolveBpmnIncidentRequestWithBody(server string, projectID openapi_type
 }
 
 // NewMigrateBpmnInstanceRequest calls the generic MigrateBpmnInstance builder with application/json body
-func NewMigrateBpmnInstanceRequest(server string, projectID openapi_types.UUID, workflowID string, body MigrateBpmnInstanceJSONRequestBody) (*http.Request, error) {
+func NewMigrateBpmnInstanceRequest(server string, projectID openapi_types.UUID, instanceID string, body MigrateBpmnInstanceJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewMigrateBpmnInstanceRequestWithBody(server, projectID, workflowID, "application/json", bodyReader)
+	return NewMigrateBpmnInstanceRequestWithBody(server, projectID, instanceID, "application/json", bodyReader)
 }
 
 // NewMigrateBpmnInstanceRequestWithBody generates requests for MigrateBpmnInstance with any type of body
-func NewMigrateBpmnInstanceRequestWithBody(server string, projectID openapi_types.UUID, workflowID string, contentType string, body io.Reader) (*http.Request, error) {
+func NewMigrateBpmnInstanceRequestWithBody(server string, projectID openapi_types.UUID, instanceID string, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -5330,7 +5574,7 @@ func NewMigrateBpmnInstanceRequestWithBody(server string, projectID openapi_type
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "workflowID", runtime.ParamLocationPath, workflowID)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "instanceID", runtime.ParamLocationPath, instanceID)
 	if err != nil {
 		return nil, err
 	}
@@ -5361,18 +5605,18 @@ func NewMigrateBpmnInstanceRequestWithBody(server string, projectID openapi_type
 }
 
 // NewValidateBpmnInstanceMigrationRequest calls the generic ValidateBpmnInstanceMigration builder with application/json body
-func NewValidateBpmnInstanceMigrationRequest(server string, projectID openapi_types.UUID, workflowID string, body ValidateBpmnInstanceMigrationJSONRequestBody) (*http.Request, error) {
+func NewValidateBpmnInstanceMigrationRequest(server string, projectID openapi_types.UUID, instanceID string, body ValidateBpmnInstanceMigrationJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewValidateBpmnInstanceMigrationRequestWithBody(server, projectID, workflowID, "application/json", bodyReader)
+	return NewValidateBpmnInstanceMigrationRequestWithBody(server, projectID, instanceID, "application/json", bodyReader)
 }
 
 // NewValidateBpmnInstanceMigrationRequestWithBody generates requests for ValidateBpmnInstanceMigration with any type of body
-func NewValidateBpmnInstanceMigrationRequestWithBody(server string, projectID openapi_types.UUID, workflowID string, contentType string, body io.Reader) (*http.Request, error) {
+func NewValidateBpmnInstanceMigrationRequestWithBody(server string, projectID openapi_types.UUID, instanceID string, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -5384,7 +5628,7 @@ func NewValidateBpmnInstanceMigrationRequestWithBody(server string, projectID op
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "workflowID", runtime.ParamLocationPath, workflowID)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "instanceID", runtime.ParamLocationPath, instanceID)
 	if err != nil {
 		return nil, err
 	}
@@ -5415,18 +5659,18 @@ func NewValidateBpmnInstanceMigrationRequestWithBody(server string, projectID op
 }
 
 // NewModifyBpmnInstanceRequest calls the generic ModifyBpmnInstance builder with application/json body
-func NewModifyBpmnInstanceRequest(server string, projectID openapi_types.UUID, workflowID string, body ModifyBpmnInstanceJSONRequestBody) (*http.Request, error) {
+func NewModifyBpmnInstanceRequest(server string, projectID openapi_types.UUID, instanceID string, body ModifyBpmnInstanceJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewModifyBpmnInstanceRequestWithBody(server, projectID, workflowID, "application/json", bodyReader)
+	return NewModifyBpmnInstanceRequestWithBody(server, projectID, instanceID, "application/json", bodyReader)
 }
 
 // NewModifyBpmnInstanceRequestWithBody generates requests for ModifyBpmnInstance with any type of body
-func NewModifyBpmnInstanceRequestWithBody(server string, projectID openapi_types.UUID, workflowID string, contentType string, body io.Reader) (*http.Request, error) {
+func NewModifyBpmnInstanceRequestWithBody(server string, projectID openapi_types.UUID, instanceID string, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -5438,7 +5682,7 @@ func NewModifyBpmnInstanceRequestWithBody(server string, projectID openapi_types
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "workflowID", runtime.ParamLocationPath, workflowID)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "instanceID", runtime.ParamLocationPath, instanceID)
 	if err != nil {
 		return nil, err
 	}
@@ -5469,7 +5713,7 @@ func NewModifyBpmnInstanceRequestWithBody(server string, projectID openapi_types
 }
 
 // NewResumeBpmnInstanceRequest generates requests for ResumeBpmnInstance
-func NewResumeBpmnInstanceRequest(server string, projectID openapi_types.UUID, workflowID string) (*http.Request, error) {
+func NewResumeBpmnInstanceRequest(server string, projectID openapi_types.UUID, instanceID string) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -5481,7 +5725,7 @@ func NewResumeBpmnInstanceRequest(server string, projectID openapi_types.UUID, w
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "workflowID", runtime.ParamLocationPath, workflowID)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "instanceID", runtime.ParamLocationPath, instanceID)
 	if err != nil {
 		return nil, err
 	}
@@ -5510,18 +5754,18 @@ func NewResumeBpmnInstanceRequest(server string, projectID openapi_types.UUID, w
 }
 
 // NewSuspendBpmnInstanceRequest calls the generic SuspendBpmnInstance builder with application/json body
-func NewSuspendBpmnInstanceRequest(server string, projectID openapi_types.UUID, workflowID string, body SuspendBpmnInstanceJSONRequestBody) (*http.Request, error) {
+func NewSuspendBpmnInstanceRequest(server string, projectID openapi_types.UUID, instanceID string, body SuspendBpmnInstanceJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewSuspendBpmnInstanceRequestWithBody(server, projectID, workflowID, "application/json", bodyReader)
+	return NewSuspendBpmnInstanceRequestWithBody(server, projectID, instanceID, "application/json", bodyReader)
 }
 
 // NewSuspendBpmnInstanceRequestWithBody generates requests for SuspendBpmnInstance with any type of body
-func NewSuspendBpmnInstanceRequestWithBody(server string, projectID openapi_types.UUID, workflowID string, contentType string, body io.Reader) (*http.Request, error) {
+func NewSuspendBpmnInstanceRequestWithBody(server string, projectID openapi_types.UUID, instanceID string, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -5533,7 +5777,7 @@ func NewSuspendBpmnInstanceRequestWithBody(server string, projectID openapi_type
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "workflowID", runtime.ParamLocationPath, workflowID)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "instanceID", runtime.ParamLocationPath, instanceID)
 	if err != nil {
 		return nil, err
 	}
@@ -5564,7 +5808,7 @@ func NewSuspendBpmnInstanceRequestWithBody(server string, projectID openapi_type
 }
 
 // NewGetBpmnInstanceVariablesRequest generates requests for GetBpmnInstanceVariables
-func NewGetBpmnInstanceVariablesRequest(server string, projectID openapi_types.UUID, workflowID string) (*http.Request, error) {
+func NewGetBpmnInstanceVariablesRequest(server string, projectID openapi_types.UUID, instanceID string) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -5576,7 +5820,7 @@ func NewGetBpmnInstanceVariablesRequest(server string, projectID openapi_types.U
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "workflowID", runtime.ParamLocationPath, workflowID)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "instanceID", runtime.ParamLocationPath, instanceID)
 	if err != nil {
 		return nil, err
 	}
@@ -5605,18 +5849,18 @@ func NewGetBpmnInstanceVariablesRequest(server string, projectID openapi_types.U
 }
 
 // NewUpdateBpmnInstanceVariablesRequest calls the generic UpdateBpmnInstanceVariables builder with application/json body
-func NewUpdateBpmnInstanceVariablesRequest(server string, projectID openapi_types.UUID, workflowID string, body UpdateBpmnInstanceVariablesJSONRequestBody) (*http.Request, error) {
+func NewUpdateBpmnInstanceVariablesRequest(server string, projectID openapi_types.UUID, instanceID string, body UpdateBpmnInstanceVariablesJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewUpdateBpmnInstanceVariablesRequestWithBody(server, projectID, workflowID, "application/json", bodyReader)
+	return NewUpdateBpmnInstanceVariablesRequestWithBody(server, projectID, instanceID, "application/json", bodyReader)
 }
 
 // NewUpdateBpmnInstanceVariablesRequestWithBody generates requests for UpdateBpmnInstanceVariables with any type of body
-func NewUpdateBpmnInstanceVariablesRequestWithBody(server string, projectID openapi_types.UUID, workflowID string, contentType string, body io.Reader) (*http.Request, error) {
+func NewUpdateBpmnInstanceVariablesRequestWithBody(server string, projectID openapi_types.UUID, instanceID string, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -5628,7 +5872,7 @@ func NewUpdateBpmnInstanceVariablesRequestWithBody(server string, projectID open
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "workflowID", runtime.ParamLocationPath, workflowID)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "instanceID", runtime.ParamLocationPath, instanceID)
 	if err != nil {
 		return nil, err
 	}
@@ -5932,6 +6176,185 @@ func NewListBpmnProcessVersionsRequest(server string, projectID openapi_types.UU
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewGetBpmnProcessVersionRequest generates requests for GetBpmnProcessVersion
+func NewGetBpmnProcessVersionRequest(server string, projectID openapi_types.UUID, processID string, version int, params *GetBpmnProcessVersionParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "projectID", runtime.ParamLocationPath, projectID)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "processID", runtime.ParamLocationPath, processID)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "version", runtime.ParamLocationPath, version)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/projects/%s/bpmn/processes/%s/versions/%s", pathParam0, pathParam1, pathParam2)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.CreatedAfter != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "createdAfter", runtime.ParamLocationQuery, *params.CreatedAfter); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewResumeBpmnDefinitionRequest generates requests for ResumeBpmnDefinition
+func NewResumeBpmnDefinitionRequest(server string, projectID openapi_types.UUID, processID string, version int) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "projectID", runtime.ParamLocationPath, projectID)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "processID", runtime.ParamLocationPath, processID)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "version", runtime.ParamLocationPath, version)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/projects/%s/bpmn/processes/%s/versions/%s/resume", pathParam0, pathParam1, pathParam2)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewSuspendBpmnDefinitionRequest calls the generic SuspendBpmnDefinition builder with application/json body
+func NewSuspendBpmnDefinitionRequest(server string, projectID openapi_types.UUID, processID string, version int, body SuspendBpmnDefinitionJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSuspendBpmnDefinitionRequestWithBody(server, projectID, processID, version, "application/json", bodyReader)
+}
+
+// NewSuspendBpmnDefinitionRequestWithBody generates requests for SuspendBpmnDefinition with any type of body
+func NewSuspendBpmnDefinitionRequestWithBody(server string, projectID openapi_types.UUID, processID string, version int, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "projectID", runtime.ParamLocationPath, projectID)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "processID", runtime.ParamLocationPath, processID)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "version", runtime.ParamLocationPath, version)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/projects/%s/bpmn/processes/%s/versions/%s/suspend", pathParam0, pathParam1, pathParam2)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -6513,9 +6936,9 @@ func NewListBpmnUserTasksRequest(server string, projectID openapi_types.UUID, pa
 	if params != nil {
 		queryValues := queryURL.Query()
 
-		if params.WorkflowID != nil {
+		if params.InstanceID != nil {
 
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "workflowID", runtime.ParamLocationQuery, *params.WorkflowID); err != nil {
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "instanceID", runtime.ParamLocationQuery, *params.InstanceID); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -6609,9 +7032,9 @@ func NewListBpmnUserTasksRequest(server string, projectID openapi_types.UUID, pa
 
 		}
 
-		if params.Page != nil {
+		if params.DueAfter != nil {
 
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "page", runtime.ParamLocationQuery, *params.Page); err != nil {
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "dueAfter", runtime.ParamLocationQuery, *params.DueAfter); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -6625,9 +7048,57 @@ func NewListBpmnUserTasksRequest(server string, projectID openapi_types.UUID, pa
 
 		}
 
-		if params.PageSize != nil {
+		if params.DueBefore != nil {
 
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "pageSize", runtime.ParamLocationQuery, *params.PageSize); err != nil {
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "dueBefore", runtime.ParamLocationQuery, *params.DueBefore); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Sort != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "sort", runtime.ParamLocationQuery, *params.Sort); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Cursor != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "cursor", runtime.ParamLocationQuery, *params.Cursor); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -6681,9 +7152,9 @@ func NewListBpmnUserTasksForCallerRequest(server string, projectID openapi_types
 	if params != nil {
 		queryValues := queryURL.Query()
 
-		if params.Page != nil {
+		if params.DueAfter != nil {
 
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "page", runtime.ParamLocationQuery, *params.Page); err != nil {
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "dueAfter", runtime.ParamLocationQuery, *params.DueAfter); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -6697,9 +7168,57 @@ func NewListBpmnUserTasksForCallerRequest(server string, projectID openapi_types
 
 		}
 
-		if params.PageSize != nil {
+		if params.DueBefore != nil {
 
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "pageSize", runtime.ParamLocationQuery, *params.PageSize); err != nil {
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "dueBefore", runtime.ParamLocationQuery, *params.DueBefore); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Sort != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "sort", runtime.ParamLocationQuery, *params.Sort); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Cursor != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "cursor", runtime.ParamLocationQuery, *params.Cursor); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -7052,6 +7571,47 @@ func NewListDecisionsRequest(server string, projectID openapi_types.UUID, params
 		}
 
 		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListDecisionVersionsRequest generates requests for ListDecisionVersions
+func NewListDecisionVersionsRequest(server string, projectID openapi_types.UUID, decisionID string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "projectID", runtime.ParamLocationPath, projectID)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "decisionID", runtime.ParamLocationPath, decisionID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/projects/%s/dmn/decisions/%s/versions", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
 	}
 
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
@@ -7607,19 +8167,8 @@ func NewUpdateDefinitionRequestWithBody(server string, projectID openapi_types.U
 	return req, nil
 }
 
-// NewEvaluateStoredRequest calls the generic EvaluateStored builder with application/json body
-func NewEvaluateStoredRequest(server string, projectID openapi_types.UUID, definitionID openapi_types.UUID, body EvaluateStoredJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewEvaluateStoredRequestWithBody(server, projectID, definitionID, "application/json", bodyReader)
-}
-
-// NewEvaluateStoredRequestWithBody generates requests for EvaluateStored with any type of body
-func NewEvaluateStoredRequestWithBody(server string, projectID openapi_types.UUID, definitionID openapi_types.UUID, contentType string, body io.Reader) (*http.Request, error) {
+// NewDeployDefinitionRequest generates requests for DeployDefinition
+func NewDeployDefinitionRequest(server string, projectID openapi_types.UUID, definitionID openapi_types.UUID) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -7641,7 +8190,7 @@ func NewEvaluateStoredRequestWithBody(server string, projectID openapi_types.UUI
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/projects/%s/dmn/definitions/%s/evaluate", pathParam0, pathParam1)
+	operationPath := fmt.Sprintf("/projects/%s/dmn/definitions/%s/deploy", pathParam0, pathParam1)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -7651,136 +8200,7 @@ func NewEvaluateStoredRequestWithBody(server string, projectID openapi_types.UUI
 		return nil, err
 	}
 
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewListExecutionsRequest generates requests for ListExecutions
-func NewListExecutionsRequest(server string, projectID openapi_types.UUID, definitionID openapi_types.UUID, params *ListExecutionsParams) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "projectID", runtime.ParamLocationPath, projectID)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam1 string
-
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "definitionID", runtime.ParamLocationPath, definitionID)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/projects/%s/dmn/definitions/%s/executions", pathParam0, pathParam1)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	if params != nil {
-		queryValues := queryURL.Query()
-
-		if params.DefinitionsID != nil {
-
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "definitionsID", runtime.ParamLocationQuery, *params.DefinitionsID); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
-		if params.StartDate != nil {
-
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "startDate", runtime.ParamLocationQuery, *params.StartDate); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
-		if params.BusinessId != nil {
-
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "businessId", runtime.ParamLocationQuery, *params.BusinessId); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
-		if params.Page != nil {
-
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "page", runtime.ParamLocationQuery, *params.Page); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
-		if params.PageSize != nil {
-
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "pageSize", runtime.ParamLocationQuery, *params.PageSize); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
-		queryURL.RawQuery = queryValues.Encode()
-	}
-
-	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -7820,6 +8240,22 @@ func NewListProjectExecutionsRequest(server string, projectID openapi_types.UUID
 		if params.DefinitionsID != nil {
 
 			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "definitionsID", runtime.ParamLocationQuery, *params.DefinitionsID); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Version != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "version", runtime.ParamLocationQuery, *params.Version); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -8032,24 +8468,8 @@ type ClientWithResponsesInterface interface {
 	// ListProjectsWithResponse request
 	ListProjectsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListProjectsResponse, error)
 
-	// CreateProjectWithBodyWithResponse request with any body
-	CreateProjectWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateProjectResponse, error)
-
-	CreateProjectWithResponse(ctx context.Context, body CreateProjectJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateProjectResponse, error)
-
-	// DeleteProjectWithResponse request
-	DeleteProjectWithResponse(ctx context.Context, projectID openapi_types.UUID, reqEditors ...RequestEditorFn) (*DeleteProjectResponse, error)
-
 	// GetProjectWithResponse request
 	GetProjectWithResponse(ctx context.Context, projectID openapi_types.UUID, reqEditors ...RequestEditorFn) (*GetProjectResponse, error)
-
-	// ResumeBpmnDefinitionWithResponse request
-	ResumeBpmnDefinitionWithResponse(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, reqEditors ...RequestEditorFn) (*ResumeBpmnDefinitionResponse, error)
-
-	// SuspendBpmnDefinitionWithBodyWithResponse request with any body
-	SuspendBpmnDefinitionWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SuspendBpmnDefinitionResponse, error)
-
-	SuspendBpmnDefinitionWithResponse(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, body SuspendBpmnDefinitionJSONRequestBody, reqEditors ...RequestEditorFn) (*SuspendBpmnDefinitionResponse, error)
 
 	// ListBpmnExternalJobsWithResponse request
 	ListBpmnExternalJobsWithResponse(ctx context.Context, projectID openapi_types.UUID, params *ListBpmnExternalJobsParams, reqEditors ...RequestEditorFn) (*ListBpmnExternalJobsResponse, error)
@@ -8099,59 +8519,65 @@ type ClientWithResponsesInterface interface {
 	StartBpmnInstanceWithResponse(ctx context.Context, projectID openapi_types.UUID, body StartBpmnInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*StartBpmnInstanceResponse, error)
 
 	// CancelBpmnInstanceWithResponse request
-	CancelBpmnInstanceWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, reqEditors ...RequestEditorFn) (*CancelBpmnInstanceResponse, error)
+	CancelBpmnInstanceWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, reqEditors ...RequestEditorFn) (*CancelBpmnInstanceResponse, error)
 
 	// GetBpmnInstanceWithResponse request
-	GetBpmnInstanceWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, reqEditors ...RequestEditorFn) (*GetBpmnInstanceResponse, error)
+	GetBpmnInstanceWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, reqEditors ...RequestEditorFn) (*GetBpmnInstanceResponse, error)
 
 	// TriggerBpmnAdHocNodeWithBodyWithResponse request with any body
-	TriggerBpmnAdHocNodeWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, adHocNodeID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*TriggerBpmnAdHocNodeResponse, error)
+	TriggerBpmnAdHocNodeWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, adHocNodeID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*TriggerBpmnAdHocNodeResponse, error)
 
-	TriggerBpmnAdHocNodeWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, adHocNodeID string, body TriggerBpmnAdHocNodeJSONRequestBody, reqEditors ...RequestEditorFn) (*TriggerBpmnAdHocNodeResponse, error)
+	TriggerBpmnAdHocNodeWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, adHocNodeID string, body TriggerBpmnAdHocNodeJSONRequestBody, reqEditors ...RequestEditorFn) (*TriggerBpmnAdHocNodeResponse, error)
 
 	// SetBpmnAdHocVariablesWithBodyWithResponse request with any body
-	SetBpmnAdHocVariablesWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, adHocNodeID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetBpmnAdHocVariablesResponse, error)
+	SetBpmnAdHocVariablesWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, adHocNodeID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetBpmnAdHocVariablesResponse, error)
 
-	SetBpmnAdHocVariablesWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, adHocNodeID string, body SetBpmnAdHocVariablesJSONRequestBody, reqEditors ...RequestEditorFn) (*SetBpmnAdHocVariablesResponse, error)
+	SetBpmnAdHocVariablesWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, adHocNodeID string, body SetBpmnAdHocVariablesJSONRequestBody, reqEditors ...RequestEditorFn) (*SetBpmnAdHocVariablesResponse, error)
 
 	// GetBpmnInstanceChildrenWithResponse request
-	GetBpmnInstanceChildrenWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, reqEditors ...RequestEditorFn) (*GetBpmnInstanceChildrenResponse, error)
+	GetBpmnInstanceChildrenWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, reqEditors ...RequestEditorFn) (*GetBpmnInstanceChildrenResponse, error)
+
+	// GetBpmnInstanceHistoryWithResponse request
+	GetBpmnInstanceHistoryWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, params *GetBpmnInstanceHistoryParams, reqEditors ...RequestEditorFn) (*GetBpmnInstanceHistoryResponse, error)
+
+	// GetBpmnInstanceHistoryEntryWithResponse request
+	GetBpmnInstanceHistoryEntryWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, seq int64, reqEditors ...RequestEditorFn) (*GetBpmnInstanceHistoryEntryResponse, error)
 
 	// ResolveBpmnIncidentWithBodyWithResponse request with any body
-	ResolveBpmnIncidentWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, incidentID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ResolveBpmnIncidentResponse, error)
+	ResolveBpmnIncidentWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, incidentID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ResolveBpmnIncidentResponse, error)
 
-	ResolveBpmnIncidentWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, incidentID string, body ResolveBpmnIncidentJSONRequestBody, reqEditors ...RequestEditorFn) (*ResolveBpmnIncidentResponse, error)
+	ResolveBpmnIncidentWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, incidentID string, body ResolveBpmnIncidentJSONRequestBody, reqEditors ...RequestEditorFn) (*ResolveBpmnIncidentResponse, error)
 
 	// MigrateBpmnInstanceWithBodyWithResponse request with any body
-	MigrateBpmnInstanceWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*MigrateBpmnInstanceResponse, error)
+	MigrateBpmnInstanceWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*MigrateBpmnInstanceResponse, error)
 
-	MigrateBpmnInstanceWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, body MigrateBpmnInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*MigrateBpmnInstanceResponse, error)
+	MigrateBpmnInstanceWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, body MigrateBpmnInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*MigrateBpmnInstanceResponse, error)
 
 	// ValidateBpmnInstanceMigrationWithBodyWithResponse request with any body
-	ValidateBpmnInstanceMigrationWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ValidateBpmnInstanceMigrationResponse, error)
+	ValidateBpmnInstanceMigrationWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ValidateBpmnInstanceMigrationResponse, error)
 
-	ValidateBpmnInstanceMigrationWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, body ValidateBpmnInstanceMigrationJSONRequestBody, reqEditors ...RequestEditorFn) (*ValidateBpmnInstanceMigrationResponse, error)
+	ValidateBpmnInstanceMigrationWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, body ValidateBpmnInstanceMigrationJSONRequestBody, reqEditors ...RequestEditorFn) (*ValidateBpmnInstanceMigrationResponse, error)
 
 	// ModifyBpmnInstanceWithBodyWithResponse request with any body
-	ModifyBpmnInstanceWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ModifyBpmnInstanceResponse, error)
+	ModifyBpmnInstanceWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ModifyBpmnInstanceResponse, error)
 
-	ModifyBpmnInstanceWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, body ModifyBpmnInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*ModifyBpmnInstanceResponse, error)
+	ModifyBpmnInstanceWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, body ModifyBpmnInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*ModifyBpmnInstanceResponse, error)
 
 	// ResumeBpmnInstanceWithResponse request
-	ResumeBpmnInstanceWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, reqEditors ...RequestEditorFn) (*ResumeBpmnInstanceResponse, error)
+	ResumeBpmnInstanceWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, reqEditors ...RequestEditorFn) (*ResumeBpmnInstanceResponse, error)
 
 	// SuspendBpmnInstanceWithBodyWithResponse request with any body
-	SuspendBpmnInstanceWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SuspendBpmnInstanceResponse, error)
+	SuspendBpmnInstanceWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SuspendBpmnInstanceResponse, error)
 
-	SuspendBpmnInstanceWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, body SuspendBpmnInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*SuspendBpmnInstanceResponse, error)
+	SuspendBpmnInstanceWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, body SuspendBpmnInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*SuspendBpmnInstanceResponse, error)
 
 	// GetBpmnInstanceVariablesWithResponse request
-	GetBpmnInstanceVariablesWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, reqEditors ...RequestEditorFn) (*GetBpmnInstanceVariablesResponse, error)
+	GetBpmnInstanceVariablesWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, reqEditors ...RequestEditorFn) (*GetBpmnInstanceVariablesResponse, error)
 
 	// UpdateBpmnInstanceVariablesWithBodyWithResponse request with any body
-	UpdateBpmnInstanceVariablesWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateBpmnInstanceVariablesResponse, error)
+	UpdateBpmnInstanceVariablesWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateBpmnInstanceVariablesResponse, error)
 
-	UpdateBpmnInstanceVariablesWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, body UpdateBpmnInstanceVariablesJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateBpmnInstanceVariablesResponse, error)
+	UpdateBpmnInstanceVariablesWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, body UpdateBpmnInstanceVariablesJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateBpmnInstanceVariablesResponse, error)
 
 	// PublishBpmnMessageWithBodyWithResponse request with any body
 	PublishBpmnMessageWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PublishBpmnMessageResponse, error)
@@ -8163,6 +8589,17 @@ type ClientWithResponsesInterface interface {
 
 	// ListBpmnProcessVersionsWithResponse request
 	ListBpmnProcessVersionsWithResponse(ctx context.Context, projectID openapi_types.UUID, processID string, params *ListBpmnProcessVersionsParams, reqEditors ...RequestEditorFn) (*ListBpmnProcessVersionsResponse, error)
+
+	// GetBpmnProcessVersionWithResponse request
+	GetBpmnProcessVersionWithResponse(ctx context.Context, projectID openapi_types.UUID, processID string, version int, params *GetBpmnProcessVersionParams, reqEditors ...RequestEditorFn) (*GetBpmnProcessVersionResponse, error)
+
+	// ResumeBpmnDefinitionWithResponse request
+	ResumeBpmnDefinitionWithResponse(ctx context.Context, projectID openapi_types.UUID, processID string, version int, reqEditors ...RequestEditorFn) (*ResumeBpmnDefinitionResponse, error)
+
+	// SuspendBpmnDefinitionWithBodyWithResponse request with any body
+	SuspendBpmnDefinitionWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, processID string, version int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SuspendBpmnDefinitionResponse, error)
+
+	SuspendBpmnDefinitionWithResponse(ctx context.Context, projectID openapi_types.UUID, processID string, version int, body SuspendBpmnDefinitionJSONRequestBody, reqEditors ...RequestEditorFn) (*SuspendBpmnDefinitionResponse, error)
 
 	// ListBpmnResourcesWithResponse request
 	ListBpmnResourcesWithResponse(ctx context.Context, projectID openapi_types.UUID, params *ListBpmnResourcesParams, reqEditors ...RequestEditorFn) (*ListBpmnResourcesResponse, error)
@@ -8234,6 +8671,9 @@ type ClientWithResponsesInterface interface {
 	// ListDecisionsWithResponse request
 	ListDecisionsWithResponse(ctx context.Context, projectID openapi_types.UUID, params *ListDecisionsParams, reqEditors ...RequestEditorFn) (*ListDecisionsResponse, error)
 
+	// ListDecisionVersionsWithResponse request
+	ListDecisionVersionsWithResponse(ctx context.Context, projectID openapi_types.UUID, decisionID string, reqEditors ...RequestEditorFn) (*ListDecisionVersionsResponse, error)
+
 	// ListDefinitionsWithResponse request
 	ListDefinitionsWithResponse(ctx context.Context, projectID openapi_types.UUID, params *ListDefinitionsParams, reqEditors ...RequestEditorFn) (*ListDefinitionsResponse, error)
 
@@ -8267,13 +8707,8 @@ type ClientWithResponsesInterface interface {
 
 	UpdateDefinitionWithResponse(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, body UpdateDefinitionJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateDefinitionResponse, error)
 
-	// EvaluateStoredWithBodyWithResponse request with any body
-	EvaluateStoredWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*EvaluateStoredResponse, error)
-
-	EvaluateStoredWithResponse(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, body EvaluateStoredJSONRequestBody, reqEditors ...RequestEditorFn) (*EvaluateStoredResponse, error)
-
-	// ListExecutionsWithResponse request
-	ListExecutionsWithResponse(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, params *ListExecutionsParams, reqEditors ...RequestEditorFn) (*ListExecutionsResponse, error)
+	// DeployDefinitionWithResponse request
+	DeployDefinitionWithResponse(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, reqEditors ...RequestEditorFn) (*DeployDefinitionResponse, error)
 
 	// ListProjectExecutionsWithResponse request
 	ListProjectExecutionsWithResponse(ctx context.Context, projectID openapi_types.UUID, params *ListProjectExecutionsParams, reqEditors ...RequestEditorFn) (*ListProjectExecutionsResponse, error)
@@ -8356,55 +8791,6 @@ func (r ListProjectsResponse) StatusCode() int {
 	return 0
 }
 
-type CreateProjectResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON201      *Project
-	JSON400      *Error
-	JSON403      *Error
-	JSON500      *Error
-}
-
-// Status returns HTTPResponse.Status
-func (r CreateProjectResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r CreateProjectResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type DeleteProjectResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON400      *Error
-	JSON404      *Error
-	JSON500      *Error
-}
-
-// Status returns HTTPResponse.Status
-func (r DeleteProjectResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r DeleteProjectResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
 type GetProjectResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -8424,48 +8810,6 @@ func (r GetProjectResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetProjectResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type ResumeBpmnDefinitionResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-}
-
-// Status returns HTTPResponse.Status
-func (r ResumeBpmnDefinitionResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r ResumeBpmnDefinitionResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type SuspendBpmnDefinitionResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-}
-
-// Status returns HTTPResponse.Status
-func (r SuspendBpmnDefinitionResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r SuspendBpmnDefinitionResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -8701,8 +9045,8 @@ type StartBpmnInstanceResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON201      *struct {
-		// WorkflowID Stable execution identifier of the new instance.
-		WorkflowID *string `json:"workflowID,omitempty"`
+		// InstanceID Identifier of the new instance.
+		InstanceID *string `json:"instanceID,omitempty"`
 	}
 	JSON400 *BadRequest
 	JSON401 *Unauthorized
@@ -8753,7 +9097,7 @@ type GetBpmnInstanceResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *BpmnInstanceState
-	JSON503      *Error
+	JSON404      *NotFound
 }
 
 // Status returns HTTPResponse.Status
@@ -8830,6 +9174,52 @@ func (r GetBpmnInstanceChildrenResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetBpmnInstanceChildrenResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetBpmnInstanceHistoryResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *BpmnHistoryPage
+	JSON404      *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r GetBpmnInstanceHistoryResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetBpmnInstanceHistoryResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetBpmnInstanceHistoryEntryResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *BpmnActivityState
+	JSON404      *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r GetBpmnInstanceHistoryEntryResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetBpmnInstanceHistoryEntryResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -9080,6 +9470,73 @@ func (r ListBpmnProcessVersionsResponse) StatusCode() int {
 	return 0
 }
 
+type GetBpmnProcessVersionResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *BpmnProcessVersion
+	JSON401      *Unauthorized
+	JSON404      *NotFound
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetBpmnProcessVersionResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetBpmnProcessVersionResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ResumeBpmnDefinitionResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+}
+
+// Status returns HTTPResponse.Status
+func (r ResumeBpmnDefinitionResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ResumeBpmnDefinitionResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type SuspendBpmnDefinitionResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+}
+
+// Status returns HTTPResponse.Status
+func (r SuspendBpmnDefinitionResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SuspendBpmnDefinitionResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ListBpmnResourcesResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -9106,6 +9563,7 @@ type CreateBpmnResourceResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON201      *BpmnResourceDetail
+	JSON409      *Conflict
 }
 
 // Status returns HTTPResponse.Status
@@ -9175,6 +9633,7 @@ func (r ListLatestBpmnResourcesResponse) StatusCode() int {
 type DeleteBpmnResourceResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON409      *Conflict
 }
 
 // Status returns HTTPResponse.Status
@@ -9220,6 +9679,7 @@ type UpdateBpmnResourceResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *BpmnResourceDetail
+	JSON409      *Conflict
 }
 
 // Status returns HTTPResponse.Status
@@ -9244,6 +9704,7 @@ type DeployBpmnResourceResponse struct {
 	JSON400      *BadRequest
 	JSON401      *Unauthorized
 	JSON404      *NotFound
+	JSON409      *Conflict
 	JSON500      *InternalError
 }
 
@@ -9267,8 +9728,8 @@ type StartBpmnTestInstanceResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON201      *struct {
-		// WorkflowID Stable execution identifier of the new test instance.
-		WorkflowID *string `json:"workflowID,omitempty"`
+		// InstanceID Identifier of the new test instance.
+		InstanceID *string `json:"instanceID,omitempty"`
 	}
 	JSON400 *BadRequest
 	JSON401 *Unauthorized
@@ -9492,6 +9953,29 @@ func (r ListDecisionsResponse) StatusCode() int {
 	return 0
 }
 
+type ListDecisionVersionsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *DecisionVersionList
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r ListDecisionVersionsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListDecisionVersionsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ListDefinitionsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -9523,6 +10007,7 @@ type CreateDefinitionResponse struct {
 	JSON201      *Definition
 	JSON400      *Error
 	JSON404      *Error
+	JSON409      *Conflict
 	JSON500      *Error
 }
 
@@ -9646,6 +10131,7 @@ type DeleteDefinitionResponse struct {
 	HTTPResponse *http.Response
 	JSON400      *Error
 	JSON404      *Error
+	JSON409      *Conflict
 	JSON500      *Error
 }
 
@@ -9696,6 +10182,7 @@ type UpdateDefinitionResponse struct {
 	JSON200      *Definition
 	JSON400      *Error
 	JSON404      *Error
+	JSON409      *Conflict
 	JSON500      *Error
 }
 
@@ -9715,17 +10202,18 @@ func (r UpdateDefinitionResponse) StatusCode() int {
 	return 0
 }
 
-type EvaluateStoredResponse struct {
+type DeployDefinitionResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *map[string]EvaluationResult
+	JSON200      *Definition
 	JSON400      *Error
 	JSON404      *Error
+	JSON409      *Conflict
 	JSON500      *Error
 }
 
 // Status returns HTTPResponse.Status
-func (r EvaluateStoredResponse) Status() string {
+func (r DeployDefinitionResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -9733,32 +10221,7 @@ func (r EvaluateStoredResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r EvaluateStoredResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type ListExecutionsResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *PaginatedExecutionsResponse
-	JSON400      *Error
-	JSON404      *Error
-	JSON500      *Error
-}
-
-// Status returns HTTPResponse.Status
-func (r ListExecutionsResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r ListExecutionsResponse) StatusCode() int {
+func (r DeployDefinitionResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -9819,9 +10282,7 @@ type GetVersionResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
-		BuildTime *string `json:"buildTime,omitempty"`
-		Commit    *string `json:"commit,omitempty"`
-		Version   *string `json:"version,omitempty"`
+		Version *string `json:"version,omitempty"`
 	}
 }
 
@@ -9884,32 +10345,6 @@ func (c *ClientWithResponses) ListProjectsWithResponse(ctx context.Context, reqE
 	return ParseListProjectsResponse(rsp)
 }
 
-// CreateProjectWithBodyWithResponse request with arbitrary body returning *CreateProjectResponse
-func (c *ClientWithResponses) CreateProjectWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateProjectResponse, error) {
-	rsp, err := c.CreateProjectWithBody(ctx, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseCreateProjectResponse(rsp)
-}
-
-func (c *ClientWithResponses) CreateProjectWithResponse(ctx context.Context, body CreateProjectJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateProjectResponse, error) {
-	rsp, err := c.CreateProject(ctx, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseCreateProjectResponse(rsp)
-}
-
-// DeleteProjectWithResponse request returning *DeleteProjectResponse
-func (c *ClientWithResponses) DeleteProjectWithResponse(ctx context.Context, projectID openapi_types.UUID, reqEditors ...RequestEditorFn) (*DeleteProjectResponse, error) {
-	rsp, err := c.DeleteProject(ctx, projectID, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseDeleteProjectResponse(rsp)
-}
-
 // GetProjectWithResponse request returning *GetProjectResponse
 func (c *ClientWithResponses) GetProjectWithResponse(ctx context.Context, projectID openapi_types.UUID, reqEditors ...RequestEditorFn) (*GetProjectResponse, error) {
 	rsp, err := c.GetProject(ctx, projectID, reqEditors...)
@@ -9917,32 +10352,6 @@ func (c *ClientWithResponses) GetProjectWithResponse(ctx context.Context, projec
 		return nil, err
 	}
 	return ParseGetProjectResponse(rsp)
-}
-
-// ResumeBpmnDefinitionWithResponse request returning *ResumeBpmnDefinitionResponse
-func (c *ClientWithResponses) ResumeBpmnDefinitionWithResponse(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, reqEditors ...RequestEditorFn) (*ResumeBpmnDefinitionResponse, error) {
-	rsp, err := c.ResumeBpmnDefinition(ctx, projectID, definitionID, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseResumeBpmnDefinitionResponse(rsp)
-}
-
-// SuspendBpmnDefinitionWithBodyWithResponse request with arbitrary body returning *SuspendBpmnDefinitionResponse
-func (c *ClientWithResponses) SuspendBpmnDefinitionWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SuspendBpmnDefinitionResponse, error) {
-	rsp, err := c.SuspendBpmnDefinitionWithBody(ctx, projectID, definitionID, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseSuspendBpmnDefinitionResponse(rsp)
-}
-
-func (c *ClientWithResponses) SuspendBpmnDefinitionWithResponse(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, body SuspendBpmnDefinitionJSONRequestBody, reqEditors ...RequestEditorFn) (*SuspendBpmnDefinitionResponse, error) {
-	rsp, err := c.SuspendBpmnDefinition(ctx, projectID, definitionID, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseSuspendBpmnDefinitionResponse(rsp)
 }
 
 // ListBpmnExternalJobsWithResponse request returning *ListBpmnExternalJobsResponse
@@ -10101,8 +10510,8 @@ func (c *ClientWithResponses) StartBpmnInstanceWithResponse(ctx context.Context,
 }
 
 // CancelBpmnInstanceWithResponse request returning *CancelBpmnInstanceResponse
-func (c *ClientWithResponses) CancelBpmnInstanceWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, reqEditors ...RequestEditorFn) (*CancelBpmnInstanceResponse, error) {
-	rsp, err := c.CancelBpmnInstance(ctx, projectID, workflowID, reqEditors...)
+func (c *ClientWithResponses) CancelBpmnInstanceWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, reqEditors ...RequestEditorFn) (*CancelBpmnInstanceResponse, error) {
+	rsp, err := c.CancelBpmnInstance(ctx, projectID, instanceID, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -10110,8 +10519,8 @@ func (c *ClientWithResponses) CancelBpmnInstanceWithResponse(ctx context.Context
 }
 
 // GetBpmnInstanceWithResponse request returning *GetBpmnInstanceResponse
-func (c *ClientWithResponses) GetBpmnInstanceWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, reqEditors ...RequestEditorFn) (*GetBpmnInstanceResponse, error) {
-	rsp, err := c.GetBpmnInstance(ctx, projectID, workflowID, reqEditors...)
+func (c *ClientWithResponses) GetBpmnInstanceWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, reqEditors ...RequestEditorFn) (*GetBpmnInstanceResponse, error) {
+	rsp, err := c.GetBpmnInstance(ctx, projectID, instanceID, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -10119,16 +10528,16 @@ func (c *ClientWithResponses) GetBpmnInstanceWithResponse(ctx context.Context, p
 }
 
 // TriggerBpmnAdHocNodeWithBodyWithResponse request with arbitrary body returning *TriggerBpmnAdHocNodeResponse
-func (c *ClientWithResponses) TriggerBpmnAdHocNodeWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, adHocNodeID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*TriggerBpmnAdHocNodeResponse, error) {
-	rsp, err := c.TriggerBpmnAdHocNodeWithBody(ctx, projectID, workflowID, adHocNodeID, contentType, body, reqEditors...)
+func (c *ClientWithResponses) TriggerBpmnAdHocNodeWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, adHocNodeID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*TriggerBpmnAdHocNodeResponse, error) {
+	rsp, err := c.TriggerBpmnAdHocNodeWithBody(ctx, projectID, instanceID, adHocNodeID, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
 	return ParseTriggerBpmnAdHocNodeResponse(rsp)
 }
 
-func (c *ClientWithResponses) TriggerBpmnAdHocNodeWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, adHocNodeID string, body TriggerBpmnAdHocNodeJSONRequestBody, reqEditors ...RequestEditorFn) (*TriggerBpmnAdHocNodeResponse, error) {
-	rsp, err := c.TriggerBpmnAdHocNode(ctx, projectID, workflowID, adHocNodeID, body, reqEditors...)
+func (c *ClientWithResponses) TriggerBpmnAdHocNodeWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, adHocNodeID string, body TriggerBpmnAdHocNodeJSONRequestBody, reqEditors ...RequestEditorFn) (*TriggerBpmnAdHocNodeResponse, error) {
+	rsp, err := c.TriggerBpmnAdHocNode(ctx, projectID, instanceID, adHocNodeID, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -10136,16 +10545,16 @@ func (c *ClientWithResponses) TriggerBpmnAdHocNodeWithResponse(ctx context.Conte
 }
 
 // SetBpmnAdHocVariablesWithBodyWithResponse request with arbitrary body returning *SetBpmnAdHocVariablesResponse
-func (c *ClientWithResponses) SetBpmnAdHocVariablesWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, adHocNodeID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetBpmnAdHocVariablesResponse, error) {
-	rsp, err := c.SetBpmnAdHocVariablesWithBody(ctx, projectID, workflowID, adHocNodeID, contentType, body, reqEditors...)
+func (c *ClientWithResponses) SetBpmnAdHocVariablesWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, adHocNodeID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetBpmnAdHocVariablesResponse, error) {
+	rsp, err := c.SetBpmnAdHocVariablesWithBody(ctx, projectID, instanceID, adHocNodeID, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
 	return ParseSetBpmnAdHocVariablesResponse(rsp)
 }
 
-func (c *ClientWithResponses) SetBpmnAdHocVariablesWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, adHocNodeID string, body SetBpmnAdHocVariablesJSONRequestBody, reqEditors ...RequestEditorFn) (*SetBpmnAdHocVariablesResponse, error) {
-	rsp, err := c.SetBpmnAdHocVariables(ctx, projectID, workflowID, adHocNodeID, body, reqEditors...)
+func (c *ClientWithResponses) SetBpmnAdHocVariablesWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, adHocNodeID string, body SetBpmnAdHocVariablesJSONRequestBody, reqEditors ...RequestEditorFn) (*SetBpmnAdHocVariablesResponse, error) {
+	rsp, err := c.SetBpmnAdHocVariables(ctx, projectID, instanceID, adHocNodeID, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -10153,25 +10562,43 @@ func (c *ClientWithResponses) SetBpmnAdHocVariablesWithResponse(ctx context.Cont
 }
 
 // GetBpmnInstanceChildrenWithResponse request returning *GetBpmnInstanceChildrenResponse
-func (c *ClientWithResponses) GetBpmnInstanceChildrenWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, reqEditors ...RequestEditorFn) (*GetBpmnInstanceChildrenResponse, error) {
-	rsp, err := c.GetBpmnInstanceChildren(ctx, projectID, workflowID, reqEditors...)
+func (c *ClientWithResponses) GetBpmnInstanceChildrenWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, reqEditors ...RequestEditorFn) (*GetBpmnInstanceChildrenResponse, error) {
+	rsp, err := c.GetBpmnInstanceChildren(ctx, projectID, instanceID, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
 	return ParseGetBpmnInstanceChildrenResponse(rsp)
 }
 
+// GetBpmnInstanceHistoryWithResponse request returning *GetBpmnInstanceHistoryResponse
+func (c *ClientWithResponses) GetBpmnInstanceHistoryWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, params *GetBpmnInstanceHistoryParams, reqEditors ...RequestEditorFn) (*GetBpmnInstanceHistoryResponse, error) {
+	rsp, err := c.GetBpmnInstanceHistory(ctx, projectID, instanceID, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetBpmnInstanceHistoryResponse(rsp)
+}
+
+// GetBpmnInstanceHistoryEntryWithResponse request returning *GetBpmnInstanceHistoryEntryResponse
+func (c *ClientWithResponses) GetBpmnInstanceHistoryEntryWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, seq int64, reqEditors ...RequestEditorFn) (*GetBpmnInstanceHistoryEntryResponse, error) {
+	rsp, err := c.GetBpmnInstanceHistoryEntry(ctx, projectID, instanceID, seq, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetBpmnInstanceHistoryEntryResponse(rsp)
+}
+
 // ResolveBpmnIncidentWithBodyWithResponse request with arbitrary body returning *ResolveBpmnIncidentResponse
-func (c *ClientWithResponses) ResolveBpmnIncidentWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, incidentID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ResolveBpmnIncidentResponse, error) {
-	rsp, err := c.ResolveBpmnIncidentWithBody(ctx, projectID, workflowID, incidentID, contentType, body, reqEditors...)
+func (c *ClientWithResponses) ResolveBpmnIncidentWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, incidentID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ResolveBpmnIncidentResponse, error) {
+	rsp, err := c.ResolveBpmnIncidentWithBody(ctx, projectID, instanceID, incidentID, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
 	return ParseResolveBpmnIncidentResponse(rsp)
 }
 
-func (c *ClientWithResponses) ResolveBpmnIncidentWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, incidentID string, body ResolveBpmnIncidentJSONRequestBody, reqEditors ...RequestEditorFn) (*ResolveBpmnIncidentResponse, error) {
-	rsp, err := c.ResolveBpmnIncident(ctx, projectID, workflowID, incidentID, body, reqEditors...)
+func (c *ClientWithResponses) ResolveBpmnIncidentWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, incidentID string, body ResolveBpmnIncidentJSONRequestBody, reqEditors ...RequestEditorFn) (*ResolveBpmnIncidentResponse, error) {
+	rsp, err := c.ResolveBpmnIncident(ctx, projectID, instanceID, incidentID, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -10179,16 +10606,16 @@ func (c *ClientWithResponses) ResolveBpmnIncidentWithResponse(ctx context.Contex
 }
 
 // MigrateBpmnInstanceWithBodyWithResponse request with arbitrary body returning *MigrateBpmnInstanceResponse
-func (c *ClientWithResponses) MigrateBpmnInstanceWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*MigrateBpmnInstanceResponse, error) {
-	rsp, err := c.MigrateBpmnInstanceWithBody(ctx, projectID, workflowID, contentType, body, reqEditors...)
+func (c *ClientWithResponses) MigrateBpmnInstanceWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*MigrateBpmnInstanceResponse, error) {
+	rsp, err := c.MigrateBpmnInstanceWithBody(ctx, projectID, instanceID, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
 	return ParseMigrateBpmnInstanceResponse(rsp)
 }
 
-func (c *ClientWithResponses) MigrateBpmnInstanceWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, body MigrateBpmnInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*MigrateBpmnInstanceResponse, error) {
-	rsp, err := c.MigrateBpmnInstance(ctx, projectID, workflowID, body, reqEditors...)
+func (c *ClientWithResponses) MigrateBpmnInstanceWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, body MigrateBpmnInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*MigrateBpmnInstanceResponse, error) {
+	rsp, err := c.MigrateBpmnInstance(ctx, projectID, instanceID, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -10196,16 +10623,16 @@ func (c *ClientWithResponses) MigrateBpmnInstanceWithResponse(ctx context.Contex
 }
 
 // ValidateBpmnInstanceMigrationWithBodyWithResponse request with arbitrary body returning *ValidateBpmnInstanceMigrationResponse
-func (c *ClientWithResponses) ValidateBpmnInstanceMigrationWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ValidateBpmnInstanceMigrationResponse, error) {
-	rsp, err := c.ValidateBpmnInstanceMigrationWithBody(ctx, projectID, workflowID, contentType, body, reqEditors...)
+func (c *ClientWithResponses) ValidateBpmnInstanceMigrationWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ValidateBpmnInstanceMigrationResponse, error) {
+	rsp, err := c.ValidateBpmnInstanceMigrationWithBody(ctx, projectID, instanceID, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
 	return ParseValidateBpmnInstanceMigrationResponse(rsp)
 }
 
-func (c *ClientWithResponses) ValidateBpmnInstanceMigrationWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, body ValidateBpmnInstanceMigrationJSONRequestBody, reqEditors ...RequestEditorFn) (*ValidateBpmnInstanceMigrationResponse, error) {
-	rsp, err := c.ValidateBpmnInstanceMigration(ctx, projectID, workflowID, body, reqEditors...)
+func (c *ClientWithResponses) ValidateBpmnInstanceMigrationWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, body ValidateBpmnInstanceMigrationJSONRequestBody, reqEditors ...RequestEditorFn) (*ValidateBpmnInstanceMigrationResponse, error) {
+	rsp, err := c.ValidateBpmnInstanceMigration(ctx, projectID, instanceID, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -10213,16 +10640,16 @@ func (c *ClientWithResponses) ValidateBpmnInstanceMigrationWithResponse(ctx cont
 }
 
 // ModifyBpmnInstanceWithBodyWithResponse request with arbitrary body returning *ModifyBpmnInstanceResponse
-func (c *ClientWithResponses) ModifyBpmnInstanceWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ModifyBpmnInstanceResponse, error) {
-	rsp, err := c.ModifyBpmnInstanceWithBody(ctx, projectID, workflowID, contentType, body, reqEditors...)
+func (c *ClientWithResponses) ModifyBpmnInstanceWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ModifyBpmnInstanceResponse, error) {
+	rsp, err := c.ModifyBpmnInstanceWithBody(ctx, projectID, instanceID, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
 	return ParseModifyBpmnInstanceResponse(rsp)
 }
 
-func (c *ClientWithResponses) ModifyBpmnInstanceWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, body ModifyBpmnInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*ModifyBpmnInstanceResponse, error) {
-	rsp, err := c.ModifyBpmnInstance(ctx, projectID, workflowID, body, reqEditors...)
+func (c *ClientWithResponses) ModifyBpmnInstanceWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, body ModifyBpmnInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*ModifyBpmnInstanceResponse, error) {
+	rsp, err := c.ModifyBpmnInstance(ctx, projectID, instanceID, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -10230,8 +10657,8 @@ func (c *ClientWithResponses) ModifyBpmnInstanceWithResponse(ctx context.Context
 }
 
 // ResumeBpmnInstanceWithResponse request returning *ResumeBpmnInstanceResponse
-func (c *ClientWithResponses) ResumeBpmnInstanceWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, reqEditors ...RequestEditorFn) (*ResumeBpmnInstanceResponse, error) {
-	rsp, err := c.ResumeBpmnInstance(ctx, projectID, workflowID, reqEditors...)
+func (c *ClientWithResponses) ResumeBpmnInstanceWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, reqEditors ...RequestEditorFn) (*ResumeBpmnInstanceResponse, error) {
+	rsp, err := c.ResumeBpmnInstance(ctx, projectID, instanceID, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -10239,16 +10666,16 @@ func (c *ClientWithResponses) ResumeBpmnInstanceWithResponse(ctx context.Context
 }
 
 // SuspendBpmnInstanceWithBodyWithResponse request with arbitrary body returning *SuspendBpmnInstanceResponse
-func (c *ClientWithResponses) SuspendBpmnInstanceWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SuspendBpmnInstanceResponse, error) {
-	rsp, err := c.SuspendBpmnInstanceWithBody(ctx, projectID, workflowID, contentType, body, reqEditors...)
+func (c *ClientWithResponses) SuspendBpmnInstanceWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SuspendBpmnInstanceResponse, error) {
+	rsp, err := c.SuspendBpmnInstanceWithBody(ctx, projectID, instanceID, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
 	return ParseSuspendBpmnInstanceResponse(rsp)
 }
 
-func (c *ClientWithResponses) SuspendBpmnInstanceWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, body SuspendBpmnInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*SuspendBpmnInstanceResponse, error) {
-	rsp, err := c.SuspendBpmnInstance(ctx, projectID, workflowID, body, reqEditors...)
+func (c *ClientWithResponses) SuspendBpmnInstanceWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, body SuspendBpmnInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*SuspendBpmnInstanceResponse, error) {
+	rsp, err := c.SuspendBpmnInstance(ctx, projectID, instanceID, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -10256,8 +10683,8 @@ func (c *ClientWithResponses) SuspendBpmnInstanceWithResponse(ctx context.Contex
 }
 
 // GetBpmnInstanceVariablesWithResponse request returning *GetBpmnInstanceVariablesResponse
-func (c *ClientWithResponses) GetBpmnInstanceVariablesWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, reqEditors ...RequestEditorFn) (*GetBpmnInstanceVariablesResponse, error) {
-	rsp, err := c.GetBpmnInstanceVariables(ctx, projectID, workflowID, reqEditors...)
+func (c *ClientWithResponses) GetBpmnInstanceVariablesWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, reqEditors ...RequestEditorFn) (*GetBpmnInstanceVariablesResponse, error) {
+	rsp, err := c.GetBpmnInstanceVariables(ctx, projectID, instanceID, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -10265,16 +10692,16 @@ func (c *ClientWithResponses) GetBpmnInstanceVariablesWithResponse(ctx context.C
 }
 
 // UpdateBpmnInstanceVariablesWithBodyWithResponse request with arbitrary body returning *UpdateBpmnInstanceVariablesResponse
-func (c *ClientWithResponses) UpdateBpmnInstanceVariablesWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateBpmnInstanceVariablesResponse, error) {
-	rsp, err := c.UpdateBpmnInstanceVariablesWithBody(ctx, projectID, workflowID, contentType, body, reqEditors...)
+func (c *ClientWithResponses) UpdateBpmnInstanceVariablesWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateBpmnInstanceVariablesResponse, error) {
+	rsp, err := c.UpdateBpmnInstanceVariablesWithBody(ctx, projectID, instanceID, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
 	return ParseUpdateBpmnInstanceVariablesResponse(rsp)
 }
 
-func (c *ClientWithResponses) UpdateBpmnInstanceVariablesWithResponse(ctx context.Context, projectID openapi_types.UUID, workflowID string, body UpdateBpmnInstanceVariablesJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateBpmnInstanceVariablesResponse, error) {
-	rsp, err := c.UpdateBpmnInstanceVariables(ctx, projectID, workflowID, body, reqEditors...)
+func (c *ClientWithResponses) UpdateBpmnInstanceVariablesWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, body UpdateBpmnInstanceVariablesJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateBpmnInstanceVariablesResponse, error) {
+	rsp, err := c.UpdateBpmnInstanceVariables(ctx, projectID, instanceID, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -10314,6 +10741,41 @@ func (c *ClientWithResponses) ListBpmnProcessVersionsWithResponse(ctx context.Co
 		return nil, err
 	}
 	return ParseListBpmnProcessVersionsResponse(rsp)
+}
+
+// GetBpmnProcessVersionWithResponse request returning *GetBpmnProcessVersionResponse
+func (c *ClientWithResponses) GetBpmnProcessVersionWithResponse(ctx context.Context, projectID openapi_types.UUID, processID string, version int, params *GetBpmnProcessVersionParams, reqEditors ...RequestEditorFn) (*GetBpmnProcessVersionResponse, error) {
+	rsp, err := c.GetBpmnProcessVersion(ctx, projectID, processID, version, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetBpmnProcessVersionResponse(rsp)
+}
+
+// ResumeBpmnDefinitionWithResponse request returning *ResumeBpmnDefinitionResponse
+func (c *ClientWithResponses) ResumeBpmnDefinitionWithResponse(ctx context.Context, projectID openapi_types.UUID, processID string, version int, reqEditors ...RequestEditorFn) (*ResumeBpmnDefinitionResponse, error) {
+	rsp, err := c.ResumeBpmnDefinition(ctx, projectID, processID, version, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseResumeBpmnDefinitionResponse(rsp)
+}
+
+// SuspendBpmnDefinitionWithBodyWithResponse request with arbitrary body returning *SuspendBpmnDefinitionResponse
+func (c *ClientWithResponses) SuspendBpmnDefinitionWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, processID string, version int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SuspendBpmnDefinitionResponse, error) {
+	rsp, err := c.SuspendBpmnDefinitionWithBody(ctx, projectID, processID, version, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSuspendBpmnDefinitionResponse(rsp)
+}
+
+func (c *ClientWithResponses) SuspendBpmnDefinitionWithResponse(ctx context.Context, projectID openapi_types.UUID, processID string, version int, body SuspendBpmnDefinitionJSONRequestBody, reqEditors ...RequestEditorFn) (*SuspendBpmnDefinitionResponse, error) {
+	rsp, err := c.SuspendBpmnDefinition(ctx, projectID, processID, version, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSuspendBpmnDefinitionResponse(rsp)
 }
 
 // ListBpmnResourcesWithResponse request returning *ListBpmnResourcesResponse
@@ -10542,6 +11004,15 @@ func (c *ClientWithResponses) ListDecisionsWithResponse(ctx context.Context, pro
 	return ParseListDecisionsResponse(rsp)
 }
 
+// ListDecisionVersionsWithResponse request returning *ListDecisionVersionsResponse
+func (c *ClientWithResponses) ListDecisionVersionsWithResponse(ctx context.Context, projectID openapi_types.UUID, decisionID string, reqEditors ...RequestEditorFn) (*ListDecisionVersionsResponse, error) {
+	rsp, err := c.ListDecisionVersions(ctx, projectID, decisionID, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListDecisionVersionsResponse(rsp)
+}
+
 // ListDefinitionsWithResponse request returning *ListDefinitionsResponse
 func (c *ClientWithResponses) ListDefinitionsWithResponse(ctx context.Context, projectID openapi_types.UUID, params *ListDefinitionsParams, reqEditors ...RequestEditorFn) (*ListDefinitionsResponse, error) {
 	rsp, err := c.ListDefinitions(ctx, projectID, params, reqEditors...)
@@ -10647,30 +11118,13 @@ func (c *ClientWithResponses) UpdateDefinitionWithResponse(ctx context.Context, 
 	return ParseUpdateDefinitionResponse(rsp)
 }
 
-// EvaluateStoredWithBodyWithResponse request with arbitrary body returning *EvaluateStoredResponse
-func (c *ClientWithResponses) EvaluateStoredWithBodyWithResponse(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*EvaluateStoredResponse, error) {
-	rsp, err := c.EvaluateStoredWithBody(ctx, projectID, definitionID, contentType, body, reqEditors...)
+// DeployDefinitionWithResponse request returning *DeployDefinitionResponse
+func (c *ClientWithResponses) DeployDefinitionWithResponse(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, reqEditors ...RequestEditorFn) (*DeployDefinitionResponse, error) {
+	rsp, err := c.DeployDefinition(ctx, projectID, definitionID, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseEvaluateStoredResponse(rsp)
-}
-
-func (c *ClientWithResponses) EvaluateStoredWithResponse(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, body EvaluateStoredJSONRequestBody, reqEditors ...RequestEditorFn) (*EvaluateStoredResponse, error) {
-	rsp, err := c.EvaluateStored(ctx, projectID, definitionID, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseEvaluateStoredResponse(rsp)
-}
-
-// ListExecutionsWithResponse request returning *ListExecutionsResponse
-func (c *ClientWithResponses) ListExecutionsWithResponse(ctx context.Context, projectID openapi_types.UUID, definitionID openapi_types.UUID, params *ListExecutionsParams, reqEditors ...RequestEditorFn) (*ListExecutionsResponse, error) {
-	rsp, err := c.ListExecutions(ctx, projectID, definitionID, params, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseListExecutionsResponse(rsp)
+	return ParseDeployDefinitionResponse(rsp)
 }
 
 // ListProjectExecutionsWithResponse request returning *ListProjectExecutionsResponse
@@ -10813,93 +11267,6 @@ func ParseListProjectsResponse(rsp *http.Response) (*ListProjectsResponse, error
 	return response, nil
 }
 
-// ParseCreateProjectResponse parses an HTTP response from a CreateProjectWithResponse call
-func ParseCreateProjectResponse(rsp *http.Response) (*CreateProjectResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &CreateProjectResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
-		var dest Project
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON201 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest Error
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest Error
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest Error
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseDeleteProjectResponse parses an HTTP response from a DeleteProjectWithResponse call
-func ParseDeleteProjectResponse(rsp *http.Response) (*DeleteProjectResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &DeleteProjectResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest Error
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest Error
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest Error
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
 // ParseGetProjectResponse parses an HTTP response from a GetProjectWithResponse call
 func ParseGetProjectResponse(rsp *http.Response) (*GetProjectResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -10942,38 +11309,6 @@ func ParseGetProjectResponse(rsp *http.Response) (*GetProjectResponse, error) {
 		}
 		response.JSON500 = &dest
 
-	}
-
-	return response, nil
-}
-
-// ParseResumeBpmnDefinitionResponse parses an HTTP response from a ResumeBpmnDefinitionWithResponse call
-func ParseResumeBpmnDefinitionResponse(rsp *http.Response) (*ResumeBpmnDefinitionResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &ResumeBpmnDefinitionResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	return response, nil
-}
-
-// ParseSuspendBpmnDefinitionResponse parses an HTTP response from a SuspendBpmnDefinitionWithResponse call
-func ParseSuspendBpmnDefinitionResponse(rsp *http.Response) (*SuspendBpmnDefinitionResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &SuspendBpmnDefinitionResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
 	}
 
 	return response, nil
@@ -11290,8 +11625,8 @@ func ParseStartBpmnInstanceResponse(rsp *http.Response) (*StartBpmnInstanceRespo
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
 		var dest struct {
-			// WorkflowID Stable execution identifier of the new instance.
-			WorkflowID *string `json:"workflowID,omitempty"`
+			// InstanceID Identifier of the new instance.
+			InstanceID *string `json:"instanceID,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
@@ -11385,12 +11720,12 @@ func ParseGetBpmnInstanceResponse(rsp *http.Response) (*GetBpmnInstanceResponse,
 		}
 		response.JSON200 = &dest
 
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 503:
-		var dest Error
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
-		response.JSON503 = &dest
+		response.JSON404 = &dest
 
 	}
 
@@ -11449,6 +11784,72 @@ func ParseGetBpmnInstanceChildrenResponse(rsp *http.Response) (*GetBpmnInstanceC
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetBpmnInstanceHistoryResponse parses an HTTP response from a GetBpmnInstanceHistoryWithResponse call
+func ParseGetBpmnInstanceHistoryResponse(rsp *http.Response) (*GetBpmnInstanceHistoryResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetBpmnInstanceHistoryResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest BpmnHistoryPage
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetBpmnInstanceHistoryEntryResponse parses an HTTP response from a GetBpmnInstanceHistoryEntryWithResponse call
+func ParseGetBpmnInstanceHistoryEntryResponse(rsp *http.Response) (*GetBpmnInstanceHistoryEntryResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetBpmnInstanceHistoryEntryResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest BpmnActivityState
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
 
 	}
 
@@ -11728,6 +12129,85 @@ func ParseListBpmnProcessVersionsResponse(rsp *http.Response) (*ListBpmnProcessV
 	return response, nil
 }
 
+// ParseGetBpmnProcessVersionResponse parses an HTTP response from a GetBpmnProcessVersionWithResponse call
+func ParseGetBpmnProcessVersionResponse(rsp *http.Response) (*GetBpmnProcessVersionResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetBpmnProcessVersionResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest BpmnProcessVersion
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseResumeBpmnDefinitionResponse parses an HTTP response from a ResumeBpmnDefinitionWithResponse call
+func ParseResumeBpmnDefinitionResponse(rsp *http.Response) (*ResumeBpmnDefinitionResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ResumeBpmnDefinitionResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	return response, nil
+}
+
+// ParseSuspendBpmnDefinitionResponse parses an HTTP response from a SuspendBpmnDefinitionWithResponse call
+func ParseSuspendBpmnDefinitionResponse(rsp *http.Response) (*SuspendBpmnDefinitionResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SuspendBpmnDefinitionResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	return response, nil
+}
+
 // ParseListBpmnResourcesResponse parses an HTTP response from a ListBpmnResourcesWithResponse call
 func ParseListBpmnResourcesResponse(rsp *http.Response) (*ListBpmnResourcesResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -11774,6 +12254,13 @@ func ParseCreateBpmnResourceResponse(rsp *http.Response) (*CreateBpmnResourceRes
 			return nil, err
 		}
 		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Conflict
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
 
 	}
 
@@ -11873,6 +12360,16 @@ func ParseDeleteBpmnResourceResponse(rsp *http.Response) (*DeleteBpmnResourceRes
 		HTTPResponse: rsp,
 	}
 
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Conflict
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
+
+	}
+
 	return response, nil
 }
 
@@ -11930,6 +12427,13 @@ func ParseUpdateBpmnResourceResponse(rsp *http.Response) (*UpdateBpmnResourceRes
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Conflict
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
+
 	}
 
 	return response, nil
@@ -11970,6 +12474,13 @@ func ParseDeployBpmnResourceResponse(rsp *http.Response) (*DeployBpmnResourceRes
 		}
 		response.JSON404 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Conflict
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -11998,8 +12509,8 @@ func ParseStartBpmnTestInstanceResponse(rsp *http.Response) (*StartBpmnTestInsta
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
 		var dest struct {
-			// WorkflowID Stable execution identifier of the new test instance.
-			WorkflowID *string `json:"workflowID,omitempty"`
+			// InstanceID Identifier of the new test instance.
+			InstanceID *string `json:"instanceID,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
@@ -12287,6 +12798,39 @@ func ParseListDecisionsResponse(rsp *http.Response) (*ListDecisionsResponse, err
 	return response, nil
 }
 
+// ParseListDecisionVersionsResponse parses an HTTP response from a ListDecisionVersionsWithResponse call
+func ParseListDecisionVersionsResponse(rsp *http.Response) (*ListDecisionVersionsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListDecisionVersionsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DecisionVersionList
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseListDefinitionsResponse parses an HTTP response from a ListDefinitionsWithResponse call
 func ParseListDefinitionsResponse(rsp *http.Response) (*ListDefinitionsResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -12368,6 +12912,13 @@ func ParseCreateDefinitionResponse(rsp *http.Response) (*CreateDefinitionRespons
 			return nil, err
 		}
 		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Conflict
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest Error
@@ -12590,6 +13141,13 @@ func ParseDeleteDefinitionResponse(rsp *http.Response) (*DeleteDefinitionRespons
 		}
 		response.JSON404 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Conflict
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest Error
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -12684,6 +13242,13 @@ func ParseUpdateDefinitionResponse(rsp *http.Response) (*UpdateDefinitionRespons
 		}
 		response.JSON404 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Conflict
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest Error
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -12696,22 +13261,22 @@ func ParseUpdateDefinitionResponse(rsp *http.Response) (*UpdateDefinitionRespons
 	return response, nil
 }
 
-// ParseEvaluateStoredResponse parses an HTTP response from a EvaluateStoredWithResponse call
-func ParseEvaluateStoredResponse(rsp *http.Response) (*EvaluateStoredResponse, error) {
+// ParseDeployDefinitionResponse parses an HTTP response from a DeployDefinitionWithResponse call
+func ParseDeployDefinitionResponse(rsp *http.Response) (*DeployDefinitionResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &EvaluateStoredResponse{
+	response := &DeployDefinitionResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest map[string]EvaluationResult
+		var dest Definition
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -12731,52 +13296,12 @@ func ParseEvaluateStoredResponse(rsp *http.Response) (*EvaluateStoredResponse, e
 		}
 		response.JSON404 = &dest
 
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest Error
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Conflict
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseListExecutionsResponse parses an HTTP response from a ListExecutionsWithResponse call
-func ParseListExecutionsResponse(rsp *http.Response) (*ListExecutionsResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &ListExecutionsResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest PaginatedExecutionsResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest Error
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest Error
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
+		response.JSON409 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest Error
@@ -12900,9 +13425,7 @@ func ParseGetVersionResponse(rsp *http.Response) (*GetVersionResponse, error) {
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
-			BuildTime *string `json:"buildTime,omitempty"`
-			Commit    *string `json:"commit,omitempty"`
-			Version   *string `json:"version,omitempty"`
+			Version *string `json:"version,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err

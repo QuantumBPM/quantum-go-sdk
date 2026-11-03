@@ -5,15 +5,15 @@
 // sub-clients via .DMN and .BPMN. To run external job workers, call
 // Client.NewWorker.
 //
-//	provider, _ := auth.NewZitadelTokenProvider(keyPath, issuer, projectID)
+//	provider := auth.NewClientCredentialsTokenProvider(auth.ClientCredentials{TokenURL: tokenURL, ClientID: id, ClientSecret: secret})
 //	client, _ := quantumbpm.New(quantumbpm.Config{
-//	    BaseURL:       "https://api.quantumbpm.com",
+//	    BaseURL:       "https://quantumbpm.example.com",
 //	    ProjectID:     projectUUID,
 //	    TokenProvider: provider,
 //	})
 //
 //	result, _ := client.DMN.Evaluate(ctx, "loan-eligibility", vars)
-//	wfID,    _ := client.BPMN.StartInstance(ctx, processDefID, vars)
+//	instanceID, _ := client.BPMN.StartInstance(ctx, "order-flow", vars)
 //
 //	worker := client.NewWorker(workers.Config{ClientID: "billing-svc"})
 //	worker.Handle("send-email", func(ctx context.Context, j *workers.Job) (variables.Vars, error) {
@@ -29,16 +29,16 @@ import (
 	"github.com/google/uuid"
 	openapi_types "github.com/oapi-codegen/runtime/types"
 
-	"github.com/QuantumBPM/quantum-go-sdk/auth"
-	"github.com/QuantumBPM/quantum-go-sdk/bpmn"
-	"github.com/QuantumBPM/quantum-go-sdk/dmn"
-	"github.com/QuantumBPM/quantum-go-sdk/generated"
-	"github.com/QuantumBPM/quantum-go-sdk/workers"
+	"github.com/QuantumBPM/quantum-go-sdk/v2/auth"
+	"github.com/QuantumBPM/quantum-go-sdk/v2/bpmn"
+	"github.com/QuantumBPM/quantum-go-sdk/v2/dmn"
+	"github.com/QuantumBPM/quantum-go-sdk/v2/generated"
+	"github.com/QuantumBPM/quantum-go-sdk/v2/workers"
 )
 
 // Config holds construction parameters for Client.
 type Config struct {
-	// BaseURL is the QuantumBPM API root (e.g. https://api.quantumbpm.com).
+	// BaseURL is the QuantumBPM API root (e.g. https://quantumbpm.example.com).
 	BaseURL string
 
 	// ProjectID is the workspace the client is scoped to. All DMN, BPMN, and
@@ -46,8 +46,8 @@ type Config struct {
 	ProjectID uuid.UUID
 
 	// TokenProvider supplies a bearer token on every request. Use
-	// auth.NewZitadelTokenProvider for Zitadel-issued tokens or
-	// auth.NewStaticTokenProvider for fixed API keys.
+	// auth.NewClientCredentialsTokenProvider for tokens from an OIDC provider
+	// or auth.NewStaticTokenProvider for a fixed token.
 	TokenProvider auth.TokenProvider
 }
 

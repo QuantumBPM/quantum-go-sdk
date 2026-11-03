@@ -5,12 +5,13 @@ import (
 
 	openapi_types "github.com/oapi-codegen/runtime/types"
 
-	"github.com/QuantumBPM/quantum-go-sdk/generated"
-	"github.com/QuantumBPM/quantum-go-sdk/variables"
+	"github.com/QuantumBPM/quantum-go-sdk/v2/generated"
+	"github.com/QuantumBPM/quantum-go-sdk/v2/variables"
 )
 
 // CreateResource stores a new BPMN resource (XML draft) in the project. The
-// resource is not deployed until DeployResource is called.
+// resource is not deployed until DeployResource is called. XML identical to
+// the latest deployed resource of its model is refused.
 func (c *Client) CreateResource(ctx context.Context, name, xml string) (*ResourceDetail, error) {
 	resp, err := c.api.CreateBpmnResourceWithResponse(ctx, c.projectID, generated.CreateBpmnResourceJSONRequestBody{
 		Name: name,
@@ -22,7 +23,7 @@ func (c *Client) CreateResource(ctx context.Context, name, xml string) (*Resourc
 	if resp.JSON201 != nil {
 		return resp.JSON201, nil
 	}
-	return nil, errorFromResponses("create-resource", resp.StatusCode())
+	return nil, errorFromResponses("create-resource", resp.StatusCode(), resp.JSON409)
 }
 
 // UpdateResource replaces an existing draft resource with new name and XML.
@@ -66,7 +67,8 @@ func (c *Client) GetResource(ctx context.Context, resourceID openapi_types.UUID)
 
 // DeployResource promotes a stored draft resource to a deployed process
 // definition. Subsequent StartInstance calls reference the resulting
-// definition.
+// definition. A resource identical to the latest deployed one of its model
+// is refused.
 func (c *Client) DeployResource(ctx context.Context, resourceID openapi_types.UUID) error {
 	resp, err := c.api.DeployBpmnResourceWithResponse(ctx, c.projectID, resourceID)
 	if err != nil {
@@ -75,7 +77,7 @@ func (c *Client) DeployResource(ctx context.Context, resourceID openapi_types.UU
 	if resp.StatusCode() >= 200 && resp.StatusCode() < 300 {
 		return nil
 	}
-	return errorFromResponses("deploy-resource", resp.StatusCode(), resp.JSON400, nil, resp.JSON500)
+	return errorFromResponses("deploy-resource", resp.StatusCode(), resp.JSON400, resp.JSON409, resp.JSON500)
 }
 
 // StartTestInstance starts a non-deployed instance against a draft resource
@@ -90,8 +92,8 @@ func (c *Client) StartTestInstance(ctx context.Context, resourceID openapi_types
 	if err != nil {
 		return "", err
 	}
-	if resp.JSON201 != nil && resp.JSON201.WorkflowID != nil {
-		return *resp.JSON201.WorkflowID, nil
+	if resp.JSON201 != nil && resp.JSON201.InstanceID != nil {
+		return *resp.JSON201.InstanceID, nil
 	}
 	return "", errorFromResponses("start-test-instance", resp.StatusCode())
 }
@@ -131,6 +133,12 @@ func applyPageOpts(opts ...PageOption) pageOpts {
 		opt(&o)
 	}
 	return o
+}
+
+// cursorOpts are the paging options of a list the API pages by cursor.
+type cursorOpts struct {
+	cursor *string
+	limit  *int
 }
 
 // ListResources returns a page of all resource versions in the project.

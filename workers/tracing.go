@@ -8,7 +8,7 @@ import (
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/trace"
 
-	"github.com/QuantumBPM/quantum-go-sdk/generated"
+	"github.com/QuantumBPM/quantum-go-sdk/v2/generated"
 )
 
 const tracerScope = "quantumbpm/go-sdk"
@@ -20,7 +20,7 @@ func startJobSpan(ctx context.Context, job *generated.ExternalJob) (context.Cont
 	attrs := []attribute.KeyValue{
 		attribute.String("bpmn.task_type", job.TaskType),
 		attribute.String("bpmn.node_id", job.NodeID),
-		attribute.String("bpmn.process_instance_id", job.WorkflowID),
+		attribute.String("bpmn.process_instance_id", job.InstanceID),
 		attribute.String("bpmn.execution_key", job.ExecutionKey),
 	}
 	if job.BusinessId != nil && *job.BusinessId != "" {

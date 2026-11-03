@@ -5,7 +5,7 @@ Official Go SDK for the [QuantumBPM](https://quantumbpm.com) platform - DMN eval
 ## Installation
 
 ```bash
-go get github.com/QuantumBPM/quantum-go-sdk
+go get github.com/QuantumBPM/quantum-go-sdk/v2
 ```
 
 Requires Go 1.25+.
@@ -15,7 +15,7 @@ Requires Go 1.25+.
 | Package                            | Purpose                                                                       |
 | ---------------------------------- | ----------------------------------------------------------------------------- |
 | `quantumbpm` (root)                | Top-level `Client` exposing `.DMN` and `.BPMN`, plus `NewWorker(...)`         |
-| `quantumbpm/auth`                  | `TokenProvider` interface, `ZitadelTokenProvider`, `StaticTokenProvider`      |
+| `quantumbpm/auth`                  | `TokenProvider`, `ClientCredentialsTokenProvider`, `StaticTokenProvider`      |
 | `quantumbpm/dmn`                   | DMN evaluation: stored definitions, ad-hoc XML, batch                         |
 | `quantumbpm/bpmn`                  | BPMN resources, instances, messaging, user tasks, processes                   |
 | `quantumbpm/workers`               | External job worker runtime - long-poll, lock heartbeat, dispatch             |
@@ -30,26 +30,24 @@ package main
 import (
     "context"
     "log"
+    "os"
 
     "github.com/google/uuid"
 
-    quantumbpm "github.com/QuantumBPM/quantum-go-sdk"
-    "github.com/QuantumBPM/quantum-go-sdk/auth"
-    "github.com/QuantumBPM/quantum-go-sdk/variables"
+    quantumbpm "github.com/QuantumBPM/quantum-go-sdk/v2"
+    "github.com/QuantumBPM/quantum-go-sdk/v2/auth"
+    "github.com/QuantumBPM/quantum-go-sdk/v2/variables"
 )
 
 func main() {
-    provider, err := auth.NewZitadelTokenProvider(
-        "./service-account.json",       // Zitadel JSON Key file
-        "https://auth.quantumbpm.com",  // issuer
-        "your-zitadel-project-id",      // audience scope
-    )
-    if err != nil {
-        log.Fatal(err)
-    }
+    provider := auth.NewClientCredentialsTokenProvider(auth.ClientCredentials{
+        TokenURL:     "https://idp.example.com/realms/acme/protocol/openid-connect/token",
+        ClientID:     "billing-svc",
+        ClientSecret: os.Getenv("QUANTUMBPM_CLIENT_SECRET"),
+    })
 
     client, err := quantumbpm.New(quantumbpm.Config{
-        BaseURL:       "https://api.quantumbpm.com",
+        BaseURL:       "https://quantumbpm.example.com",
         ProjectID:     uuid.MustParse("00000000-0000-0000-0000-000000000000"),
         TokenProvider: provider,
     })
@@ -72,21 +70,30 @@ func main() {
 
 The `auth.TokenProvider` interface returns a bearer token on each request. Two implementations ship out of the box.
 
-### Zitadel service account
+### OAuth 2.0 client credentials
+
+`auth.ClientCredentialsTokenProvider` fetches access tokens from your OIDC identity provider (Keycloak, Microsoft Entra ID, Okta, Auth0 and others) with the client credentials grant. Register a confidential client for your service at the identity provider and pass its token endpoint and credentials:
 
 ```go
-provider, err := auth.NewZitadelTokenProvider(
-    "./service-account.json",      // path to JSON Key file
-    "https://auth.quantumbpm.com", // issuer URL
-    "your-zitadel-project-id",     // adds the audience scope
-)
+provider := auth.NewClientCredentialsTokenProvider(auth.ClientCredentials{
+    TokenURL:     "https://idp.example.com/realms/acme/protocol/openid-connect/token",
+    ClientID:     "billing-svc",
+    ClientSecret: os.Getenv("QUANTUMBPM_CLIENT_SECRET"),
+    Scopes:       []string{"openid"}, // optional
+    Audience:     "quantumbpm",       // optional, some providers such as Auth0 require it
+    HTTPClient:   httpClient,         // optional, defaults to http.DefaultClient
+})
 ```
 
-The provider caches tokens in-memory until shortly before expiry.
+The exact token endpoint depends on the identity provider. The provider's OIDC discovery document (`/.well-known/openid-configuration`) lists it as `token_endpoint`.
+
+`Scopes` are sent space-joined as the `scope` parameter and `Audience` as the `audience` parameter. Each is left out of the request when empty. The client must be set up at the identity provider so its tokens carry the audience and roles your QuantumBPM deployment expects.
+
+The provider caches the token and fetches a new one once less than 60 seconds of its lifetime remain. It is safe for concurrent use. A non-2xx response from the token endpoint returns an error with the HTTP status and response body.
 
 ### Static bearer token
 
-For Enterprise deployments that issue long-lived API keys, or in tests where a token is acquired out of band:
+For a token acquired out of band, for example by another library or in tests:
 
 ```go
 provider := auth.NewStaticTokenProvider("eyJhbGciOi...")
@@ -127,14 +134,6 @@ result, err := client.DMN.Evaluate(ctx, "loan-eligibility", vars,
 )
 ```
 
-### Evaluate by platform UUID
-
-When you already hold a database-version pointer:
-
-```go
-result, err := client.DMN.EvaluateByID(ctx, definitionUUID, vars)
-```
-
 ### Ad-hoc XML evaluation
 
 For "evaluate while editing" flows that don't store the XML:
@@ -172,8 +171,9 @@ if err := client.BPMN.DeployResource(ctx, draft.Id); err != nil {
     log.Fatal(err)
 }
 
-// Start an instance from the deployed process definition.
-workflowID, err := client.BPMN.StartInstance(ctx, draft.ProcessDefinition.Id, variables.New().
+// Start an instance of the deployed process's latest version, by its BPMN
+// process ID. bpmn.WithStartVersion(n) starts a specific version.
+instanceID, err := client.BPMN.StartInstance(ctx, "loan-process", variables.New().
     Set("applicantID", "u-123").
     Set("requestedAmt", 25000))
 ```
@@ -181,12 +181,19 @@ workflowID, err := client.BPMN.StartInstance(ctx, draft.ProcessDefinition.Id, va
 ### Inspect runtime state
 
 ```go
-state, err := client.BPMN.GetInstance(ctx, workflowID)
+state, err := client.BPMN.GetInstance(ctx, instanceID)
 fmt.Println(state.Status, state.ActiveScopes)
 
-vars, err := client.BPMN.GetInstanceVariables(ctx, workflowID)
+vars, err := client.BPMN.GetInstanceVariables(ctx, instanceID)
 
-children, err := client.BPMN.GetInstanceChildren(ctx, workflowID)
+children, err := client.BPMN.GetInstanceChildren(ctx, instanceID)
+
+// History pages run oldest first. Without options a page holds the newest
+// entries, and an entry read by its seq carries its inputs and outputs.
+page, err := client.BPMN.GetInstanceHistory(ctx, instanceID, bpmn.WithHistoryFromSeq(1), bpmn.WithHistoryLimit(100))
+entry, err := client.BPMN.GetInstanceHistoryEntry(ctx, instanceID, *page.Items[0].Seq)
+
+version, err := client.BPMN.GetProcessVersion(ctx, "loan-process", 2)
 ```
 
 ### Send messages and signals
@@ -207,6 +214,23 @@ err = client.BPMN.PublishSignal(ctx, "system-maintenance", variables.New())
 page, err := client.BPMN.ListUserTasks(ctx,
     bpmn.WithUserTaskAssignee("alice@example.com"),
     bpmn.WithUserTaskStatus("CREATED"),
+)
+
+// Lists of instances and user tasks page by cursor: pass the page's
+// NextCursor back for the next one. It is nil on the last page.
+if page.Pagination.NextCursor != nil {
+    page, err = client.BPMN.ListUserTasks(ctx,
+        bpmn.WithUserTaskAssignee("alice@example.com"),
+        bpmn.WithUserTaskStatus("CREATED"),
+        bpmn.WithUserTaskCursor(*page.Pagination.NextCursor),
+    )
+}
+
+// The caller's tasks soonest due first, and the project's overdue ones.
+mine, err := client.BPMN.ListUserTasksForCaller(ctx, bpmn.WithUserTaskSort("dueDate"))
+overdue, err := client.BPMN.ListUserTasks(ctx,
+    bpmn.WithUserTaskStatus("CREATED"),
+    bpmn.WithUserTaskDueBefore(time.Now()),
 )
 
 err = client.BPMN.CompleteUserTask(ctx, executionKey,
@@ -255,11 +279,11 @@ worker.Handle("send-email", handler,
 )
 ```
 
-Concurrency is per task type. Different task types run in independent goroutine pools. The server clamps the lock duration to between 10s and 5m by default (`BPMN_WORKER_LEASE_MIN`, `BPMN_WORKER_LEASE_MAX`), so `WithLockDuration(11*time.Minute)` gets a 5m lock. While the handler runs, the runtime heartbeats at half of the lock the server granted.
+Concurrency is per task type. Different task types run in independent goroutine pools. The server clamps the lock duration to between 10s and 5m by default (`ENGINE_WORKER_LOCK_MIN`, `ENGINE_WORKER_LOCK_MAX`), so `WithLockDuration(11*time.Minute)` gets a 5m lock. While the handler runs, the runtime heartbeats at half of the lock the server granted.
 
 ### Locks, heartbeats, and shutdown
 
-A polled job is locked to the worker's `ClientID`. Each heartbeat extends the lock by the clamped lock duration, and the server caps one attempt at 30 minutes by default (`BPMN_JOB_MAX_HOLD`). If the lock runs out (missed heartbeats, the cap, or a crashed worker), the server charges the job a retry and offers it again, or raises an incident when no retries are left. So abandoning a running job always costs a retry.
+A polled job is locked to the worker's `ClientID`. Each heartbeat extends the lock by the clamped lock duration, and the server caps one attempt at 30 minutes by default (`ENGINE_JOB_MAX_HOLD`). If the lock runs out (missed heartbeats, the cap, or a crashed worker), the server charges the job a retry and offers it again, or raises an incident when no retries are left. So abandoning a running job always costs a retry.
 
 When a heartbeat answers that the worker no longer holds the job, the runtime stops heartbeating it, cancels the handler's `ctx` and drops its result. Handlers doing long work should watch `ctx.Done()`.
 
@@ -346,7 +370,7 @@ The `client.Raw()` and `client.BPMN.Raw()` methods expose the underlying generat
 
 ```go
 raw := client.Raw()
-resp, err := raw.MigrateBpmnInstanceWithResponse(ctx, projectID, workflowID, body)
+resp, err := raw.MigrateBpmnInstanceWithResponse(ctx, projectID, instanceID, body)
 ```
 
 ## License

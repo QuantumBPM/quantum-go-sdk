@@ -9,11 +9,12 @@ import (
 	"net/url"
 	"strings"
 	"testing"
+	"time"
 
 	openapi_types "github.com/oapi-codegen/runtime/types"
 
-	"github.com/QuantumBPM/quantum-go-sdk/generated"
-	"github.com/QuantumBPM/quantum-go-sdk/variables"
+	"github.com/QuantumBPM/quantum-go-sdk/v2/generated"
+	"github.com/QuantumBPM/quantum-go-sdk/v2/variables"
 )
 
 func newTestClient(t *testing.T, handler http.HandlerFunc) (*Client, *httptest.Server) {
@@ -37,11 +38,10 @@ func TestStartInstance_SendsBusinessID(t *testing.T) {
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
-		_, _ = w.Write([]byte(`{"workflowID":"wf-1"}`))
+		_, _ = w.Write([]byte(`{"instanceID":"wf-1"}`))
 	})
 
-	defID := openapi_types.UUID{}
-	if _, err := c.StartInstance(context.Background(), defID, variables.New(), WithStartBusinessID("ORDER-42")); err != nil {
+	if _, err := c.StartInstance(context.Background(), "order", variables.New(), WithStartBusinessID("ORDER-42")); err != nil {
 		t.Fatalf("StartInstance: %v", err)
 	}
 	if got.BusinessId == nil || *got.BusinessId != "ORDER-42" {
@@ -56,11 +56,10 @@ func TestStartInstance_OmitsBusinessIDWhenAbsent(t *testing.T) {
 		_ = json.Unmarshal(body, &got)
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
-		_, _ = w.Write([]byte(`{"workflowID":"wf-1"}`))
+		_, _ = w.Write([]byte(`{"instanceID":"wf-1"}`))
 	})
 
-	defID := openapi_types.UUID{}
-	if _, err := c.StartInstance(context.Background(), defID, variables.New()); err != nil {
+	if _, err := c.StartInstance(context.Background(), "order", variables.New()); err != nil {
 		t.Fatalf("StartInstance: %v", err)
 	}
 	if got.BusinessId != nil {
@@ -73,7 +72,7 @@ func TestListInstances_PassesBusinessIDFilter(t *testing.T) {
 	c, _ := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
 		query = r.URL.Query()
 		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte(`{"data":[],"pagination":{"page":1,"pageSize":20,"totalCount":0,"totalPages":0}}`))
+		_, _ = w.Write([]byte(`{"data":[],"pagination":{"total":0}}`))
 	})
 
 	if _, err := c.ListInstances(context.Background(), WithInstanceBusinessID("ORDER-42")); err != nil {
@@ -89,7 +88,7 @@ func TestListUserTasks_PassesBusinessIDFilter(t *testing.T) {
 	c, _ := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
 		query = r.URL.Query()
 		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte(`{"data":[],"pagination":{"page":1,"pageSize":20,"totalCount":0,"totalPages":0}}`))
+		_, _ = w.Write([]byte(`{"data":[],"pagination":{"total":0}}`))
 	})
 
 	if _, err := c.ListUserTasks(context.Background(), WithUserTaskBusinessID("ORDER-42")); err != nil {
@@ -97,6 +96,77 @@ func TestListUserTasks_PassesBusinessIDFilter(t *testing.T) {
 	}
 	if got := query.Get("businessId"); got != "ORDER-42" {
 		t.Fatalf("businessId query = %q, want ORDER-42", got)
+	}
+}
+
+// Both user task lists send the due date bounds and the sort.
+func TestListUserTasks_PassDueRangeAndSort(t *testing.T) {
+	var query url.Values
+	c, _ := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+		query = r.URL.Query()
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{"data":[],"pagination":{"total":0}}`))
+	})
+	now := time.Date(2026, 11, 10, 12, 0, 0, 0, time.UTC)
+
+	if _, err := c.ListUserTasks(context.Background(), WithUserTaskDueBefore(now), WithUserTaskSort("dueDate")); err != nil {
+		t.Fatalf("ListUserTasks: %v", err)
+	}
+	if query.Get("dueBefore") != "2026-11-10T12:00:00Z" || query.Get("dueAfter") != "" || query.Get("sort") != "dueDate" {
+		t.Fatalf("ListUserTasks query = %v", query)
+	}
+	if _, err := c.ListUserTasksForCaller(context.Background(), WithUserTaskDueAfter(now), WithUserTaskSort("priority")); err != nil {
+		t.Fatalf("ListUserTasksForCaller: %v", err)
+	}
+	if query.Get("dueAfter") != "2026-11-10T12:00:00Z" || query.Get("dueBefore") != "" || query.Get("sort") != "priority" {
+		t.Fatalf("ListUserTasksForCaller query = %v", query)
+	}
+}
+
+// Each cursor list sends its cursor and limit, and hands back the next
+// page's cursor.
+func TestCursorListsPassCursorAndLimit(t *testing.T) {
+	var query url.Values
+	c, _ := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+		query = r.URL.Query()
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{"data":[],"pagination":{"nextCursor":"next","total":3}}`))
+	})
+	ctx := context.Background()
+	lists := map[string]func() (*generated.CursorPage, error){
+		"ListInstances": func() (*generated.CursorPage, error) {
+			p, err := c.ListInstances(ctx, WithInstanceCursor("prev"), WithInstanceLimit(7))
+			if err != nil {
+				return nil, err
+			}
+			return &p.Pagination, nil
+		},
+		"ListUserTasks": func() (*generated.CursorPage, error) {
+			p, err := c.ListUserTasks(ctx, WithUserTaskCursor("prev"), WithUserTaskLimit(7))
+			if err != nil {
+				return nil, err
+			}
+			return &p.Pagination, nil
+		},
+		"ListUserTasksForCaller": func() (*generated.CursorPage, error) {
+			p, err := c.ListUserTasksForCaller(ctx, WithUserTaskCursor("prev"), WithUserTaskLimit(7))
+			if err != nil {
+				return nil, err
+			}
+			return &p.Pagination, nil
+		},
+	}
+	for name, list := range lists {
+		page, err := list()
+		if err != nil {
+			t.Fatalf("%s: %v", name, err)
+		}
+		if query.Get("cursor") != "prev" || query.Get("limit") != "7" {
+			t.Errorf("%s sent cursor %q and limit %q, want prev and 7", name, query.Get("cursor"), query.Get("limit"))
+		}
+		if page.NextCursor == nil || *page.NextCursor != "next" {
+			t.Errorf("%s NextCursor = %v, want next", name, page.NextCursor)
+		}
 	}
 }
 
@@ -110,7 +180,7 @@ func TestStartTestInstance_SendsBusinessID(t *testing.T) {
 		_ = json.Unmarshal(body, &got)
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
-		_, _ = w.Write([]byte(`{"workflowID":"wf-1"}`))
+		_, _ = w.Write([]byte(`{"instanceID":"wf-1"}`))
 	})
 
 	resID := openapi_types.UUID{}

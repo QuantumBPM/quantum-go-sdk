@@ -22,8 +22,8 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 
-	"github.com/QuantumBPM/quantum-go-sdk/generated"
-	"github.com/QuantumBPM/quantum-go-sdk/variables"
+	"github.com/QuantumBPM/quantum-go-sdk/v2/generated"
+	"github.com/QuantumBPM/quantum-go-sdk/v2/variables"
 )
 
 // Defaults tuned to match the server-side defaults documented in the API.
@@ -474,7 +474,7 @@ func (w *Worker) heartbeat(ctx context.Context, r *registration, job *generated.
 
 func (w *Worker) complete(ctx context.Context, job *generated.ExternalJob, vars variables.Vars) {
 	resp, err := w.api.CompleteBpmnExternalJobWithResponse(ctx, w.projectID, job.ExecutionKey, generated.CompleteBpmnExternalJobJSONRequestBody{
-		WorkflowID: job.WorkflowID,
+		InstanceID: job.InstanceID,
 		ClientID:   &w.clientID,
 		Variables:  vars.ToWireMap(),
 	})
@@ -511,10 +511,11 @@ func conflictReason(body []byte) string {
 
 func (w *Worker) throwError(ctx context.Context, job *generated.ExternalJob, code string, vars variables.Vars, retryable bool) {
 	resp, err := w.api.ThrowBpmnExternalJobErrorWithResponse(ctx, w.projectID, job.ExecutionKey, generated.ThrowBpmnExternalJobErrorJSONRequestBody{
-		ErrorCode: code,
-		ClientID:  &w.clientID,
-		Retryable: &retryable,
-		Variables: vars.ToWireMap(),
+		InstanceID: job.InstanceID,
+		ErrorCode:  code,
+		ClientID:   &w.clientID,
+		Retryable:  &retryable,
+		Variables:  vars.ToWireMap(),
 	})
 	if err != nil {
 		w.logger.Printf("throw-error %s: %v", job.ExecutionKey, err)

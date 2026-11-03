@@ -3,7 +3,7 @@ package workers
 import (
 	"fmt"
 
-	"github.com/QuantumBPM/quantum-go-sdk/variables"
+	"github.com/QuantumBPM/quantum-go-sdk/v2/variables"
 )
 
 // BpmnError is a typed error a handler can return to fail a job with a BPMN

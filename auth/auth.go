@@ -1,17 +1,14 @@
 // Package auth provides token providers and an authenticated HTTP client
-// wrapper for the QuantumBPM SDK.
-//
-// The TokenProvider interface is the extension point. ZitadelTokenProvider
-// implements service-account JWT auth against Zitadel; StaticTokenProvider
-// supplies a fixed bearer token for Enterprise / API-key flows. Implementing
-// TokenProvider yourself integrates any other OIDC source.
+// wrapper for the QuantumBPM SDK. ClientCredentialsTokenProvider fetches
+// tokens from any OIDC provider and StaticTokenProvider supplies a fixed
+// bearer token. Implement TokenProvider to plug in any other token source.
 package auth
 
 import (
 	"context"
 	"net/http"
 
-	"github.com/QuantumBPM/quantum-go-sdk/generated"
+	"github.com/QuantumBPM/quantum-go-sdk/v2/generated"
 )
 
 // TokenProvider returns a valid access token for the next request. The

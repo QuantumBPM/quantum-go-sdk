@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/QuantumBPM/quantum-go-sdk/generated"
+	"github.com/QuantumBPM/quantum-go-sdk/v2/generated"
 )
 
 // ProcessListOption tunes a list-processes query.
@@ -77,4 +77,24 @@ func (c *Client) ListProcessVersions(ctx context.Context, processID string, opts
 		return resp.JSON200, nil
 	}
 	return nil, errorFromResponses("list-process-versions", resp.StatusCode())
+}
+
+// GetProcessVersion returns one deployed version of a process id with its
+// instance counts and suspension state. WithProcessCreatedAfter bounds its
+// totalCount, the other options do not apply.
+func (c *Client) GetProcessVersion(ctx context.Context, processID string, version int, opts ...ProcessListOption) (*ProcessVersion, error) {
+	o := &processListOpts{}
+	for _, opt := range opts {
+		opt(o)
+	}
+	resp, err := c.api.GetBpmnProcessVersionWithResponse(ctx, c.projectID, processID, version, &generated.GetBpmnProcessVersionParams{
+		CreatedAfter: o.createdAfter,
+	})
+	if err != nil {
+		return nil, err
+	}
+	if resp.JSON200 != nil {
+		return resp.JSON200, nil
+	}
+	return nil, errorFromResponses("get-process-version", resp.StatusCode(), resp.JSON404)
 }
