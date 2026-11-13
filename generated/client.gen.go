@@ -88,6 +88,12 @@ const (
 	BpmnValidationIssueSeverityWarning BpmnValidationIssueSeverity = "warning"
 )
 
+// Defines values for DecisionKind.
+const (
+	DecisionKindDECISION        DecisionKind = "DECISION"
+	DecisionKindDECISIONSERVICE DecisionKind = "DECISION_SERVICE"
+)
+
 // Defines values for ErrorCode.
 const (
 	BADREQUEST    ErrorCode = "BAD_REQUEST"
@@ -107,10 +113,10 @@ const (
 
 // Defines values for EvaluationResultType.
 const (
-	BKM             EvaluationResultType = "BKM"
-	DECISION        EvaluationResultType = "DECISION"
-	DECISIONSERVICE EvaluationResultType = "DECISION_SERVICE"
-	INPUTDATA       EvaluationResultType = "INPUT_DATA"
+	EvaluationResultTypeBKM             EvaluationResultType = "BKM"
+	EvaluationResultTypeDECISION        EvaluationResultType = "DECISION"
+	EvaluationResultTypeDECISIONSERVICE EvaluationResultType = "DECISION_SERVICE"
+	EvaluationResultTypeINPUTDATA       EvaluationResultType = "INPUT_DATA"
 )
 
 // Defines values for ExternalJobStatus.
@@ -561,11 +567,6 @@ type BpmnInstance struct {
 	SuspendedBy *string `json:"suspendedBy,omitempty"`
 }
 
-// BpmnInstanceChildrenResponse Child instances spawned by a parent instance via CallActivity elements.
-type BpmnInstanceChildrenResponse struct {
-	Children []BpmnInstance `json:"children"`
-}
-
 // BpmnInstancePaginatedResponse Page of BPMN process instances.
 type BpmnInstancePaginatedResponse struct {
 	Data []BpmnInstance `json:"data"`
@@ -972,12 +973,17 @@ type DecisionInputField struct {
 	TypeRef *string `json:"typeRef,omitempty"`
 }
 
-// DecisionSummary A unique decision in the project, surfaced for picking from BPMN BusinessRuleTask elements.
+// DecisionKind Whether a deployed entry is a decision or a decision service. A BPMN
+// BusinessRuleTask calls either by its ID. A decision service returns its
+// output decision's value, or a context of them when it has several.
+type DecisionKind string
+
+// DecisionSummary A unique decision or decision service in the project, surfaced for picking from BPMN BusinessRuleTask elements.
 type DecisionSummary struct {
-	// DecisionID ID of the decision node from the DMN XML (unique per project).
+	// DecisionID ID of the decision or decision service from the DMN XML (unique per project).
 	DecisionID string `json:"decisionID"`
 
-	// DecisionName Human-readable name of the decision.
+	// DecisionName Human-readable name of the decision or decision service.
 	DecisionName string `json:"decisionName"`
 
 	// DefinitionName Human-readable name of the DMN definition the latest version came from.
@@ -986,8 +992,13 @@ type DecisionSummary struct {
 	// DefinitionsID Stable identifier from the DMN XML's outer `<definitions id="…">` attribute.
 	DefinitionsID string `json:"definitionsID"`
 
-	// InputFields Declared input variables of the decision (from DMN `InformationRequirement` → `InputData`). Useful for prepopulating BPMN BusinessRuleTask input mappings. Empty when the decision declares no typed inputs.
+	// InputFields Declared input variables of the decision (from DMN `InformationRequirement` → `InputData`), or a decision service's parameters (its input data, then its input decisions). Useful for prepopulating BPMN BusinessRuleTask input mappings. Empty when none are declared.
 	InputFields []DecisionInputField `json:"inputFields"`
+
+	// Kind Whether a deployed entry is a decision or a decision service. A BPMN
+	// BusinessRuleTask calls either by its ID. A decision service returns its
+	// output decision's value, or a context of them when it has several.
+	Kind DecisionKind `json:"kind"`
 
 	// LatestVersion The decision's latest deployed version, counted per decision id. A business rule task that binds a version names this number.
 	LatestVersion int `json:"latestVersion"`
@@ -1190,6 +1201,11 @@ type Execution struct {
 	// ExecutedBy User or service account that issued the evaluation. Absent on a business rule task's.
 	ExecutedBy *string `json:"executedBy,omitempty"`
 
+	// ExecutionKey The business rule task execution the evaluation ran in, the `executionKey` of its entries
+	// in the instance history. Each run of the task, a retry included, has its own. Absent on an
+	// evaluation through the API.
+	ExecutionKey *string `json:"executionKey,omitempty"`
+
 	// Id Unique identifier of this evaluation.
 	Id openapi_types.UUID `json:"id"`
 
@@ -1341,6 +1357,9 @@ type HitRule struct {
 
 	// RuleID ID of the matched rule from the DMN XML.
 	RuleID *string `json:"ruleID,omitempty"`
+
+	// RuleIndex The matched rule's 0-based position in its decision table, in the evaluated definitions version.
+	RuleIndex *int `json:"ruleIndex,omitempty"`
 }
 
 // JoinArrivals The flows that have delivered tokens to a join that has not fired yet.
@@ -1418,8 +1437,11 @@ type PaginatedDefinitionsResponse struct {
 type PaginatedExecutionsResponse struct {
 	Data []Execution `json:"data"`
 
-	// Pagination Pagination metadata accompanying paginated list responses.
-	Pagination PaginationMetadata `json:"pagination"`
+	// Pagination Where a list paged by cursor stands. Pass `nextCursor` back as `cursor`
+	// for the next page. It is absent on the last page. `total` counts the
+	// matches on the first page only, the one read without a cursor, and stops
+	// at 10,000, which `totalCapped` reports.
+	Pagination CursorPage `json:"pagination"`
 }
 
 // PaginationMetadata Pagination metadata accompanying paginated list responses.
@@ -1886,6 +1908,15 @@ type SetBpmnAdHocVariablesJSONBody struct {
 	Variables *VariableMap `json:"variables,omitempty"`
 }
 
+// GetBpmnInstanceChildrenParams defines parameters for GetBpmnInstanceChildren.
+type GetBpmnInstanceChildrenParams struct {
+	// Cursor The `nextCursor` of the page before, absent for the first page.
+	Cursor *string `form:"cursor,omitempty" json:"cursor,omitempty"`
+
+	// Limit Most instances per page, 20 by default and 100 at most.
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
 // GetBpmnInstanceHistoryParams defines parameters for GetBpmnInstanceHistory.
 type GetBpmnInstanceHistoryParams struct {
 	// FromSeq Read the entries from this seq on. Takes precedence over `beforeSeq`.
@@ -2147,17 +2178,23 @@ type ListProjectExecutionsParams struct {
 	// Version Only evaluations of this deployed version of `definitionsID`. Ignored without `definitionsID`.
 	Version *int `form:"version,omitempty" json:"version,omitempty"`
 
+	// InstanceID Only the evaluations of this process instance's business rule tasks.
+	InstanceID *string `form:"instanceID,omitempty" json:"instanceID,omitempty"`
+
+	// ExecutionKey Only the evaluation of this business rule task execution, the `executionKey` of its entries in the instance history. Use it with `instanceID`.
+	ExecutionKey *string `form:"executionKey,omitempty" json:"executionKey,omitempty"`
+
 	// BusinessId Exact-match filter on the caller-supplied correlation key.
 	BusinessId *string `form:"businessId,omitempty" json:"businessId,omitempty"`
 
 	// StartDate Only return executions at or after this instant (ISO 8601). Bounds the scan and the reported total; omit for the full unbounded history.
 	StartDate *time.Time `form:"startDate,omitempty" json:"startDate,omitempty"`
 
-	// Page Page number (1-indexed)
-	Page *int `form:"page,omitempty" json:"page,omitempty"`
+	// Cursor The `nextCursor` of the page before, absent for the first page.
+	Cursor *string `form:"cursor,omitempty" json:"cursor,omitempty"`
 
-	// PageSize Number of items per page (max 100)
-	PageSize *int `form:"pageSize,omitempty" json:"pageSize,omitempty"`
+	// Limit Most executions per page, 20 by default and 100 at most.
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
 }
 
 // EvaluateDesignJSONRequestBody defines body for EvaluateDesign for application/json ContentType.
@@ -2657,7 +2694,7 @@ type ClientInterface interface {
 	SetBpmnAdHocVariables(ctx context.Context, projectID openapi_types.UUID, instanceID string, adHocNodeID string, body SetBpmnAdHocVariablesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetBpmnInstanceChildren request
-	GetBpmnInstanceChildren(ctx context.Context, projectID openapi_types.UUID, instanceID string, reqEditors ...RequestEditorFn) (*http.Response, error)
+	GetBpmnInstanceChildren(ctx context.Context, projectID openapi_types.UUID, instanceID string, params *GetBpmnInstanceChildrenParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetBpmnInstanceHistory request
 	GetBpmnInstanceHistory(ctx context.Context, projectID openapi_types.UUID, instanceID string, params *GetBpmnInstanceHistoryParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -3202,8 +3239,8 @@ func (c *Client) SetBpmnAdHocVariables(ctx context.Context, projectID openapi_ty
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetBpmnInstanceChildren(ctx context.Context, projectID openapi_types.UUID, instanceID string, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetBpmnInstanceChildrenRequest(c.Server, projectID, instanceID)
+func (c *Client) GetBpmnInstanceChildren(ctx context.Context, projectID openapi_types.UUID, instanceID string, params *GetBpmnInstanceChildrenParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetBpmnInstanceChildrenRequest(c.Server, projectID, instanceID, params)
 	if err != nil {
 		return nil, err
 	}
@@ -5306,7 +5343,7 @@ func NewSetBpmnAdHocVariablesRequestWithBody(server string, projectID openapi_ty
 }
 
 // NewGetBpmnInstanceChildrenRequest generates requests for GetBpmnInstanceChildren
-func NewGetBpmnInstanceChildrenRequest(server string, projectID openapi_types.UUID, instanceID string) (*http.Request, error) {
+func NewGetBpmnInstanceChildrenRequest(server string, projectID openapi_types.UUID, instanceID string, params *GetBpmnInstanceChildrenParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -5336,6 +5373,44 @@ func NewGetBpmnInstanceChildrenRequest(server string, projectID openapi_types.UU
 	queryURL, err := serverURL.Parse(operationPath)
 	if err != nil {
 		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Cursor != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "cursor", runtime.ParamLocationQuery, *params.Cursor); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
 	}
 
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
@@ -8269,6 +8344,38 @@ func NewListProjectExecutionsRequest(server string, projectID openapi_types.UUID
 
 		}
 
+		if params.InstanceID != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "instanceID", runtime.ParamLocationQuery, *params.InstanceID); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ExecutionKey != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "executionKey", runtime.ParamLocationQuery, *params.ExecutionKey); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
 		if params.BusinessId != nil {
 
 			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "businessId", runtime.ParamLocationQuery, *params.BusinessId); err != nil {
@@ -8301,9 +8408,9 @@ func NewListProjectExecutionsRequest(server string, projectID openapi_types.UUID
 
 		}
 
-		if params.Page != nil {
+		if params.Cursor != nil {
 
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "page", runtime.ParamLocationQuery, *params.Page); err != nil {
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "cursor", runtime.ParamLocationQuery, *params.Cursor); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -8317,9 +8424,9 @@ func NewListProjectExecutionsRequest(server string, projectID openapi_types.UUID
 
 		}
 
-		if params.PageSize != nil {
+		if params.Limit != nil {
 
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "pageSize", runtime.ParamLocationQuery, *params.PageSize); err != nil {
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -8535,7 +8642,7 @@ type ClientWithResponsesInterface interface {
 	SetBpmnAdHocVariablesWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, adHocNodeID string, body SetBpmnAdHocVariablesJSONRequestBody, reqEditors ...RequestEditorFn) (*SetBpmnAdHocVariablesResponse, error)
 
 	// GetBpmnInstanceChildrenWithResponse request
-	GetBpmnInstanceChildrenWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, reqEditors ...RequestEditorFn) (*GetBpmnInstanceChildrenResponse, error)
+	GetBpmnInstanceChildrenWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, params *GetBpmnInstanceChildrenParams, reqEditors ...RequestEditorFn) (*GetBpmnInstanceChildrenResponse, error)
 
 	// GetBpmnInstanceHistoryWithResponse request
 	GetBpmnInstanceHistoryWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, params *GetBpmnInstanceHistoryParams, reqEditors ...RequestEditorFn) (*GetBpmnInstanceHistoryResponse, error)
@@ -9161,7 +9268,7 @@ func (r SetBpmnAdHocVariablesResponse) StatusCode() int {
 type GetBpmnInstanceChildrenResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *BpmnInstanceChildrenResponse
+	JSON200      *BpmnInstancePaginatedResponse
 }
 
 // Status returns HTTPResponse.Status
@@ -10562,8 +10669,8 @@ func (c *ClientWithResponses) SetBpmnAdHocVariablesWithResponse(ctx context.Cont
 }
 
 // GetBpmnInstanceChildrenWithResponse request returning *GetBpmnInstanceChildrenResponse
-func (c *ClientWithResponses) GetBpmnInstanceChildrenWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, reqEditors ...RequestEditorFn) (*GetBpmnInstanceChildrenResponse, error) {
-	rsp, err := c.GetBpmnInstanceChildren(ctx, projectID, instanceID, reqEditors...)
+func (c *ClientWithResponses) GetBpmnInstanceChildrenWithResponse(ctx context.Context, projectID openapi_types.UUID, instanceID string, params *GetBpmnInstanceChildrenParams, reqEditors ...RequestEditorFn) (*GetBpmnInstanceChildrenResponse, error) {
+	rsp, err := c.GetBpmnInstanceChildren(ctx, projectID, instanceID, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -11779,7 +11886,7 @@ func ParseGetBpmnInstanceChildrenResponse(rsp *http.Response) (*GetBpmnInstanceC
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest BpmnInstanceChildrenResponse
+		var dest BpmnInstancePaginatedResponse
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}

@@ -150,9 +150,33 @@ func (c *Client) ListInstances(ctx context.Context, opts ...InstanceListOption) 
 	return nil, errorFromResponses("list-instances", resp.StatusCode())
 }
 
-// GetInstanceChildren returns child instances spawned via CallActivity.
-func (c *Client) GetInstanceChildren(ctx context.Context, instanceID string) (*InstanceChildren, error) {
-	resp, err := c.api.GetBpmnInstanceChildrenWithResponse(ctx, c.projectID, instanceID)
+// ChildrenOption tunes a GetInstanceChildren read.
+type ChildrenOption func(*cursorOpts)
+
+// WithChildrenCursor continues a listing from the page before's
+// Pagination.NextCursor.
+func WithChildrenCursor(cursor string) ChildrenOption {
+	return func(o *cursorOpts) { o.cursor = &cursor }
+}
+
+// WithChildrenLimit sets the most instances a page returns, 20 by default
+// and 100 at most.
+func WithChildrenLimit(limit int) ChildrenOption {
+	return func(o *cursorOpts) { o.limit = &limit }
+}
+
+// GetInstanceChildren returns a page of the instances this instance spawned
+// via CallActivity, newest first. Pass the page's Pagination.NextCursor to
+// WithChildrenCursor for the next one. It is nil on the last page.
+func (c *Client) GetInstanceChildren(ctx context.Context, instanceID string, opts ...ChildrenOption) (*InstanceListPage, error) {
+	o := &cursorOpts{}
+	for _, opt := range opts {
+		opt(o)
+	}
+	resp, err := c.api.GetBpmnInstanceChildrenWithResponse(ctx, c.projectID, instanceID, &generated.GetBpmnInstanceChildrenParams{
+		Cursor: o.cursor,
+		Limit:  o.limit,
+	})
 	if err != nil {
 		return nil, err
 	}

@@ -22,7 +22,6 @@ type (
 	Instance                = generated.BpmnInstance
 	InstanceState           = generated.BpmnInstanceState
 	InstanceListPage        = generated.BpmnInstancePaginatedResponse
-	InstanceChildren        = generated.BpmnInstanceChildrenResponse
 	HistoryPage             = generated.BpmnHistoryPage
 	HistoryEntry            = generated.BpmnActivityState
 	Incident                = generated.BpmnIncident
