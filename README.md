@@ -16,7 +16,7 @@ Requires Go 1.25+.
 | ---------------------------------- | ----------------------------------------------------------------------------- |
 | `quantumbpm` (root)                | Top-level `Client` exposing `.DMN` and `.BPMN`, plus `NewWorker(...)`         |
 | `quantumbpm/auth`                  | `TokenProvider`, `ClientCredentialsTokenProvider`, `StaticTokenProvider`      |
-| `quantumbpm/dmn`                   | DMN evaluation: stored definitions, ad-hoc XML, batch                         |
+| `quantumbpm/dmn`                   | DMN deploy and evaluation: stored definitions, ad-hoc XML, batch              |
 | `quantumbpm/bpmn`                  | BPMN resources, instances, messaging, user tasks, processes                   |
 | `quantumbpm/workers`               | External job worker runtime - long-poll, lock heartbeat, dispatch             |
 | `quantumbpm/variables`             | `Vars` map type with typed accessors and FEEL-context conversion              |
@@ -113,7 +113,20 @@ type TokenProvider interface {
 
 ## DMN evaluation
 
-The `client.DMN` sub-client offers four methods.
+The `client.DMN` sub-client deploys definitions and evaluates them.
+
+### Deploy a definition
+
+```go
+draft, err := client.DMN.CreateDefinition(ctx, "loan-eligibility", dmnXML)
+if err != nil {
+    log.Fatal(err)
+}
+deployed, err := client.DMN.DeployDefinition(ctx, draft.Id)
+// *deployed.Version is the version the deploy gave it.
+```
+
+A draft is not evaluable until it is deployed. Saving XML identical to the latest deployed version of its `<definitions id>` returns a conflict error, and nothing is saved.
 
 ### Evaluate a stored definition
 

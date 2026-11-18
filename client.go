@@ -56,7 +56,7 @@ type Client struct {
 	api       *generated.ClientWithResponses
 	projectID openapi_types.UUID
 
-	// DMN evaluates DMN definitions in the project.
+	// DMN deploys and evaluates DMN definitions in the project.
 	DMN *dmn.Client
 	// BPMN drives BPMN process resources, instances, messaging, and user tasks.
 	BPMN *bpmn.Client

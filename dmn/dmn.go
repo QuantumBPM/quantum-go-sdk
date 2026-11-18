@@ -1,6 +1,7 @@
-// Package dmn wraps the QuantumBPM DMN evaluation endpoints with a
-// project-scoped client. Use Client.Evaluate for stored definitions and
-// Client.EvaluateDesign for ad-hoc XML.
+// Package dmn wraps the QuantumBPM DMN endpoints with a project-scoped
+// client. Use Client.CreateDefinition and Client.DeployDefinition to deploy
+// DMN XML, Client.Evaluate for deployed definitions and Client.EvaluateDesign
+// for ad-hoc XML.
 package dmn
 
 import (
@@ -19,7 +20,10 @@ type Result = map[string]generated.EvaluationResult
 // BatchResult is one result row per input row in a batch evaluation.
 type BatchResult = generated.BatchEvaluationResponse
 
-// Client evaluates DMN definitions in a single project.
+// Definition is a saved DMN definition, a draft or a deployed version.
+type Definition = generated.Definition
+
+// Client deploys and evaluates DMN definitions in a single project.
 type Client struct {
 	api       *generated.ClientWithResponses
 	projectID openapi_types.UUID
@@ -96,7 +100,7 @@ func (c *Client) Evaluate(ctx context.Context, definitionsID string, vars variab
 		return *resp.JSON200, nil
 	}
 	return nil, errorFromResponses("evaluate", resp.StatusCode(),
-		resp.JSON400, resp.JSON404, resp.JSON500)
+		resp.JSON400, resp.JSON404, nil, resp.JSON500)
 }
 
 // DesignOption tunes an ad-hoc design evaluation.
@@ -152,7 +156,7 @@ func (c *Client) EvaluateDesign(ctx context.Context, xml string, vars variables.
 		return *resp.JSON200, nil
 	}
 	return nil, errorFromResponses("evaluate-design", resp.StatusCode(),
-		resp.JSON400, nil, resp.JSON500)
+		resp.JSON400, nil, nil, resp.JSON500)
 }
 
 // EvaluateDesignBatch evaluates the same XML against many input rows in a
@@ -178,15 +182,50 @@ func (c *Client) EvaluateDesignBatch(ctx context.Context, xml string, rows []var
 		return *resp.JSON200, nil
 	}
 	return BatchResult{}, errorFromResponses("evaluate-design-batch", resp.StatusCode(),
-		resp.JSON400, nil, resp.JSON500)
+		resp.JSON400, nil, nil, resp.JSON500)
 }
 
-func errorFromResponses(op string, status int, e400, e404, e500 *generated.Error) error {
+// CreateDefinition saves DMN XML as a draft, which is not evaluable until
+// DeployDefinition deploys it. XML identical to the latest deployed version
+// of its `<definitions id>` is refused with a conflict.
+func (c *Client) CreateDefinition(ctx context.Context, name, xml string) (*Definition, error) {
+	resp, err := c.api.CreateDefinitionWithResponse(ctx, c.projectID, generated.CreateDefinitionJSONRequestBody{
+		Name: name,
+		Xml:  xml,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("dmn: create-definition request: %w", err)
+	}
+	if resp.JSON201 != nil {
+		return resp.JSON201, nil
+	}
+	return nil, errorFromResponses("create-definition", resp.StatusCode(),
+		resp.JSON400, resp.JSON404, resp.JSON409, resp.JSON500)
+}
+
+// DeployDefinition deploys a draft and returns it with the version it got.
+// A draft identical to the latest deployed version is refused with a
+// conflict.
+func (c *Client) DeployDefinition(ctx context.Context, definitionID openapi_types.UUID) (*Definition, error) {
+	resp, err := c.api.DeployDefinitionWithResponse(ctx, c.projectID, definitionID)
+	if err != nil {
+		return nil, fmt.Errorf("dmn: deploy-definition request: %w", err)
+	}
+	if resp.JSON200 != nil {
+		return resp.JSON200, nil
+	}
+	return nil, errorFromResponses("deploy-definition", resp.StatusCode(),
+		resp.JSON400, resp.JSON404, resp.JSON409, resp.JSON500)
+}
+
+func errorFromResponses(op string, status int, e400, e404, e409, e500 *generated.Error) error {
 	switch {
 	case e400 != nil:
 		return fmt.Errorf("dmn: %s: bad request: %s", op, e400.Message)
 	case e404 != nil:
 		return fmt.Errorf("dmn: %s: not found: %s", op, e404.Message)
+	case e409 != nil:
+		return fmt.Errorf("dmn: %s: conflict: %s", op, e409.Message)
 	case e500 != nil:
 		return fmt.Errorf("dmn: %s: server error: %s", op, e500.Message)
 	}
